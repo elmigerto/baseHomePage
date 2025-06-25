@@ -7,13 +7,20 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "node server/index.js",
+    "biome" : "npx biome format ."
   },
   "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^4.19.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^6.23.0",
+    "stripe": "^14.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.0.5",
     "@eslint/js": "^9.29.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

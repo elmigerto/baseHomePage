@@ -1,23 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes } from 'react-router-dom'
+import Layout from './components/Layout'
+import Home from './pages/Home'
+import BoardGame from './pages/BoardGame'
+import Stories from './pages/Stories'
+import Drawings from './pages/Drawings'
+import CheckoutSuccess from './pages/CheckoutSuccess'
+import CheckoutCancel from './pages/CheckoutCancel'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-       
-      </div>
-      
-          <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-
-    </>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="boardgame" element={<BoardGame />} />
+        <Route path="stories" element={<Stories />} />
+        <Route path="drawings" element={<Drawings />} />
+        <Route path="success" element={<CheckoutSuccess />} />
+        <Route path="cancel" element={<CheckoutCancel />} />
+      </Route>
+    </Routes>
   )
 }
-
-export default App
