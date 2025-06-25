@@ -6,7 +6,6 @@ import Stories from './pages/Stories'
 import Drawings from './pages/Drawings'
 import CheckoutSuccess from './pages/CheckoutSuccess'
 import CheckoutCancel from './pages/CheckoutCancel'
-import Cart from './components/Cart'
 
 export default function App() {
   return (
@@ -16,7 +15,6 @@ export default function App() {
         <Route path="boardgame" element={<BoardGame />} />
         <Route path="stories" element={<Stories />} />
         <Route path="drawings" element={<Drawings />} />
-        <Route path="cart" element={<Cart />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />
       </Route>

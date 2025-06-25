@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useCart } from '../contexts/CartContext'
 
 const artworks = [
@@ -7,6 +8,7 @@ const artworks = [
 
 export default function Drawings() {
   const { addItem } = useCart()
+  const [selected, setSelected] = useState<typeof artworks[0] | null>(null)
 
   return (
     <div>
@@ -14,7 +16,10 @@ export default function Drawings() {
       <div className="grid grid-cols-2 gap-4">
         {artworks.map((art) => (
           <div key={art.id} className="border p-2">
-            <div className="h-24 bg-gray-200 mb-2" />
+            <div
+              className="h-24 bg-gray-200 mb-2 cursor-pointer"
+              onClick={() => setSelected(art)}
+            />
             <p>{art.name}</p>
             <button
               className="mt-2 px-2 py-1 bg-blue-500 text-white rounded"
@@ -25,6 +30,23 @@ export default function Drawings() {
           </div>
         ))}
       </div>
+      {selected && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white text-black p-4">
+            <div className="h-48 w-48 bg-gray-200 mb-2" />
+            <p className="mb-2">{selected.name}</p>
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => addItem(selected)}
+            >
+              Add to Cart
+            </button>
+            <button className="ml-2" onClick={() => setSelected(null)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
