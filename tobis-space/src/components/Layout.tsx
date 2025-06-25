@@ -9,7 +9,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header openCart={() => setCartOpen(true)} />
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-4 container mx-auto w-full">
         <Outlet />
       </main>
       <footer className="p-4 border-t text-center">&copy; 2024 Tobis Space</footer>

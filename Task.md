@@ -53,3 +53,7 @@ A personal homepage with subpages for:
 - [ ] Deploy frontend (Vite) to GitHub Pages or Vercel
 - [ ] Connect to backend Stripe API from frontend
 - [ ] Use custom domain (optional)
+
+## 🎨 Design Enhancements
+- [x] Improve layout with Tailwind so pages fill the screen and respond well on mobile
+- [x] Add a full-screen hero section on the homepage
