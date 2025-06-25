@@ -1,7 +1,11 @@
 import { NavLink } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 
-export default function Header() {
+export default function Header({
+  openCart,
+}: {
+  openCart: () => void
+}) {
   const { items } = useCart()
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'text-blue-500' : 'text-gray-700'
@@ -22,9 +26,9 @@ export default function Header() {
           Drawings
         </NavLink>
       </nav>
-      <NavLink to="/cart" className="relative" aria-label="Cart">
+      <button onClick={openCart} className="relative" aria-label="Cart">
         Cart ({items.length})
-      </NavLink>
+      </button>
     </header>
   )
 }
