@@ -35,7 +35,7 @@ export default function Chapter() {
       <select
         value={chapter.slug}
         onChange={(e) => navigate(`../${e.target.value}`)}
-        className="border p-2 rounded"
+        className="border p-2 rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600"
       >
         {chapters.map((ch) => (
           <option key={ch.slug} value={ch.slug}>

@@ -27,7 +27,7 @@ export default function Drawings() {
         </Link>
       </div>
       <select
-        className="border rounded p-1 mb-4"
+        className="border rounded p-1 mb-4 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600"
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
       >
