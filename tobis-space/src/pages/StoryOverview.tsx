@@ -20,13 +20,15 @@ export default function StoryOverview() {
           </option>
         ))}
       </select>
-      <nav className="flex flex-wrap gap-2">
+      <ul className="space-y-1">
         {chapters.map((ch) => (
-          <Link key={ch.slug} to={ch.slug} className="text-blue-500 underline">
-            {ch.title}
-          </Link>
+          <li key={ch.slug}>
+            <Link to={ch.slug} className="text-blue-500 underline block">
+              {ch.title}
+            </Link>
+          </li>
         ))}
-      </nav>
+      </ul>
     </div>
   )
 }
