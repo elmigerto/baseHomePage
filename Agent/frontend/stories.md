@@ -9,8 +9,8 @@
 
 ## The Summoners' Veiled Cards
 
-- Chapters stored in `tobis-space/src/chapters/chapter-files` as Markdown files
-- Images for each chapter in `tobis-space/src/chapters/images`
+- Chapters stored in `tobis-space/src/files/chapters/chapter-files` as Markdown files
+- Images for each chapter in `tobis-space/src/files/chapters/images`
 - Story page lists chapters and links to `/stories/:chapterSlug`
 - Clicking a chapter shows its text and image
 - `/stories` acts as a landing page with a short story description and chapter list
