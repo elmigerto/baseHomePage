@@ -84,7 +84,7 @@ corresponding file so you can dive deeper when needed.
 ### Cart & Product Display (`Agent/frontend/cart.md`)
 - [x] Implement global **Cart Context** using React Context API or signals
 - [x] Show cart icon in header with item count
-- [x] Enable **Add to Cart** functionality from each subpage
+- [ ] Enable **Add to Cart** functionality from each subpage
 - [x] Create a **Cart drawer or modal** to show items and total
 
 ### Shopping Cards (`Agent/frontend/product-cards.md`)
@@ -121,4 +121,5 @@ corresponding file so you can dive deeper when needed.
 ### File Locations
 - **Board Game page component**: `tobis-space/src/pages/BoardGame.tsx`
 - **Board Game subpages**: `tobis-space/src/pages/BoardGameCommunity.tsx`, `tobis-space/src/pages/BoardGameRules.tsx`
+- **Board Game updates**: `tobis-space/src/pages/BoardGameUpdates.tsx`
 
