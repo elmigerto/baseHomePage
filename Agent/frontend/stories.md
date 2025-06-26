@@ -7,6 +7,8 @@
 
 ## The Summoners' Veiled Cards
 
-- Chapters stored in [`Agent/stories/`](../stories) as Markdown files
-- Sample chapter: [chapter-1.md](../stories/chapter-1.md)
+- Chapters stored in `tobis-space/src/chapters/chapter-files` as Markdown files
+- Images for each chapter in `tobis-space/src/chapters/images`
+- Story page lists chapters and links to `/stories/:chapterSlug`
+- Clicking a chapter shows its text and image
 - Original story on [Wattpad](https://www.wattpad.com/1528766096-the-summoners%27-veiled-cards-chapter-1-the-fire-in)
