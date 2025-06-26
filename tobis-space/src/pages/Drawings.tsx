@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCartPlus,
@@ -23,7 +24,12 @@ export default function Drawings() {
 
   return (
     <div>
-      <h2 className="text-xl mb-4">Drawings</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl">Drawings</h2>
+        <Link to="/drawings/room" className="text-blue-500 underline">
+          Virtual Room
+        </Link>
+      </div>
       <select
         className="border rounded p-1 mb-4"
         value={filter}
