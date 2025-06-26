@@ -1,26 +1,38 @@
 import { useState } from "react"
 import { useCart } from "../contexts/CartContext"
-import img1 from "../chapters/images/Chapter1.png"
-import img2 from "../chapters/images/Chapter2.png"
-import img3 from "../chapters/images/Chapter3.png"
-import img4 from "../chapters/images/Chapter4.png"
+import drawings, { categories } from "../drawings"
 
-const artworks = [
-  { id: "drawing1", name: "Drawing 1", price: 9.99, image: img1 },
-  { id: "drawing2", name: "Drawing 2", price: 9.99, image: img2 },
-  { id: "drawing3", name: "Drawing 3", price: 9.99, image: img3 },
-  { id: "drawing4", name: "Drawing 4", price: 9.99, image: img4 },
-]
+const allCategory = "all"
+
+type Artwork = (typeof drawings)[number]
 
 export default function Drawings() {
   const { addItem } = useCart()
-  const [selected, setSelected] = useState<typeof artworks[0] | null>(null)
+  const [selected, setSelected] = useState<Artwork | null>(null)
+  const [filter, setFilter] = useState(allCategory)
+
+  const filtered =
+    filter === allCategory
+      ? drawings
+      : drawings.filter((d) => d.category === filter)
 
   return (
     <div>
       <h2 className="text-xl mb-4">Drawings</h2>
+      <select
+        className="border rounded p-1 mb-4"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      >
+        <option value={allCategory}>All</option>
+        {categories.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
       <div className="flex flex-wrap justify-center gap-4">
-        {artworks.map((art) => (
+        {filtered.map((art) => (
           <div key={art.id} className="border p-2 w-48">
             <img
               src={art.image}
