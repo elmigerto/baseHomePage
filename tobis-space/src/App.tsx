@@ -12,7 +12,7 @@ import CheckoutSuccess from './pages/CheckoutSuccess'
 import Drawings from './pages/Drawings'
 import Home from './pages/Home'
 import Stories from './pages/Stories'
-import StoryLanding from './pages/StoryLanding'
+import StoryOverview from './pages/StoryOverview'
 
 export default function App() {
   return (
@@ -27,7 +27,7 @@ export default function App() {
           <Route path="updates" element={<BoardGameUpdates />} />
         </Route>
         <Route path="stories" element={<Stories />}>
-          <Route index element={<StoryLanding />} />
+          <Route index element={<StoryOverview />} />
           <Route path=":chapterSlug" element={<Chapter />} />
         </Route>
         <Route path="drawings" element={<Drawings />} />
