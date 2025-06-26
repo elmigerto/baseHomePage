@@ -10,3 +10,4 @@ This folder contains separate task lists for each major section of the frontend.
 - `boardgame.md` – Board Game page specifics
 - `stories.md` – Stories page features
 - `design.md` – General design improvements
+- `about.md` – About page with personal info

@@ -8,6 +8,7 @@ import BoardGameUpdates from './pages/BoardGameUpdates'
 import Stories from './pages/Stories'
 import Chapter from './pages/Chapter'
 import Drawings from './pages/Drawings'
+import About from './pages/About'
 import CheckoutSuccess from './pages/CheckoutSuccess'
 import CheckoutCancel from './pages/CheckoutCancel'
 
@@ -25,6 +26,7 @@ export default function App() {
           <Route path=":chapterSlug" element={<Chapter />} />
         </Route>
         <Route path="drawings" element={<Drawings />} />
+        <Route path="about" element={<About />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />
       </Route>

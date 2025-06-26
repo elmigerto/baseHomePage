@@ -26,6 +26,9 @@ export default function Header({
           <NavLink to="/drawings" className={linkClass}>
             Drawings
           </NavLink>
+          <NavLink to="/about" className={linkClass}>
+            About
+          </NavLink>
         </nav>
         <button onClick={openCart} className="relative" aria-label="Cart">
           Cart ({items.length})
