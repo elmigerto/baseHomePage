@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import Card from "../components/Card"
 import Button from "../components/Button"
+import { useCart } from "../contexts/CartContext"
 import drawings, { categories } from "../files/drawings"
 
 const allCategory = "all"
@@ -12,6 +13,7 @@ const allCategory = "all"
 export default function Drawings() {
   const [selected, setSelected] = useState<string | null>(null)
   const [filter, setFilter] = useState(allCategory)
+  const { addItem } = useCart()
 
   const filtered =
     filter === allCategory
@@ -46,12 +48,21 @@ export default function Drawings() {
                 <p className="font-semibold">{art.name}</p>
                 <p className="text-sm">{art.description}</p>
                 <p className="font-bold">{art.price.toFixed(2)} €</p>
-                <Button
-                  className="bg-gray-300 text-black hover:bg-gray-400"
-                  onClick={() => setSelected(null)}
-                >
-                  <FontAwesomeIcon icon={faXmark} className="mr-1" /> Close
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() =>
+                      addItem({ id: art.id, name: art.name, price: art.price })
+                    }
+                  >
+                    Add to Cart
+                  </Button>
+                  <Button
+                    className="bg-gray-300 text-black hover:bg-gray-400"
+                    onClick={() => setSelected(null)}
+                  >
+                    <FontAwesomeIcon icon={faXmark} className="mr-1" /> Close
+                  </Button>
+                </div>
               </div>
             ) : (
               <>
