@@ -2,6 +2,8 @@ import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import BoardGame from './pages/BoardGame'
+import BoardGameCommunity from './pages/BoardGameCommunity'
+import BoardGameRules from './pages/BoardGameRules'
 import Stories from './pages/Stories'
 import Drawings from './pages/Drawings'
 import CheckoutSuccess from './pages/CheckoutSuccess'
@@ -12,7 +14,10 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="boardgame" element={<BoardGame />} />
+        <Route path="boardgame" element={<BoardGame />}>
+          <Route path="community" element={<BoardGameCommunity />} />
+          <Route path="rules" element={<BoardGameRules />} />
+        </Route>
         <Route path="stories" element={<Stories />} />
         <Route path="drawings" element={<Drawings />} />
         <Route path="success" element={<CheckoutSuccess />} />

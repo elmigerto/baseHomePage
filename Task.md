@@ -57,3 +57,7 @@ A personal homepage with subpages for:
 ## 🎨 Design Enhancements
 - [x] Improve layout with Tailwind so pages fill the screen and respond well on mobile
 - [x] Add a full-screen hero section on the homepage
+
+## ℹ️ File Locations
+- **Board Game page component**: `tobis-space/src/pages/BoardGame.tsx`
+- **Board Game subpages**: `tobis-space/src/pages/BoardGameCommunity.tsx`, `tobis-space/src/pages/BoardGameRules.tsx`
