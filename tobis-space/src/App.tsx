@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import BoardGame from './pages/BoardGame'
 import BoardGameCommunity from './pages/BoardGameCommunity'
 import BoardGameRules from './pages/BoardGameRules'
+import BoardGameUpdates from './pages/BoardGameUpdates'
 import Stories from './pages/Stories'
 import Drawings from './pages/Drawings'
 import CheckoutSuccess from './pages/CheckoutSuccess'
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="boardgame" element={<BoardGame />}>
           <Route path="community" element={<BoardGameCommunity />} />
           <Route path="rules" element={<BoardGameRules />} />
+          <Route path="updates" element={<BoardGameUpdates />} />
         </Route>
         <Route path="stories" element={<Stories />} />
         <Route path="drawings" element={<Drawings />} />
