@@ -15,6 +15,7 @@ Build a personal homepage where visitors can browse board games, read stories, a
 ## 📂 File Organization
 - Project code lives in `tobis-space/`
 - Individual task files are in `Agent/`
+- Markdown files inside `Agent/` match their topic and should be kept updated
 - This file (`Agent.md`) summarizes the project scope
 
 ## 🧑‍💻 Agent Instructions

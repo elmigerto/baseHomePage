@@ -17,12 +17,12 @@ export default function Chapter() {
       <pre className="whitespace-pre-wrap">{chapter.content}</pre>
       <div className="flex justify-between">
         {prev && (
-          <Link to={prev.slug} className="text-blue-500 underline">
+          <Link to={`../${prev.slug}`} className="text-blue-500 underline">
             ← {prev.title}
           </Link>
         )}
         {next && (
-          <Link to={next.slug} className="ml-auto text-blue-500 underline">
+          <Link to={`../${next.slug}`} className="ml-auto text-blue-500 underline">
             {next.title} →
           </Link>
         )}
