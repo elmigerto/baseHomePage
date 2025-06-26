@@ -24,7 +24,7 @@ export default function Header({
     isActive ? 'text-brand-neon' : 'text-gray-700 dark:text-gray-300'
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur border-b shadow-sm">
+    <header className="sticky top-0 z-40 bg-gray-100/90 dark:bg-gray-800/80 text-gray-900 dark:text-gray-100 backdrop-blur border-b border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="container mx-auto flex justify-between items-center p-4">
         <nav className="flex gap-4 text-sm sm:text-base">
           <NavLink to="/" className={linkClass} end>

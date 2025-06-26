@@ -11,7 +11,7 @@ export default function BoardGameRules() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <h3 className="text-lg font-semibold">Rules</h3>
+        <h3 className="subpage-title">Rules</h3>
         <button
           className={`px-2 py-1 text-sm border rounded ${lang === "de" ? "bg-blue-500 text-white" : ""}`}
           onClick={() => setLang("de")}

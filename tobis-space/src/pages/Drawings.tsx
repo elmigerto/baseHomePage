@@ -21,7 +21,7 @@ export default function Drawings() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl">Drawings</h2>
+        <h2 className="page-title">Drawings</h2>
         <Link to="/drawings/room" className="text-blue-500 underline">
           Virtual Room
         </Link>

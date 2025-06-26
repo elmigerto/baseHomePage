@@ -30,7 +30,7 @@ export default function Chapter() {
   )
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-bold">{chapter.title}</h3>
+      <h3 className="subpage-title">{chapter.title}</h3>
       {navigation}
       <select
         value={chapter.slug}
