@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
+import { useTheme } from '../contexts/ThemeContext'
 
 export default function Header({
   openCart,
@@ -7,13 +8,14 @@ export default function Header({
   openCart: () => void
 }) {
   const { items } = useCart()
+  const { dark, toggle } = useTheme()
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    isActive ? 'text-blue-500' : 'text-gray-700'
+    isActive ? 'text-brand dark:text-brand-light' : 'text-gray-700 dark:text-gray-300'
 
   return (
-    <header className="p-4 border-b">
-      <div className="container mx-auto flex justify-between items-center">
-        <nav className="flex gap-4">
+    <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur border-b shadow-sm">
+      <div className="container mx-auto flex justify-between items-center p-4">
+        <nav className="flex gap-4 text-sm sm:text-base">
           <NavLink to="/" className={linkClass} end>
             Home
           </NavLink>
@@ -30,9 +32,14 @@ export default function Header({
             About
           </NavLink>
         </nav>
-        <button onClick={openCart} className="relative" aria-label="Cart">
-          Cart ({items.length})
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={toggle} aria-label="Toggle theme" className="p-1 rounded transition-colors hover:bg-gray-200 dark:hover:bg-gray-700">
+            {dark ? '☀️' : '🌙'}
+          </button>
+          <button onClick={openCart} className="relative" aria-label="Cart">
+            Cart ({items.length})
+          </button>
+        </div>
       </div>
     </header>
   )

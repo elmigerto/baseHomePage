@@ -42,7 +42,7 @@ export default function Drawings() {
             />
             <p className="text-center">{art.name}</p>
             <button
-              className="mt-2 px-2 py-1 bg-blue-500 text-white rounded w-full"
+              className="mt-2 w-full btn"
               onClick={() => addItem(art)}
             >
               Add to Cart
@@ -60,12 +60,12 @@ export default function Drawings() {
             />
             <p className="mb-2 text-center">{selected.name}</p>
             <button
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="btn"
               onClick={() => addItem(selected)}
             >
               Add to Cart
             </button>
-            <button className="ml-2" onClick={() => setSelected(null)}>
+            <button className="ml-2 btn bg-gray-300 text-black hover:bg-gray-400" onClick={() => setSelected(null)}>
               Close
             </button>
           </div>

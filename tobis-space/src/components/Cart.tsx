@@ -24,7 +24,7 @@ export default function Cart() {
           <li key={item.id} className="flex justify-between">
             <span>{item.name}</span>
             <span>{item.price.toFixed(2)} €</span>
-            <button onClick={() => removeItem(item.id)}>X</button>
+            <button onClick={() => removeItem(item.id)} className="ml-2">X</button>
           </li>
         ))}
       </ul>
@@ -37,10 +37,7 @@ export default function Cart() {
             Clear
           </button>
         </div>
-        <button
-          onClick={() => checkout(items)}
-          className="px-4 py-2 bg-green-500 text-white rounded"
-        >
+        <button onClick={() => checkout(items)} className="btn bg-green-600 hover:bg-green-700">
           Buy
         </button>
       </div>
