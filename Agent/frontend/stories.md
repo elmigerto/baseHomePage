@@ -13,4 +13,5 @@
 - Images for each chapter in `tobis-space/src/chapters/images`
 - Story page lists chapters and links to `/stories/:chapterSlug`
 - Clicking a chapter shows its text and image
+- `/stories` acts as a landing page with a short story description and chapter list
 - Original story on [Wattpad](https://www.wattpad.com/1528766096-the-summoners%27-veiled-cards-chapter-1-the-fire-in)
