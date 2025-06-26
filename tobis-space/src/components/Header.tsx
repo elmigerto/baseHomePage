@@ -1,3 +1,14 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faBookOpen,
+  faDiceD20,
+  faHome,
+  faPaintBrush,
+  faShoppingCart,
+  faSun,
+  faMoon,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons'
 import { NavLink } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useTheme } from '../contexts/ThemeContext'
@@ -17,27 +28,36 @@ export default function Header({
       <div className="container mx-auto flex justify-between items-center p-4">
         <nav className="flex gap-4 text-sm sm:text-base">
           <NavLink to="/" className={linkClass} end>
-            Home
+            <FontAwesomeIcon icon={faHome} className="mr-1" /> Home
           </NavLink>
           <NavLink to="/boardgame" className={linkClass}>
-            Board Game
+            <FontAwesomeIcon icon={faDiceD20} className="mr-1" /> Board Game
           </NavLink>
           <NavLink to="/stories" className={linkClass}>
-            Stories
+            <FontAwesomeIcon icon={faBookOpen} className="mr-1" /> Stories
           </NavLink>
           <NavLink to="/drawings" className={linkClass}>
-            Drawings
+            <FontAwesomeIcon icon={faPaintBrush} className="mr-1" /> Drawings
           </NavLink>
           <NavLink to="/about" className={linkClass}>
-            About
+            <FontAwesomeIcon icon={faUser} className="mr-1" /> About
           </NavLink>
         </nav>
         <div className="flex items-center gap-4">
-          <button onClick={toggle} aria-label="Toggle theme" className="p-1 rounded transition-colors hover:bg-gray-200 dark:hover:bg-gray-700">
-            {dark ? '☀️' : '🌙'}
+          <button
+            onClick={toggle}
+            aria-label="Toggle theme"
+            className="p-1 rounded transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            {dark ? (
+              <FontAwesomeIcon icon={faSun} />
+            ) : (
+              <FontAwesomeIcon icon={faMoon} />
+            )}
           </button>
           <button onClick={openCart} className="relative" aria-label="Cart">
-            Cart ({items.length})
+            <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
+            {items.length}
           </button>
         </div>
       </div>
