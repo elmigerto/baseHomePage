@@ -5,6 +5,7 @@ This folder contains separate task lists for each major section of the frontend.
 - `setup.md` – Initial project setup tasks
 - `pages-navigation.md` – Routing and page structure
 - `cart.md` – Cart and product display functionality
+- `product-cards.md` – Shopping card component tasks
 - `gallery.md` – Virtual drawings gallery features
 - `boardgame.md` – Board Game page specifics
 - `stories.md` – Stories page features

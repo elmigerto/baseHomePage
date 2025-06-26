@@ -53,6 +53,7 @@ Build a personal homepage where visitors can browse board games, read stories, a
 - **Frontend Setup**: Vite + React + Tailwind scaffold, basic layout, and routing configured.
 - **Pages & Navigation**: Implement routes for the homepage, board game, stories, and drawings with a shared layout.
 - **Cart & Product Display**: Global cart context, add-to-cart buttons, and a drawer/modal to show items.
+- **Shopping Cards**: Reusable product cards with images, descriptions, and add-to-cart controls.
 - **Content Sections**: Board game showcase, stories list with full texts, and a virtual drawings gallery with image modal.
 - **Chapter Navigation**: Stories load chapters from Markdown files with corresponding images.
 - **Stripe Checkout**: Node.js backend exposes `/create-checkout-session` and handles success/cancel redirects.
@@ -84,6 +85,10 @@ corresponding file so you can dive deeper when needed.
 - [x] Show cart icon in header with item count
 - [x] Enable **Add to Cart** functionality from each subpage
 - [x] Create a **Cart drawer or modal** to show items and total
+
+### Shopping Cards (`Agent/frontend/product-cards.md`)
+- [ ] Build a reusable **ProductCard** component
+- [ ] Include image, description, price, and Add to Cart control
 
 ### Drawings Gallery (`Agent/frontend/gallery.md`)
 - [x] Display paintings in a **virtual gallery style UI**
