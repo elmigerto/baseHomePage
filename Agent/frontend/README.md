@@ -7,6 +7,7 @@ This folder contains separate task lists for each major section of the frontend.
 - `cart.md` – Cart and product display functionality
 - `product-cards.md` – Shopping card component tasks
 - `gallery.md` – Virtual drawings gallery features
+- `virtual-room.md` – 3D gallery room instructions
 - `boardgame.md` – Board Game page specifics
 - `stories.md` – Stories page features
 - `design.md` – General design improvements
