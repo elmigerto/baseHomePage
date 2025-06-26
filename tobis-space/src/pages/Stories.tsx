@@ -1,6 +1,10 @@
-import { Outlet } from "react-router-dom"
+import { Link, Outlet, useNavigate } from "react-router-dom"
+import chapters from "../chapters"
+import { useCart } from "../contexts/CartContext"
 
 export default function Stories() {
+  const { addItem } = useCart()
+  const navigate = useNavigate()
   return (
     <div className="space-y-4">
       <h2 className="text-xl">Stories</h2>
