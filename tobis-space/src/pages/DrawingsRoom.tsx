@@ -4,7 +4,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { Link } from "react-router-dom"
 import { Canvas, useFrame, useLoader } from "@react-three/fiber"
 import { MapControls } from "@react-three/drei"
-import { TextureLoader, DoubleSide, Group } from "three"
+import { DoubleSide, Group, TextureLoader } from "three"
 import drawings from "../files/drawings"
 
 function GallerySegment({ group }: { group: React.MutableRefObject<Group | null> }) {
@@ -45,20 +45,30 @@ function GallerySegment({ group }: { group: React.MutableRefObject<Group | null>
 }
 
 export default function DrawingsRoom() {
-  const left = useRef<Group | null>(null)
-  const center = useRef<Group | null>(null)
-  const right = useRef<Group | null>(null)
+  function GalleryScene() {
+    const left = useRef<Group | null>(null)
+    const center = useRef<Group | null>(null)
+    const right = useRef<Group | null>(null)
 
-  const segmentWidth = drawings.length * 6
+    const segmentWidth = drawings.length * 6
 
-  useFrame(({ camera }) => {
-    const offset = Math.floor(camera.position.x / segmentWidth)
-    if (left.current && center.current && right.current) {
-      left.current.position.x = segmentWidth * (offset - 1)
-      center.current.position.x = segmentWidth * offset
-      right.current.position.x = segmentWidth * (offset + 1)
-    }
-  })
+    useFrame(({ camera }) => {
+      const offset = Math.floor(camera.position.x / segmentWidth)
+      if (left.current && center.current && right.current) {
+        left.current.position.x = segmentWidth * (offset - 1)
+        center.current.position.x = segmentWidth * offset
+        right.current.position.x = segmentWidth * (offset + 1)
+      }
+    })
+
+    return (
+      <>
+        <GallerySegment group={left} />
+        <GallerySegment group={center} />
+        <GallerySegment group={right} />
+      </>
+    )
+  }
 
   return (
     <div className="min-h-screen">
@@ -71,9 +81,7 @@ export default function DrawingsRoom() {
       <Canvas className="w-full h-[calc(100vh-4rem)]">
         <MapControls enableDamping />
         <ambientLight intensity={0.8} />
-        <GallerySegment group={left} />
-        <GallerySegment group={center} />
-        <GallerySegment group={right} />
+        <GalleryScene />
       </Canvas>
     </div>
   )
