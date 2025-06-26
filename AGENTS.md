@@ -96,6 +96,9 @@ corresponding file so you can dive deeper when needed.
 - [x] Add modal to preview enlarged artwork
 - [x] Allow adding individual artworks to cart
 - [ ] (Later) Add hover effects or simple 3D illusion
+- [ ] Add a `/drawings/room` subpage for an interactive room view
+- [ ] Let visitors pan or take small steps to look around
+- [ ] Keep movement minimal to stay lightweight
 
 ### Stripe Checkout Integration (`Agent/backend.md`)
 - [x] Set up basic **Node.js Express backend**
