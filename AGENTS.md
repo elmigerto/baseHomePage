@@ -18,6 +18,22 @@ Build a personal homepage where visitors can browse board games, read stories, a
 - Markdown files inside `Agent/` match their topic and should be kept updated
 - This file (`Agent.md`) summarizes the project scope
 
+## 🗂 Repository Structure
+Use this overview to quickly locate files:
+- `tobis-space/` – React and Node project root
+  - `src/` – Frontend source
+    - `components/` – Shared UI components
+    - `contexts/` – React contexts (e.g. cart)
+    - `pages/` – Page components for each route
+    - `files/` – Markdown chapters and assets
+  - `server/` – Express backend with Stripe
+  - `package.json` – Scripts (run `npm run dev` for Vite, `npm run server` for backend)
+- `Agent/` – Documentation and tasks
+  - `frontend/` – Frontend tasks (`README.md` lists all subtasks)
+  - `stories/` – Story Markdown chapters
+  - `backend.md` / `deployment.md` – Backend and deployment guides
+- `README.md` – Minimal repo overview (refer mainly to `Agent/` docs)
+
 ## 🧑‍💻 Agent Instructions
 ### Coding Style
 - Use Tailwind for styling
