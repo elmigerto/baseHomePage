@@ -5,8 +5,8 @@
 
 ## Planned Improvements
 
-- [ ] Establish a **Galactic Night** theme with deep blues and neon accents
-- [ ] Integrate FontAwesome icons for navigation links and interactive buttons
+- [x] Establish a **Galactic Night** theme with deep blues and neon accents
+- [x] Integrate FontAwesome icons for navigation links and interactive buttons
 - [x] Add a light/dark mode toggle using Tailwind `dark:` utilities
-- [ ] Create reusable components (buttons, cards) with Tailwind classes
-- [ ] Animate hover states with subtle transitions for a polished feel
+- [x] Create reusable components (buttons, cards) with Tailwind classes
+- [x] Animate hover states with subtle transitions for a polished feel

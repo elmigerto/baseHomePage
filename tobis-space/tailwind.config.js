@@ -9,10 +9,12 @@ export default {
     extend: {
       colors: {
         brand: {
-          light: "#c4b5fd",
-          DEFAULT: "#8b5cf6",
-          dark: "#6d28d9",
+          light: "#8093ff",
+          DEFAULT: "#4154ff",
+          dark: "#1e2b7a",
+          neon: "#7f5af0",
         },
+        night: "#0f172a",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

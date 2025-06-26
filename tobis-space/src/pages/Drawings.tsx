@@ -1,10 +1,9 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faCartPlus,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons"
+import { faCartPlus, faXmark } from "@fortawesome/free-solid-svg-icons"
+import Card from "../components/Card"
+import Button from "../components/Button"
 import { useCart } from "../contexts/CartContext"
 import drawings, { categories } from "../files/drawings"
 
@@ -44,44 +43,38 @@ export default function Drawings() {
       </select>
       <div className="flex flex-wrap justify-center gap-4">
         {filtered.map((art) => (
-          <div key={art.id} className="border p-2 w-48">
+          <Card key={art.id}>
             <img
               src={art.image}
               alt={art.name}
-              className="h-32 w-full object-cover mb-2 cursor-pointer"
+              className="h-32 w-full object-cover mb-2 cursor-pointer transition-transform hover:scale-105"
               onClick={() => setSelected(art)}
             />
             <p className="text-center">{art.name}</p>
-            <button
-              className="mt-2 w-full btn"
-              onClick={() => addItem(art)}
-            >
+            <Button className="mt-2 w-full" onClick={() => addItem(art)}>
               <FontAwesomeIcon icon={faCartPlus} className="mr-1" /> Add to Cart
-            </button>
-          </div>
+            </Button>
+          </Card>
         ))}
       </div>
       {selected && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white text-black p-4">
+          <div className="bg-white text-black p-4 rounded">
             <img
               src={selected.image}
               alt={selected.name}
               className="h-48 w-48 object-cover mb-2"
             />
             <p className="mb-2 text-center">{selected.name}</p>
-            <button
-              className="btn"
-              onClick={() => addItem(selected)}
-            >
+            <Button onClick={() => addItem(selected)}>
               <FontAwesomeIcon icon={faCartPlus} className="mr-1" /> Add to Cart
-            </button>
-            <button
-              className="ml-2 btn bg-gray-300 text-black hover:bg-gray-400"
+            </Button>
+            <Button
+              className="ml-2 bg-gray-300 text-black hover:bg-gray-400"
               onClick={() => setSelected(null)}
             >
               <FontAwesomeIcon icon={faXmark} className="mr-1" /> Close
-            </button>
+            </Button>
           </div>
         </div>
       )}
