@@ -5,6 +5,7 @@ The detailed tasks for the frontend are split into separate files inside `Task/f
 - [Setup](frontend/setup.md)
 - [Pages & Navigation](frontend/pages-navigation.md)
 - [Cart & Product Display](frontend/cart.md)
+- [Shopping Cards](frontend/product-cards.md)
 - [Board Game](frontend/boardgame.md)
 - [Stories](frontend/stories.md)
 - [Drawings Gallery](frontend/gallery.md)
