@@ -39,4 +39,12 @@ const chapters: Chapter[] = Object.entries(chapterModules)
   })
   .sort((a, b) => a.number - b.number)
 
-export default chapters
+// Filter out duplicate chapters by slug (based on chapter number)
+const uniqueChapters: Chapter[] = []
+for (const ch of chapters) {
+  if (!uniqueChapters.some((u) => u.slug === ch.slug)) {
+    uniqueChapters.push(ch)
+  }
+}
+
+export default uniqueChapters
