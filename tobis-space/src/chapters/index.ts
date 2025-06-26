@@ -17,23 +17,26 @@ function extractNumber(fileName: string): number {
   return match ? parseInt(match[1]) : 0
 }
 
-const chapters: Chapter[] = Object.entries(chapterModules).map(([path, content]) => {
-  const fileName = path.split('/').pop() ?? ''
-  const number = extractNumber(fileName)
-  const slug = `chapter-${number}`
-  const firstLine = (content as string).split('\n')[0]
-  const title = firstLine.replace(/[*#]/g, '').trim()
+const chapters: Chapter[] = Object.entries(chapterModules)
+  .map(([path, content]) => {
+    const fileName = path.split("/").pop() ?? ""
+    const number = extractNumber(fileName)
+    const slug = `chapter-${number}`
+    const lines = (content as string).split("\n")
+    const body = lines.slice(1).join("\n").trim()
+    const title = `Chapter ${number}`
 
-  let image: string | undefined
-  for (const [imgPath, url] of Object.entries(imageModules)) {
-    const imgName = imgPath.split('/').pop() ?? ''
-    if (extractNumber(imgName) === number) {
-      image = url as string
-      break
+    let image: string | undefined
+    for (const [imgPath, url] of Object.entries(imageModules)) {
+      const imgName = imgPath.split("/").pop() ?? ""
+      if (extractNumber(imgName) === number) {
+        image = url as string
+        break
+      }
     }
-  }
 
-  return { number, slug, title, content: content as string, image }
-}).sort((a, b) => a.number - b.number)
+    return { number, slug, title, content: body, image }
+  })
+  .sort((a, b) => a.number - b.number)
 
 export default chapters

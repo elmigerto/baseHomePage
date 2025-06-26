@@ -4,6 +4,8 @@
 - [x] Provide "Read more" links to full texts
 - [ ] Allow buying stories as PDF or print via cart
 - [ ] (Optional) Add comment section for reader feedback
+- [x] Add previous/next links for continuous chapter reading
+- [x] Sort chapters chronologically and label as "Chapter 1", "Chapter 2", etc.
 
 ## The Summoners' Veiled Cards
 
