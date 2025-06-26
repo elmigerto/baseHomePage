@@ -14,6 +14,9 @@ export default function BoardGame() {
         <Link to="community" className="text-blue-500 underline">
           Community
         </Link>
+        <Link to="updates" className="text-blue-500 underline">
+          Updates
+        </Link>
       </nav>
       <button
         className="px-4 py-2 bg-blue-500 text-white rounded"
