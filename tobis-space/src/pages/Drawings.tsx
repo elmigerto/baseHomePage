@@ -13,7 +13,7 @@ const allCategory = "all"
 export default function Drawings() {
   const [selected, setSelected] = useState<string | null>(null)
   const [filter, setFilter] = useState(allCategory)
-  const { addItem } = useCart()
+  const { addItem, items } = useCart()
 
   const filtered =
     filter === allCategory
@@ -41,8 +41,14 @@ export default function Drawings() {
         ))}
       </select>
       <div className="flex flex-wrap justify-center gap-4">
-        {filtered.map((art) => (
-          <Card key={art.id}>
+        {filtered.map((art) => {
+          const inCart = items.some((i) => i.id === art.id)
+          const canAdd = art.multiple || !inCart
+          return (
+            <Card
+              key={art.id}
+              className={inCart ? 'bg-green-200 dark:bg-green-900' : ''}
+            >
             {selected === art.id ? (
               <div className="w-48 h-48 flex flex-col items-center justify-center text-center space-y-2">
                 <p className="font-semibold">{art.name}</p>
@@ -51,10 +57,16 @@ export default function Drawings() {
                 <div className="flex gap-2">
                   <Button
                     onClick={() =>
-                      addItem({ id: art.id, name: art.name, price: art.price })
+                      addItem({
+                        id: art.id,
+                        name: art.name,
+                        price: art.price,
+                        multiple: art.multiple,
+                      })
                     }
+                    disabled={!canAdd}
                   >
-                    Add to Cart
+                    {inCart && !art.multiple ? 'Added' : 'Add to Cart'}
                   </Button>
                   <Button
                     className="bg-gray-300 text-black hover:bg-gray-400"
@@ -73,10 +85,14 @@ export default function Drawings() {
                   onClick={() => setSelected(art.id)}
                 />
                 <p className="text-center">{art.name}</p>
+                {inCart && !art.multiple && (
+                  <p className="text-sm text-green-600">Added to cart</p>
+                )}
               </>
             )}
           </Card>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

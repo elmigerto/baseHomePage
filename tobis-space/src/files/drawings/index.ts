@@ -15,6 +15,7 @@ for (const data of Object.values(csvModules)) {
 interface Info {
   description: string
   price: number
+  multiple: boolean
 }
 
 const infoMap = new Map<string, Info>()
@@ -24,11 +25,12 @@ if (csvData) {
     .split('\n')
     .slice(1)
     .forEach((line) => {
-      const [id, description, price] = line.split(',')
+      const [id, description, price, multiple] = line.split(',')
       if (id) {
         infoMap.set(id.trim(), {
           description: (description || 'missing description').trim(),
           price: parseFloat(price) || 0,
+          multiple: multiple?.trim() === 'true',
         })
       }
     })
@@ -41,6 +43,7 @@ export interface Drawing {
   price: number
   image: string
   description: string
+  multiple: boolean
 }
 
 const drawings: Drawing[] = Object.entries(imageModules).map(([path, module]) => {
@@ -56,6 +59,7 @@ const drawings: Drawing[] = Object.entries(imageModules).map(([path, module]) =>
   const info = infoMap.get(fullPath) ?? {
     description: 'missing description',
     price: 0,
+    multiple: false,
   }
 
   return {
@@ -65,6 +69,7 @@ const drawings: Drawing[] = Object.entries(imageModules).map(([path, module]) =>
     price: info.price,
     image: module as string,
     description: info.description,
+    multiple: info.multiple,
   }
 })
 
