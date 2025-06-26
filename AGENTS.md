@@ -42,6 +42,7 @@ Use this overview to quickly locate files:
 - Apply `min-h-screen` for layout height
 - Sort imports and remove unused ones
 - Format using Biome on save
+- It's not needed to run Biome again at the end of your work
 
 ### Routing & Pages
 - Use `react-router-dom` for routing
