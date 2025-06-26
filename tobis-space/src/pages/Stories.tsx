@@ -10,7 +10,7 @@ export default function Stories() {
     active ? "border-b-2 border-blue-500" : "text-blue-500"
   return (
     <div className="space-y-4">
-      <h2 className="text-xl">Stories</h2>
+      <h2 className="page-title">Stories</h2>
       <p>
         Join the discussion on{' '}
         <a

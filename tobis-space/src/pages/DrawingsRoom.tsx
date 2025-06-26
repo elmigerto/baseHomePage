@@ -85,7 +85,7 @@ export default function DrawingsRoom() {
         <Link to="/drawings" className="text-blue-500 underline flex items-center">
           <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back to gallery
         </Link>
-        <h2 className="text-xl font-bold">Virtual Room</h2>
+        <h2 className="page-title">Virtual Room</h2>
       </div>
       <Canvas
         className="fixed inset-0 w-screen h-screen"

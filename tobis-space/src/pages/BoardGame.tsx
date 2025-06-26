@@ -4,7 +4,7 @@ export default function BoardGame() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl">Board Game</h2>
+      <h2 className="page-title">Board Game</h2>
       <nav className="flex gap-4">
         <Link to="about" className="text-blue-500 underline">
           About

@@ -16,7 +16,7 @@ const updates: Update[] = [
 export default function BoardGameUpdates() {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Game Updates</h3>
+      <h3 className="subpage-title">Game Updates</h3>
       <ul className="space-y-4">
         {updates.map((u) => (
           <li key={u.version} className="border p-4">

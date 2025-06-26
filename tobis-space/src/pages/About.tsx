@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">About Me</h2>
+      <h2 className="page-title">About Me</h2>
       <p>
         I enjoy exploring new territory—both mentally and physically. Sports have
         always been a passion: from martial arts and climbing to dance, I've tried a wide range of disciplines.
