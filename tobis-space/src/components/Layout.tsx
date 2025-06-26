@@ -7,7 +7,7 @@ export default function Layout() {
   const [cartOpen, setCartOpen] = useState(false)
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors">
       <Header openCart={() => setCartOpen(true)} />
       <main className="flex-1 p-4 container mx-auto w-full">
         <Outlet />
