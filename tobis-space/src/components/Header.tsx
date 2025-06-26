@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
+import { useEffect, useState } from 'react'
 
 export default function Header({
   openCart,
@@ -7,6 +8,16 @@ export default function Header({
   openCart: () => void
 }) {
   const { items } = useCart()
+  const [dark, setDark] = useState(false)
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (dark) {
+      root.classList.add('dark')
+    } else {
+      root.classList.remove('dark')
+    }
+  }, [dark])
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'text-blue-500' : 'text-gray-700'
 
@@ -27,9 +38,14 @@ export default function Header({
             Drawings
           </NavLink>
         </nav>
-        <button onClick={openCart} className="relative" aria-label="Cart">
-          Cart ({items.length})
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={() => setDark(!dark)} className="px-2 py-1 border rounded">
+            {dark ? 'Light' : 'Dark'} Mode
+          </button>
+          <button onClick={openCart} className="relative" aria-label="Cart">
+            Cart ({items.length})
+          </button>
+        </div>
       </div>
     </header>
   )
