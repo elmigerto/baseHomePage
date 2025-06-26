@@ -1,4 +1,9 @@
 import { useState } from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faCartPlus,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons"
 import { useCart } from "../contexts/CartContext"
 import drawings, { categories } from "../files/drawings"
 
@@ -45,7 +50,7 @@ export default function Drawings() {
               className="mt-2 w-full btn"
               onClick={() => addItem(art)}
             >
-              Add to Cart
+              <FontAwesomeIcon icon={faCartPlus} className="mr-1" /> Add to Cart
             </button>
           </div>
         ))}
@@ -63,10 +68,13 @@ export default function Drawings() {
               className="btn"
               onClick={() => addItem(selected)}
             >
-              Add to Cart
+              <FontAwesomeIcon icon={faCartPlus} className="mr-1" /> Add to Cart
             </button>
-            <button className="ml-2 btn bg-gray-300 text-black hover:bg-gray-400" onClick={() => setSelected(null)}>
-              Close
+            <button
+              className="ml-2 btn bg-gray-300 text-black hover:bg-gray-400"
+              onClick={() => setSelected(null)}
+            >
+              <FontAwesomeIcon icon={faXmark} className="mr-1" /> Close
             </button>
           </div>
         </div>
