@@ -6,6 +6,7 @@ import BoardGameCommunity from './pages/BoardGameCommunity'
 import BoardGameRules from './pages/BoardGameRules'
 import BoardGameUpdates from './pages/BoardGameUpdates'
 import Stories from './pages/Stories'
+import Chapter from './pages/Chapter'
 import Drawings from './pages/Drawings'
 import CheckoutSuccess from './pages/CheckoutSuccess'
 import CheckoutCancel from './pages/CheckoutCancel'
@@ -20,7 +21,9 @@ export default function App() {
           <Route path="rules" element={<BoardGameRules />} />
           <Route path="updates" element={<BoardGameUpdates />} />
         </Route>
-        <Route path="stories" element={<Stories />} />
+        <Route path="stories" element={<Stories />}>
+          <Route path=":chapterSlug" element={<Chapter />} />
+        </Route>
         <Route path="drawings" element={<Drawings />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />

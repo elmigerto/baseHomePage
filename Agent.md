@@ -54,6 +54,7 @@ Build a personal homepage where visitors can browse board games, read stories, a
 - **Pages & Navigation**: Implement routes for the homepage, board game, stories, and drawings with a shared layout.
 - **Cart & Product Display**: Global cart context, add-to-cart buttons, and a drawer/modal to show items.
 - **Content Sections**: Board game showcase, stories list with full texts, and a virtual drawings gallery with image modal.
+- **Chapter Navigation**: Stories load chapters from Markdown files with corresponding images.
 - **Stripe Checkout**: Node.js backend exposes `/create-checkout-session` and handles success/cancel redirects.
 - **Deployment**: Host frontend and backend (e.g., Vercel/Render) and store Stripe secrets as environment variables.
 - **Design Enhancements**: Responsive layout using Tailwind and a full-screen hero section.
