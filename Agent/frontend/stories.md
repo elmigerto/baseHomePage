@@ -6,6 +6,7 @@
 - [ ] (Optional) Add comment section for reader feedback
 - [x] Add previous/next links for continuous chapter reading
 - [x] Sort chapters chronologically and label as "Chapter 1", "Chapter 2", etc.
+- [x] Render chapter text using **ReactMarkdown** so Markdown formatting is applied
 
 ## The Summoners' Veiled Cards
 

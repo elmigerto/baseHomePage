@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useEffect } from "react"
+import ReactMarkdown from "react-markdown"
 import chapters from "../files/chapters"
 
 export default function Chapter() {
@@ -52,7 +53,9 @@ export default function Chapter() {
           className="w-full max-w-md mx-auto"
         />
       )}
-      <pre className="whitespace-pre-wrap">{chapter.content}</pre>
+      <article className="prose max-w-none">
+        <ReactMarkdown>{chapter.content}</ReactMarkdown>
+      </article>
       <div className="flex justify-between">
         {prev && (
           <Link to={`../${prev.slug}`} className="text-blue-500 underline">
