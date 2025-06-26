@@ -1,63 +1,80 @@
 import { useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowLeft, faArrowRight, faCartPlus } from "@fortawesome/free-solid-svg-icons"
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { Link } from "react-router-dom"
+import { Canvas, useFrame, useLoader } from "@react-three/fiber"
+import { MapControls } from "@react-three/drei"
+import { TextureLoader, DoubleSide, Group } from "three"
 import drawings from "../files/drawings"
-import { useCart } from "../contexts/CartContext"
+
+function GallerySegment({ group }: { group: React.MutableRefObject<Group | null> }) {
+  const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
+  const spacing = 6
+  return (
+    <group ref={group}>
+      {drawings.map((art, index) => (
+        <>
+          <mesh
+            key={`${art.id}-left`}
+            position={[index * spacing, 0, -5]}
+            rotation={[0, Math.PI / 2, 0]}
+          >
+            <planeGeometry args={[3, 3]} />
+            <meshBasicMaterial map={textures[index]} side={DoubleSide} />
+          </mesh>
+          <mesh
+            key={`${art.id}-right`}
+            position={[index * spacing, 0, 5]}
+            rotation={[0, -Math.PI / 2, 0]}
+          >
+            <planeGeometry args={[3, 3]} />
+            <meshBasicMaterial map={textures[index]} side={DoubleSide} />
+          </mesh>
+          <mesh
+            key={`${art.id}-ceiling`}
+            position={[index * spacing, 5, 0]}
+            rotation={[Math.PI / 2, 0, 0]}
+          >
+            <planeGeometry args={[3, 3]} />
+            <meshBasicMaterial map={textures[index]} side={DoubleSide} />
+          </mesh>
+        </>
+      ))}
+    </group>
+  )
+}
 
 export default function DrawingsRoom() {
-  const { addItem } = useCart()
-  const containerRef = useRef<HTMLDivElement>(null)
-  const scroll = (offset: number) => {
-    containerRef.current?.scrollBy({ left: offset, behavior: "smooth" })
-  }
+  const left = useRef<Group | null>(null)
+  const center = useRef<Group | null>(null)
+  const right = useRef<Group | null>(null)
+
+  const segmentWidth = drawings.length * 6
+
+  useFrame(({ camera }) => {
+    const offset = Math.floor(camera.position.x / segmentWidth)
+    if (left.current && center.current && right.current) {
+      left.current.position.x = segmentWidth * (offset - 1)
+      center.current.position.x = segmentWidth * offset
+      right.current.position.x = segmentWidth * (offset + 1)
+    }
+  })
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
+    <div className="min-h-screen">
+      <div className="mb-2 flex items-center gap-4">
         <Link to="/drawings" className="text-blue-500 underline flex items-center">
           <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back to gallery
         </Link>
         <h2 className="text-xl font-bold">Virtual Room</h2>
       </div>
-      <div className="relative">
-        <button
-          aria-label="Scroll left"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/80 dark:bg-gray-800/80 rounded-full shadow"
-          onClick={() => scroll(-300)}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div
-          ref={containerRef}
-          className="overflow-x-auto whitespace-nowrap py-4 px-8 snap-x snap-mandatory"
-        >
-          {drawings.map((art) => (
-            <div key={art.id} className="inline-block mx-4 snap-center">
-              <img
-                src={art.image}
-                alt={art.name}
-                className="w-64 h-40 object-cover rounded shadow-md mb-2"
-              />
-              <div className="flex justify-between items-center">
-                <span>{art.name}</span>
-                <button
-                  className="btn px-2 py-1"
-                  onClick={() => addItem(art)}
-                >
-                  <FontAwesomeIcon icon={faCartPlus} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <button
-          aria-label="Scroll right"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/80 dark:bg-gray-800/80 rounded-full shadow"
-          onClick={() => scroll(300)}
-        >
-          <FontAwesomeIcon icon={faArrowRight} />
-        </button>
-      </div>
+      <Canvas className="w-full h-[calc(100vh-4rem)]">
+        <MapControls enableDamping />
+        <ambientLight intensity={0.8} />
+        <GallerySegment group={left} />
+        <GallerySegment group={center} />
+        <GallerySegment group={right} />
+      </Canvas>
     </div>
   )
 }
