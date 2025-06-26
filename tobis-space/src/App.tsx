@@ -10,6 +10,7 @@ import Chapter from './pages/Chapter'
 import CheckoutCancel from './pages/CheckoutCancel'
 import CheckoutSuccess from './pages/CheckoutSuccess'
 import Drawings from './pages/Drawings'
+import DrawingsRoom from './pages/DrawingsRoom'
 import Home from './pages/Home'
 import Stories from './pages/Stories'
 import StoryOverview from './pages/StoryOverview'
@@ -31,6 +32,7 @@ export default function App() {
           <Route path=":chapterSlug" element={<Chapter />} />
         </Route>
         <Route path="drawings" element={<Drawings />} />
+        <Route path="drawings/room" element={<DrawingsRoom />} />
         <Route path="about" element={<About />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />
