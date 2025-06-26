@@ -1,5 +1,5 @@
-import updateInfo from '../boardgame/updates/2024-05-01/update.json'
-import updateImg from '../boardgame/updates/2024-05-01/image.png'
+import updateInfo from '../files/boardgame/updates/2024-05-01/update.json'
+import updateImg from '../files/boardgame/updates/2024-05-01/image.png'
 
 interface Update {
   date: string

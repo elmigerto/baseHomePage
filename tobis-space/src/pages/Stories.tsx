@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
-import chapters from "../chapters"
+import chapters from "../files/chapters"
 
 export default function Stories() {
   return (

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useCart } from "../contexts/CartContext"
-import drawings, { categories } from "../drawings"
+import drawings, { categories } from "../files/drawings"
 
 const allCategory = "all"
 

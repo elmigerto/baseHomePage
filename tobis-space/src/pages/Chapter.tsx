@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom"
 import { useEffect } from "react"
-import chapters from "../chapters"
+import chapters from "../files/chapters"
 
 export default function Chapter() {
   const { chapterSlug } = useParams()
