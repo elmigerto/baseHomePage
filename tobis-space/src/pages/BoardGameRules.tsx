@@ -1,7 +1,7 @@
 import  { useState } from "react"
 import ReactMarkdown from "react-markdown"
-import rulesDe from "../boardgame/manual/dragon-boardgame-rules.md?raw"
-import rulesEn from "../boardgame/manual/dragon-boardgame-rules.en.md?raw"
+import rulesDe from "../files/boardgame/manual/dragon-boardgame-rules.md?raw"
+import rulesEn from "../files/boardgame/manual/dragon-boardgame-rules.en.md?raw"
 
 export default function BoardGameRules() {
   const [lang, setLang] = useState<"de" | "en">("de")

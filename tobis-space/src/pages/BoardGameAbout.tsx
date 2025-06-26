@@ -1,5 +1,5 @@
 import ReactMarkdown from 'react-markdown'
-import summary from '../boardgame/general/summary.md?raw'
+import summary from '../files/boardgame/general/summary.md?raw'
 
 export default function BoardGameAbout() {
   return (
