@@ -25,7 +25,7 @@ export default function BoardGameRules() {
           EN
         </button>
       </div>
-      <article className="prose max-w-none">
+      <article className="prose max-w-none dark:prose-invert">
         <ReactMarkdown>{current}</ReactMarkdown>
       </article>
     </div>

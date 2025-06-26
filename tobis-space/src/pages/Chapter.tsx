@@ -53,7 +53,7 @@ export default function Chapter() {
           className="w-full max-w-md mx-auto"
         />
       )}
-      <article className="prose max-w-none">
+      <article className="prose max-w-none dark:prose-invert">
         <ReactMarkdown>{chapter.content}</ReactMarkdown>
       </article>
       <div className="flex justify-between">
