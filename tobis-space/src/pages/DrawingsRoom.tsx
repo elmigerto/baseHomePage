@@ -1,45 +1,54 @@
-import { useRef } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
-import { Link } from "react-router-dom"
-import { Canvas, useFrame, useLoader } from "@react-three/fiber"
-import { MapControls } from "@react-three/drei"
-import { DoubleSide, Group, TextureLoader } from "three"
-import drawings from "../files/drawings"
+import { Suspense, useRef } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { Canvas, useFrame, useLoader } from '@react-three/fiber'
+import { Html, MapControls } from '@react-three/drei'
+import { DoubleSide, Group, TextureLoader } from 'three'
+import { Link } from 'react-router-dom'
+import drawings from '../files/drawings'
+
+const placements = drawings.map(() => ({
+  offsetY: (Math.random() - 0.5) * 0.5,
+  offsetZ: (Math.random() - 0.5) * 0.2,
+  rotZ: (Math.random() - 0.5) * 0.2,
+}))
 
 function GallerySegment({ group }: { group: React.MutableRefObject<Group | null> }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const spacing = 6
   return (
     <group ref={group}>
-      {drawings.map((art, index) => (
-        <>
-          <mesh
-            key={`${art.id}-left`}
-            position={[index * spacing, 0, -5]}
-            rotation={[0, Math.PI / 2, 0]}
-          >
-            <planeGeometry args={[3, 3]} />
-            <meshBasicMaterial map={textures[index]} side={DoubleSide} />
-          </mesh>
-          <mesh
-            key={`${art.id}-right`}
-            position={[index * spacing, 0, 5]}
-            rotation={[0, -Math.PI / 2, 0]}
-          >
-            <planeGeometry args={[3, 3]} />
-            <meshBasicMaterial map={textures[index]} side={DoubleSide} />
-          </mesh>
-          <mesh
-            key={`${art.id}-ceiling`}
-            position={[index * spacing, 5, 0]}
-            rotation={[Math.PI / 2, 0, 0]}
-          >
-            <planeGeometry args={[3, 3]} />
-            <meshBasicMaterial map={textures[index]} side={DoubleSide} />
-          </mesh>
-        </>
-      ))}
+      {drawings.map((art, index) => {
+        const rand = placements[index]
+        return (
+          <>
+            <mesh
+              key={`${art.id}-left`}
+              position={[index * spacing, rand.offsetY, -5 + rand.offsetZ]}
+              rotation={[0, Math.PI / 2, rand.rotZ]}
+            >
+              <planeGeometry args={[3, 3]} />
+              <meshBasicMaterial map={textures[index]} side={DoubleSide} />
+            </mesh>
+            <mesh
+              key={`${art.id}-right`}
+              position={[index * spacing, rand.offsetY, 5 + rand.offsetZ]}
+              rotation={[0, -Math.PI / 2, -rand.rotZ]}
+            >
+              <planeGeometry args={[3, 3]} />
+              <meshBasicMaterial map={textures[index]} side={DoubleSide} />
+            </mesh>
+            <mesh
+              key={`${art.id}-ceiling`}
+              position={[index * spacing, 5 + rand.offsetY, rand.offsetZ]}
+              rotation={[Math.PI / 2, 0, rand.rotZ]}
+            >
+              <planeGeometry args={[3, 3]} />
+              <meshBasicMaterial map={textures[index]} side={DoubleSide} />
+            </mesh>
+          </>
+        )
+      })}
     </group>
   )
 }
@@ -78,10 +87,18 @@ export default function DrawingsRoom() {
         </Link>
         <h2 className="text-xl font-bold">Virtual Room</h2>
       </div>
-      <Canvas className="w-full h-[calc(100vh-4rem)]">
-        <MapControls enableDamping />
-        <ambientLight intensity={0.8} />
-        <GalleryScene />
+      <Canvas className="w-full h-[calc(100vh-6rem)]">
+        <Suspense
+          fallback={
+            <Html center>
+              <FontAwesomeIcon icon={faSpinner} spin size="2x" />
+            </Html>
+          }
+        >
+          <MapControls enableDamping />
+          <ambientLight intensity={0.8} />
+          <GalleryScene />
+        </Suspense>
       </Canvas>
     </div>
   )
