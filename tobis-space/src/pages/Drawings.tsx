@@ -11,7 +11,7 @@ export default function Drawings() {
   const [selected, setSelected] = useState<typeof artworks[0] | null>(null)
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <h2 className="text-xl mb-4">Drawings</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {artworks.map((art) => (
