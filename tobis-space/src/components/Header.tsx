@@ -21,7 +21,7 @@ export default function Header({
   const { items } = useCart()
   const { dark, toggle } = useTheme()
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    isActive ? 'text-brand dark:text-brand-light' : 'text-gray-700 dark:text-gray-300'
+    isActive ? 'text-brand-neon' : 'text-gray-700 dark:text-gray-300'
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur border-b shadow-sm">

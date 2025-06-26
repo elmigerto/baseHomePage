@@ -4,7 +4,10 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded bg-brand text-white hover:bg-brand-dark transition-colors;
+    @apply px-4 py-2 rounded bg-brand text-white hover:bg-brand-neon transition-colors;
+  }
+  .card {
+    @apply border rounded bg-white dark:bg-gray-800 p-4 hover:shadow-lg transition transform hover:-translate-y-1;
   }
 }
 
@@ -15,5 +18,5 @@ body,
 }
 
 body {
-  @apply font-sans bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors;
+  @apply font-sans bg-night text-gray-200 dark:bg-gray-950 dark:text-gray-100 transition-colors;
 }
