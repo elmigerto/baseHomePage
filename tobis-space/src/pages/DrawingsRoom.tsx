@@ -2,7 +2,7 @@ import { Suspense, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
-import { Html, MapControls } from '@react-three/drei'
+import { Html, OrbitControls } from '@react-three/drei'
 import { DoubleSide, Group, TextureLoader } from 'three'
 import { Link } from 'react-router-dom'
 import drawings from '../files/drawings'
@@ -81,13 +81,16 @@ export default function DrawingsRoom() {
 
   return (
     <div className="min-h-screen">
-      <div className="mb-2 flex items-center gap-4">
+      <div className="fixed top-4 left-4 z-10 flex items-center gap-4">
         <Link to="/drawings" className="text-blue-500 underline flex items-center">
           <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back to gallery
         </Link>
         <h2 className="text-xl font-bold">Virtual Room</h2>
       </div>
-      <Canvas className="w-full h-[calc(100vh-6rem)]">
+      <Canvas
+        className="fixed inset-0 w-screen h-screen"
+        camera={{ position: [0, 1.5, 0.001] }}
+      >
         <Suspense
           fallback={
             <Html center>
@@ -95,7 +98,13 @@ export default function DrawingsRoom() {
             </Html>
           }
         >
-          <MapControls enableDamping />
+          <OrbitControls
+            enablePan={false}
+            enableZoom={false}
+            target={[0, 1.5, 0]}
+            minDistance={0.001}
+            maxDistance={0.001}
+          />
           <ambientLight intensity={0.8} />
           <GalleryScene />
         </Suspense>
