@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
 import { Html, OrbitControls } from '@react-three/drei'
-import { DoubleSide, Group, TextureLoader } from 'three'
+import { DoubleSide, Group, Mesh, TextureLoader } from 'three'
 import { Link } from 'react-router-dom'
 import drawings from '../files/drawings'
 
@@ -12,14 +12,40 @@ const placements = drawings.map(() => ({
     | 'left'
     | 'right'
     | 'ceiling',
-  offsetY: (Math.random() - 0.5),
+  offsetY: (Math.random() * 4) - 2,
   offsetZ: (Math.random() - 0.5),
   rotZ: (Math.random() - 0.5) * 0.2,
+  width: 2 + Math.random() * 2,
+  height: 2 + Math.random() * 2,
 }))
+
+function SpinningArt({
+  texture,
+  width,
+  height,
+  ...props
+}: {
+  texture: string
+  width: number
+  height: number
+} & JSX.IntrinsicElements['mesh']) {
+  const ref = useRef<Mesh>(null)
+  useFrame(() => {
+    if (ref.current) {
+      ref.current.rotation.z += 0.001
+    }
+  })
+  return (
+    <mesh ref={ref} {...props}>
+      <planeGeometry args={[width, height]} />
+      <meshBasicMaterial map={texture} side={DoubleSide} />
+    </mesh>
+  )
+}
 
 function GallerySegment({ group }: { group: React.MutableRefObject<Group | null> }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
-  const spacing = 8
+  const spacing = 4
   const wallDistance = 8
   return (
     <group ref={group}>
@@ -42,10 +68,14 @@ function GallerySegment({ group }: { group: React.MutableRefObject<Group | null>
         }
 
         return (
-          <mesh key={art.id} position={pos} rotation={rot}>
-            <planeGeometry args={[3, 3]} />
-            <meshBasicMaterial map={textures[index]} side={DoubleSide} />
-          </mesh>
+          <SpinningArt
+            key={art.id}
+            position={pos}
+            rotation={rot}
+            texture={textures[index]}
+            width={rand.width}
+            height={rand.height}
+          />
         )
       })}
     </group>
@@ -58,7 +88,7 @@ export default function DrawingsRoom() {
     const center = useRef<Group | null>(null)
     const right = useRef<Group | null>(null)
 
-    const segmentWidth = drawings.length * 8
+    const segmentWidth = drawings.length * 4
 
     useFrame(({ camera }) => {
       const offset = Math.floor(camera.position.x / segmentWidth)
@@ -83,7 +113,7 @@ export default function DrawingsRoom() {
     useEffect(() => {
       const onWheel = (e: WheelEvent) => {
         e.preventDefault()
-        camera.position.x += e.deltaY * 0.002
+        camera.position.x += e.deltaY * 0.001
       }
       window.addEventListener('wheel', onWheel, { passive: false })
       return () => window.removeEventListener('wheel', onWheel)
@@ -92,15 +122,15 @@ export default function DrawingsRoom() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-screen bg-gray-200">
       <div className="fixed top-4 left-4 z-10 flex items-center gap-4">
         <Link to="/drawings" className="text-blue-500 underline flex items-center">
           <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back to gallery
         </Link>
-        <h2 className="page-title">Virtual Room</h2>
+        <h2 className="page-title text-white">Virtual Room</h2>
       </div>
       <Canvas
-        className="fixed inset-0 w-screen h-screen"
+        className="fixed inset-0 w-full h-full"
         camera={{ position: [0, 1.5, 0.001] }}
       >
         <Suspense
