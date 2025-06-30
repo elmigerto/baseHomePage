@@ -4,6 +4,7 @@ import {
   faDiceD20,
   faHome,
   faPaintBrush,
+  faCode,
   faShoppingCart,
   faSun,
   faMoon,
@@ -38,6 +39,9 @@ export default function Header({
           </NavLink>
           <NavLink to="/drawings" className={linkClass}>
             <FontAwesomeIcon icon={faPaintBrush} className="mr-1" /> Drawings
+          </NavLink>
+          <NavLink to="/software" className={linkClass}>
+            <FontAwesomeIcon icon={faCode} className="mr-1" /> Software
           </NavLink>
           <NavLink to="/about" className={linkClass}>
             <FontAwesomeIcon icon={faUser} className="mr-1" /> About
