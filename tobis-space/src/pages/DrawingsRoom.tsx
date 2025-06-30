@@ -2,7 +2,7 @@ import { Suspense, useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { Canvas, useFrame, useLoader } from "@react-three/fiber"
-import { Html, OrbitControls } from "@react-three/drei"
+import { Html, MapControls } from "@react-three/drei"
 import {
   DoubleSide,
   Mesh,
@@ -13,11 +13,11 @@ import { Link } from 'react-router-dom'
 import drawings from "../files/drawings"
 import wallImg from "../assets/drawings/wall.png"
 
-const ROOM_RADIUS = 12
-const WALL_HEIGHT = 5
-
-const SHOW_THRESHOLD = 1.1
-const REMOVE_THRESHOLD = 1.4
+const SEGMENT_SIZE = 10
+const SEGMENTS = 5
+const HALF = Math.floor(SEGMENTS / 2)
+const SHOW_RANGE = (SEGMENT_SIZE * SEGMENTS) / 2
+const REMOVE_RANGE = SHOW_RANGE * 1.4
 
 function shuffle<T>(array: T[]): T[] {
   const copy = array.slice()
@@ -28,22 +28,21 @@ function shuffle<T>(array: T[]): T[] {
   return copy
 }
 
-function angleDiff(a: number, b: number) {
-  const diff = a - b
-  return Math.atan2(Math.sin(diff), Math.cos(diff))
+interface Placement {
+  x: number
+  y: number
+  width: number
+  height: number
 }
 
-const LAYERS = 3
-const ROOM_HEIGHT = LAYERS * WALL_HEIGHT
-const angleStep = (Math.PI * 2) / drawings.length
-const placements = drawings.map((_, i) => ({
-  angle: i * angleStep,
-  offsetY: Math.random() * ROOM_HEIGHT - ROOM_HEIGHT / 2,
+const placements: Placement[] = drawings.map(() => ({
+  x: (Math.random() - 0.5) * SHOW_RANGE,
+  y: (Math.random() - 0.5) * SHOW_RANGE,
   width: 2 + Math.random() * 2,
   height: 2 + Math.random() * 2,
 }))
 
-const CAMERA_DISTANCE = ROOM_RADIUS - 1
+const CAMERA_DISTANCE = 5
 
 function ArtPlane({
   texture,
@@ -72,15 +71,17 @@ function GalleryScene({
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const wallTexture = useLoader(TextureLoader, wallImg)
 
-  const [mapping, setMapping] = useState<(number | null)[]>(
-    Array.from({ length: placements.length }, () => null),
+  const [mapping, setMapping] = useState<number[]>(
+    Array.from({ length: placements.length }, () => 0),
   )
+  const [positions, setPositions] = useState<Placement[]>(placements)
   const unseenRef = useRef<number[]>([])
 
   useEffect(() => {
     unseenRef.current = shuffle(
       Array.from({ length: drawings.length }, (_, i) => i),
     )
+    setMapping((prev) => prev.map(() => nextIndex()))
   }, [])
 
   function nextIndex() {
@@ -95,26 +96,35 @@ function GalleryScene({
   useFrame(() => {
     const controls = controlsRef.current
     if (!controls) return
-    const camAngle = controls.getAzimuthalAngle()
 
-    setMapping((prev) => {
+    const camX = controls.target.x
+    const camY = controls.target.y
+
+    setPositions((prev) => {
       let changed = false
       const next = [...prev]
-      for (let i = 0; i < placements.length; i++) {
-        const diff = Math.abs(angleDiff(camAngle, placements[i].angle))
-        if (diff < SHOW_THRESHOLD) {
-          if (next[i] == null) {
-            next[i] = nextIndex()
-            changed = true
+      const nextMapping = [...mapping]
+      for (let i = 0; i < next.length; i++) {
+        const p = next[i]
+        if (
+          Math.abs(p.x - camX) > REMOVE_RANGE ||
+          Math.abs(p.y - camY) > REMOVE_RANGE
+        ) {
+          next[i] = {
+            x: camX + (Math.random() - 0.5) * SHOW_RANGE,
+            y: camY + (Math.random() - 0.5) * SHOW_RANGE,
+            width: 2 + Math.random() * 2,
+            height: 2 + Math.random() * 2,
           }
-        } else if (diff > REMOVE_THRESHOLD) {
-          if (next[i] != null) {
-            next[i] = null
-            changed = true
-          }
+          nextMapping[i] = nextIndex()
+          changed = true
         }
       }
-      return changed ? next : prev
+      if (changed) {
+        setMapping(nextMapping)
+        return next
+      }
+      return prev
     })
   })
 
@@ -122,13 +132,21 @@ function GalleryScene({
     const handler = (e: KeyboardEvent) => {
       const controls = controlsRef.current
       if (!controls) return
+      const step = 0.5
       if (e.key === 'ArrowUp') {
-        controls.target.y += 0.5
-        controls.object.position.y += 0.5
+        controls.target.y += step
+        controls.object.position.y += step
       } else if (e.key === 'ArrowDown') {
-        controls.target.y -= 0.5
-        controls.object.position.y -= 0.5
+        controls.target.y -= step
+        controls.object.position.y -= step
+      } else if (e.key === 'ArrowLeft') {
+        controls.target.x -= step
+        controls.object.position.x -= step
+      } else if (e.key === 'ArrowRight') {
+        controls.target.x += step
+        controls.object.position.x += step
       }
+      controls.update()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
@@ -138,41 +156,45 @@ function GalleryScene({
   wallTexture.wrapT = RepeatWrapping
   wallTexture.repeat.set(1, 1)
 
-  const SEGMENTS = 32
-  const wallWidth = (2 * Math.PI * ROOM_RADIUS) / SEGMENTS
+  const tilesRef = useRef<Mesh[]>([])
+
+  useFrame(() => {
+    const controls = controlsRef.current
+    if (!controls) return
+    const camX = controls.target.x
+    const camY = controls.target.y
+    tilesRef.current.forEach((mesh, idx) => {
+      const col = (idx % SEGMENTS) - HALF
+      const row = Math.floor(idx / SEGMENTS) - HALF
+      const baseX = Math.floor(camX / SEGMENT_SIZE) * SEGMENT_SIZE
+      const baseY = Math.floor(camY / SEGMENT_SIZE) * SEGMENT_SIZE
+      mesh.position.x = baseX + col * SEGMENT_SIZE
+      mesh.position.y = baseY + row * SEGMENT_SIZE
+    })
+  })
 
   return (
     <group>
-      {Array.from({ length: LAYERS }).map((_, layer) =>
-        Array.from({ length: SEGMENTS }).map((_, i) => {
-          const angle = (i / SEGMENTS) * Math.PI * 2
-          const x = Math.cos(angle) * ROOM_RADIUS
-          const z = Math.sin(angle) * ROOM_RADIUS
-          const y = layer * WALL_HEIGHT
-          return (
-            <mesh
-              key={`wall-${layer}-${i}`}
-              position={[x, y, z]}
-              rotation={[0, -angle - Math.PI / 2, 0]}
-            >
-              <planeGeometry args={[wallWidth, WALL_HEIGHT]} />
-              <meshBasicMaterial map={wallTexture} side={DoubleSide} />
-            </mesh>
-          )
-        }),
-      )}
-      {placements.map((rand, index) => {
+      {Array.from({ length: SEGMENTS * SEGMENTS }).map((_, i) => (
+        <mesh
+          key={`wall-${i}`}
+          ref={(el) => {
+            if (el) tilesRef.current[i] = el
+          }}
+          rotation={[0, 0, 0]}
+          position={[0, 0, 0]}
+        >
+          <planeGeometry args={[SEGMENT_SIZE, SEGMENT_SIZE]} />
+          <meshBasicMaterial map={wallTexture} side={DoubleSide} />
+        </mesh>
+      ))}
+      {positions.map((rand, index) => {
         const drawingIndex = mapping[index]
-        if (drawingIndex == null) return null
-        const angle = rand.angle
-        const x = Math.cos(angle) * ROOM_RADIUS
-        const z = Math.sin(angle) * ROOM_RADIUS
-
         return (
           <ArtPlane
             key={`${index}-${drawingIndex}`}
-            position={[x, rand.offsetY, z]}
-            rotation={[0, -angle - Math.PI / 2, 0]}
+            position={[rand.x, rand.y, 0.1]}
+            rotation={[0, 0, 0]}
             texture={textures[drawingIndex]}
             width={rand.width}
             height={rand.height}
@@ -210,15 +232,13 @@ export default function DrawingsRoom() {
             </Html>
           }
         >
-          <OrbitControls
+          <MapControls
             ref={controlsRef}
-            enablePan={false}
+            enableRotate={false}
             enableZoom={false}
+            enablePan
             enableDamping
             dampingFactor={0.1}
-            rotateSpeed={0.3}
-            minDistance={CAMERA_DISTANCE}
-            maxDistance={CAMERA_DISTANCE}
           />
           <ambientLight intensity={0.8} />
           <GalleryScene controlsRef={controlsRef} />
