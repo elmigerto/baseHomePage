@@ -1,7 +1,7 @@
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
+import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import { Html, OrbitControls } from '@react-three/drei'
 import { DoubleSide, Group, Mesh, TextureLoader } from 'three'
 import { Link } from 'react-router-dom'
@@ -19,6 +19,8 @@ const placements = drawings.map(() => ({
   height: 2 + Math.random() * 2,
 }))
 
+const ART_SPACING = 5
+
 function SpinningArt({
   texture,
   width,
@@ -30,11 +32,6 @@ function SpinningArt({
   height: number
 } & JSX.IntrinsicElements['mesh']) {
   const ref = useRef<Mesh>(null)
-  useFrame(() => {
-    if (ref.current) {
-      ref.current.rotation.z += 0.001
-    }
-  })
   return (
     <mesh ref={ref} {...props}>
       <planeGeometry args={[width, height]} />
@@ -45,7 +42,7 @@ function SpinningArt({
 
 function GallerySegment({ group }: { group: React.MutableRefObject<Group | null> }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
-  const spacing = 4
+  const spacing = ART_SPACING
   const wallDistance = 8
   return (
     <group ref={group}>
@@ -88,7 +85,7 @@ export default function DrawingsRoom() {
     const center = useRef<Group | null>(null)
     const right = useRef<Group | null>(null)
 
-    const segmentWidth = drawings.length * 4
+    const segmentWidth = drawings.length * ART_SPACING
 
     useFrame(({ camera }) => {
       const offset = Math.floor(camera.position.x / segmentWidth)
@@ -108,18 +105,6 @@ export default function DrawingsRoom() {
     )
   }
 
-  function CameraScroll() {
-    const { camera } = useThree()
-    useEffect(() => {
-      const onWheel = (e: WheelEvent) => {
-        e.preventDefault()
-        camera.position.x += e.deltaY * 0.001
-      }
-      window.addEventListener('wheel', onWheel, { passive: false })
-      return () => window.removeEventListener('wheel', onWheel)
-    }, [camera])
-    return null
-  }
 
   return (
     <div className="min-h-screen w-screen bg-gray-200">
@@ -148,7 +133,6 @@ export default function DrawingsRoom() {
             minDistance={0.001}
             maxDistance={0.001}
           />
-          <CameraScroll />
           <ambientLight intensity={0.8} />
           <GalleryScene />
         </Suspense>
