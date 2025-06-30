@@ -22,12 +22,12 @@ export default function Drawings() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="page-title">Drawings</h2>
-        <Link to="/drawings/room" className="text-blue-500 underline">
+      <header className="flex items-center justify-between mb-4">
+        <h2 className="page-title">Gallery</h2>
+        <Link to="/drawings" className="text-blue-500 underline">
           Virtual Room
         </Link>
-      </div>
+      </header>
       <select
         className="border rounded p-1 mb-4 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600"
         value={filter}

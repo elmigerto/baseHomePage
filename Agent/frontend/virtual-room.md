@@ -1,6 +1,6 @@
 # Virtual Gallery Room
 
-Guidelines for implementing the fullscreen 3D gallery room accessible at `/drawings/room`.
+Guidelines for implementing the fullscreen 3D gallery room accessible at `/drawings`.
 
 - Use **React Three Fiber** with Drei helpers.
 - Allow the camera to pan freely using `MapControls`.

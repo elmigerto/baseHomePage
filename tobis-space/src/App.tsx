@@ -32,8 +32,8 @@ export default function App() {
           <Route index element={<StoryOverview />} />
           <Route path=":chapterSlug" element={<Chapter />} />
         </Route>
-        <Route path="drawings" element={<Drawings />} />
-        <Route path="drawings/room" element={<DrawingsRoom />} />
+        <Route path="drawings" element={<DrawingsRoom />} />
+        <Route path="drawings/gallery" element={<Drawings />} />
         <Route path="software" element={<Software />} />
         <Route path="about" element={<About />} />
         <Route path="success" element={<CheckoutSuccess />} />
