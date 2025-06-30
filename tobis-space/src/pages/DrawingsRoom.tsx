@@ -1,7 +1,7 @@
-import { Suspense, useRef } from "react"
+import { Suspense, useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { Canvas, useLoader } from "@react-three/fiber"
+import { Canvas, useFrame, useLoader } from "@react-three/fiber"
 import { Html, OrbitControls } from "@react-three/drei"
 import { DoubleSide, Mesh, TextureLoader, RepeatWrapping } from "three"
 import { Link } from 'react-router-dom'
@@ -10,6 +10,23 @@ import wallImg from "../assets/drawings/wall.png"
 
 const ROOM_RADIUS = 8
 const WALL_HEIGHT = 5
+
+const SHOW_THRESHOLD = 1.1
+const REMOVE_THRESHOLD = 1.4
+
+function shuffle<T>(array: T[]): T[] {
+  const copy = array.slice()
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
+
+function angleDiff(a: number, b: number) {
+  const diff = a - b
+  return Math.atan2(Math.sin(diff), Math.cos(diff))
+}
 
 const angleStep = (Math.PI * 2) / drawings.length
 const placements = drawings.map((_, i) => ({
@@ -40,9 +57,59 @@ function ArtPlane({
   )
 }
 
-function GalleryScene() {
+function GalleryScene({
+  controlsRef,
+}: {
+  controlsRef: React.RefObject<any>
+}) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const wallTexture = useLoader(TextureLoader, wallImg)
+
+  const [mapping, setMapping] = useState<(number | null)[]>(
+    Array.from({ length: placements.length }, () => null),
+  )
+  const unseenRef = useRef<number[]>([])
+
+  useEffect(() => {
+    unseenRef.current = shuffle(
+      Array.from({ length: drawings.length }, (_, i) => i),
+    )
+  }, [])
+
+  function nextIndex() {
+    if (unseenRef.current.length === 0) {
+      unseenRef.current = shuffle(
+        Array.from({ length: drawings.length }, (_, i) => i),
+      )
+    }
+    return unseenRef.current.pop() ?? 0
+  }
+
+  useFrame(() => {
+    const controls = controlsRef.current
+    if (!controls) return
+    const camAngle = controls.getAzimuthalAngle()
+
+    setMapping((prev) => {
+      let changed = false
+      const next = [...prev]
+      for (let i = 0; i < placements.length; i++) {
+        const diff = Math.abs(angleDiff(camAngle, placements[i].angle))
+        if (diff < SHOW_THRESHOLD) {
+          if (next[i] == null) {
+            next[i] = nextIndex()
+            changed = true
+          }
+        } else if (diff > REMOVE_THRESHOLD) {
+          if (next[i] != null) {
+            next[i] = null
+            changed = true
+          }
+        }
+      }
+      return changed ? next : prev
+    })
+  })
 
   wallTexture.wrapS = RepeatWrapping
   wallTexture.wrapT = RepeatWrapping
@@ -51,21 +118,24 @@ function GalleryScene() {
   return (
     <group>
       <mesh>
-        <cylinderGeometry args={[ROOM_RADIUS, ROOM_RADIUS, WALL_HEIGHT, 64, 1, true]} />
+        <cylinderGeometry
+          args={[ROOM_RADIUS, ROOM_RADIUS, WALL_HEIGHT, 64, 1, true]}
+        />
         <meshBasicMaterial map={wallTexture} side={DoubleSide} />
       </mesh>
-      {drawings.map((art, index) => {
-        const rand = placements[index]
+      {placements.map((rand, index) => {
+        const drawingIndex = mapping[index]
+        if (drawingIndex == null) return null
         const angle = rand.angle
         const x = Math.cos(angle) * ROOM_RADIUS
         const z = Math.sin(angle) * ROOM_RADIUS
 
         return (
           <ArtPlane
-            key={art.id}
+            key={`${index}-${drawingIndex}`}
             position={[x, rand.offsetY, z]}
             rotation={[0, -angle, 0]}
-            texture={textures[index]}
+            texture={textures[drawingIndex]}
             width={rand.width}
             height={rand.height}
           />
@@ -113,7 +183,7 @@ export default function DrawingsRoom() {
             maxDistance={CAMERA_DISTANCE}
           />
           <ambientLight intensity={0.8} />
-          <GalleryScene />
+          <GalleryScene controlsRef={controlsRef} />
         </Suspense>
       </Canvas>
     </div>
