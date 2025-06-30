@@ -6,3 +6,4 @@ This directory contains the project tasks split into independent scopes. Each fi
 - `frontend/` – Folder containing task files for each frontend section (navigation, gallery, boardgame, stories, etc.)
 - `backend.md` – Tasks covering the Node.js/Express backend and Stripe integration
 - `deployment.md` – Tasks for deploying both the frontend and backend
+- The virtual gallery room documentation is in `frontend/virtual-room.md` and includes file paths for editing the 3D scene
