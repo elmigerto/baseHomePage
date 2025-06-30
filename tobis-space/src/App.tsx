@@ -14,6 +14,7 @@ import DrawingsRoom from './pages/DrawingsRoom'
 import Home from './pages/Home'
 import Stories from './pages/Stories'
 import StoryOverview from './pages/StoryOverview'
+import Software from './pages/Software'
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
         </Route>
         <Route path="drawings" element={<Drawings />} />
         <Route path="drawings/room" element={<DrawingsRoom />} />
+        <Route path="software" element={<Software />} />
         <Route path="about" element={<About />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />
