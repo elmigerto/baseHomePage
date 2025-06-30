@@ -129,10 +129,8 @@ export default function DrawingsRoom() {
         </Link>
         <h2 className="page-title text-white">Virtual Room</h2>
       </div>
-      <Canvas
-        className="fixed inset-0 w-full h-full"
-        camera={{ position: [0, 1.5, 0.001] }}
-      >
+
+        <Canvas className="w-full h-full" style={{ height: '90vh' }}   camera={{ position: [0, 1.5, 0.001] }} >
         <Suspense
           fallback={
             <Html center>
