@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { Canvas, useFrame, useLoader } from "@react-three/fiber"
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber"
 import { Html, MapControls } from "@react-three/drei"
 import {
   DoubleSide,
@@ -35,12 +35,33 @@ interface Placement {
   height: number
 }
 
-const placements: Placement[] = drawings.map(() => ({
-  x: (Math.random() - 0.5) * SHOW_RANGE,
-  y: (Math.random() - 0.5) * SHOW_RANGE,
-  width: 2 + Math.random() * 2,
-  height: 2 + Math.random() * 2,
-}))
+const GRID_STEP = 6
+
+function randomSize() {
+  return (2 + Math.random() * 2) * 2
+}
+
+function randomGridPosition(
+  camX = 0,
+  camY = 0,
+  used?: Set<string>,
+) {
+  for (let i = 0; i < 20; i++) {
+    const x =
+      Math.round((camX + (Math.random() - 0.5) * SHOW_RANGE) / GRID_STEP) *
+      GRID_STEP
+    const y =
+      Math.round((camY + (Math.random() - 0.5) * SHOW_RANGE) / GRID_STEP) *
+      GRID_STEP
+    const key = `${x}:${y}`
+    if (!used || !used.has(key)) {
+      used?.add(key)
+      return { x, y }
+    }
+  }
+  return { x: camX, y: camY }
+}
+
 
 const CAMERA_DISTANCE = 5
 
@@ -70,19 +91,44 @@ function GalleryScene({
 }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const wallTexture = useLoader(TextureLoader, wallImg)
-
-  const [mapping, setMapping] = useState<number[]>(
-    Array.from({ length: placements.length }, () => 0),
-  )
-  const [positions, setPositions] = useState<Placement[]>(placements)
+  const { size, gl } = useThree()
+  const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
+  const usedPositions = useRef<Set<string>>(new Set())
+  const [positions, setPositions] = useState<Placement[]>([])
+  const [mapping, setMapping] = useState<number[]>([])
   const unseenRef = useRef<number[]>([])
 
   useEffect(() => {
     unseenRef.current = shuffle(
       Array.from({ length: drawings.length }, (_, i) => i),
     )
-    setMapping((prev) => prev.map(() => nextIndex()))
+
+    const initial = drawings.map(() => {
+      const { x, y } = randomGridPosition(0, 0, usedPositions.current)
+      return { x, y, width: randomSize(), height: randomSize() }
+    })
+    setPositions(initial)
+    setMapping(initial.map(() => nextIndex()))
   }, [])
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      const rect = gl.domElement.getBoundingClientRect()
+      pointerRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      }
+    }
+    const handleLeave = () => {
+      pointerRef.current = { x: -1, y: -1 }
+    }
+    gl.domElement.addEventListener('mousemove', handleMove)
+    gl.domElement.addEventListener('mouseleave', handleLeave)
+    return () => {
+      gl.domElement.removeEventListener('mousemove', handleMove)
+      gl.domElement.removeEventListener('mouseleave', handleLeave)
+    }
+  }, [gl])
 
   function nextIndex() {
     if (unseenRef.current.length === 0) {
@@ -97,6 +143,27 @@ function GalleryScene({
     const controls = controlsRef.current
     if (!controls) return
 
+    const pointer = pointerRef.current
+    const edge = 50
+    const moveStep = 0.2
+    if (pointer.x >= 0 && pointer.y >= 0) {
+      if (pointer.x < edge) {
+        controls.target.x -= moveStep
+        controls.object.position.x -= moveStep
+      } else if (pointer.x > size.width - edge) {
+        controls.target.x += moveStep
+        controls.object.position.x += moveStep
+      }
+      if (pointer.y < edge) {
+        controls.target.y += moveStep
+        controls.object.position.y += moveStep
+      } else if (pointer.y > size.height - edge) {
+        controls.target.y -= moveStep
+        controls.object.position.y -= moveStep
+      }
+      controls.update()
+    }
+
     const camX = controls.target.x
     const camY = controls.target.y
 
@@ -110,11 +177,13 @@ function GalleryScene({
           Math.abs(p.x - camX) > REMOVE_RANGE ||
           Math.abs(p.y - camY) > REMOVE_RANGE
         ) {
+          usedPositions.current.delete(`${p.x}:${p.y}`)
+          const { x, y } = randomGridPosition(camX, camY, usedPositions.current)
           next[i] = {
-            x: camX + (Math.random() - 0.5) * SHOW_RANGE,
-            y: camY + (Math.random() - 0.5) * SHOW_RANGE,
-            width: 2 + Math.random() * 2,
-            height: 2 + Math.random() * 2,
+            x,
+            y,
+            width: randomSize(),
+            height: randomSize(),
           }
           nextMapping[i] = nextIndex()
           changed = true
@@ -234,6 +303,7 @@ export default function DrawingsRoom() {
         >
           <MapControls
             ref={controlsRef}
+            target={[0, 1.5, 0]}
             enableRotate={false}
             enableZoom={false}
             enablePan
