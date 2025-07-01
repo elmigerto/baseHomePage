@@ -325,6 +325,16 @@ export default function DrawingsRoom() {
 
   const IDLE_DELAY = 5000
 
+  const move = useCallback((dx: number, dy: number) => {
+    const controls = controlsRef.current
+    if (!controls) return
+    controls.target.x += dx
+    controls.object.position.x += dx
+    controls.target.y += dy
+    controls.object.position.y += dy
+    controls.update()
+  }, [])
+
   const startRandomMove = useCallback(() => {
     if (autoMoveInterval.current) return
     const angle = Math.random() * Math.PI * 2
@@ -365,17 +375,6 @@ export default function DrawingsRoom() {
     },
     [setCameraDistance],
   )
-
-  const move = useCallback((dx: number, dy: number) => {
-    const controls = controlsRef.current
-    if (!controls) return
-    controls.target.x += dx
-    controls.object.position.x += dx
-    controls.target.y += dy
-    controls.object.position.y += dy
-    controls.update()
-  }, [])
-
 
   const startContinuousMove = useCallback(
     (dx: number, dy: number) => {
