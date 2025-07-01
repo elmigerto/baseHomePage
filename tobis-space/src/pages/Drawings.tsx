@@ -54,7 +54,10 @@ export default function Drawings() {
         <div className="flex items-center gap-4">
           <h2 className="page-title m-0">Gallery</h2>
           <Link to="/drawings" className="text-blue-500 underline">
-            Virtual Room
+            3D Room
+          </Link>
+          <Link to="/drawings/scroll" className="text-blue-500 underline">
+            Scrolling Room
           </Link>
         </div>
         <select
