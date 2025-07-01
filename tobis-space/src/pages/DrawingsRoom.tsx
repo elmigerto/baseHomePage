@@ -24,6 +24,7 @@ import {
   RepeatWrapping,
   TextureLoader,
   Vector3,
+  type Texture,
 } from "three"
 import { Link } from "react-router-dom"
 import drawings from "../files/drawings"
@@ -109,7 +110,7 @@ function ArtPlane({
   height,
   ...props
 }: {
-  texture: string
+  texture: Texture
   width: number
   height: number
 } & ThreeElements['mesh']) {
