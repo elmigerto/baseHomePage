@@ -7,9 +7,11 @@ import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
 import App from './App'
 
+const basename = import.meta.env.BASE_URL
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <ThemeProvider>
         <CartProvider>
           <ErrorBoundary>

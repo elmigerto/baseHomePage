@@ -1,20 +1,17 @@
 import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import Card from "../components/Card"
-import Button from "../components/Button"
-import ImageModal from "../components/ImageModal"
 import { useCart } from "../contexts/CartContext"
 import drawings, { categories, type Drawing } from "../files/drawings"
+import useDrawingModal from "../hooks/useDrawingModal"
 
 const allCategory = "all"
 
 
 export default function Drawings() {
-  const [selected, setSelected] = useState<Drawing | null>(null)
   const [filter, setFilter] = useState(allCategory)
-  const { addItem, items } = useCart()
+  const { open: openModal, modal } = useDrawingModal()
+  const { items } = useCart()
 
   const sortedCategories = useMemo(() => [...categories].sort(), [])
   const drawingsByCat = useMemo(() => {
@@ -41,7 +38,7 @@ export default function Drawings() {
           src={art.image}
           alt={art.name}
           className="mb-2 h-48 w-48 cursor-pointer object-contain"
-          onClick={() => setSelected(art)}
+          onClick={() => openModal(art)}
         />
         <p className="text-center">{art.name}</p>
         {inCart && !art.multiple && (
@@ -57,7 +54,10 @@ export default function Drawings() {
         <div className="flex items-center gap-4">
           <h2 className="page-title m-0">Gallery</h2>
           <Link to="/drawings" className="text-blue-500 underline">
-            Virtual Room
+            3D Room
+          </Link>
+          <Link to="/drawings/scroll" className="text-blue-500 underline">
+            Scrolling Room
           </Link>
         </div>
         <select
@@ -87,7 +87,8 @@ export default function Drawings() {
           {filtered.map(renderCard)}
         </div>
       )}
-      {selected && <ImageModal art={selected} onClose={() => setSelected(null)} />}
+      {modal}
     </div>
   )
 }
+
