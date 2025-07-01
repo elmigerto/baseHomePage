@@ -96,8 +96,10 @@ function ArtPlane({
 
 function GalleryScene({
   controlsRef,
+  move,
 }: {
   controlsRef: React.RefObject<any>
+  move: (dx: number, dy: number) => void
 }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const wallTexture = useLoader(TextureLoader, wallImg)
@@ -341,7 +343,7 @@ export default function DrawingsRoom() {
             dampingFactor={0.1}
           />
           <ambientLight intensity={0.8} />
-          <GalleryScene controlsRef={controlsRef} />
+          <GalleryScene controlsRef={controlsRef} move={move} />
         </Suspense>
       </Canvas>
       <div className="fixed bottom-4 right-4 z-20 flex flex-col items-center space-y-2 text-white">
