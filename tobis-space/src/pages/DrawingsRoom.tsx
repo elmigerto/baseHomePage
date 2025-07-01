@@ -180,8 +180,6 @@ function GalleryScene({
   }, [controlsRef, showRange])
 
   useEffect(() => {
-    itemsRef.current.clear()
-    indexRef.current = 0
     ensureGrid()
   }, [ensureGrid])
 
