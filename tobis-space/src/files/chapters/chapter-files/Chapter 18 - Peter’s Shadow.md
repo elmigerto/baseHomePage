@@ -88,5 +88,4 @@ Bitter enemies seconds ago, now suddenly caught in the same storm.
 
 They stood apart, uncertain, eyes scanning the chaos, instinctively watching for danger.
 
-Where to go?  
-How to escape?
+Where to go? How to escape?
