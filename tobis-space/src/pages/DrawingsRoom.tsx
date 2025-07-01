@@ -291,7 +291,7 @@ export default function DrawingsRoom() {
   const autoMoveInterval = useRef<NodeJS.Timeout | null>(null)
   const lastInteraction = useRef(Date.now())
 
-  const IDLE_DELAY = 3000
+  const IDLE_DELAY = 5000
 
   const move = useCallback((dx: number, dy: number) => {
     const controls = controlsRef.current
