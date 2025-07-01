@@ -1,17 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import Card from "../components/Card"
 import Button from "../components/Button"
+import ImageModal from "../components/ImageModal"
 import { useCart } from "../contexts/CartContext"
-import drawings, { categories, type Drawing } from '../files/drawings'
+import drawings, { categories, type Drawing } from "../files/drawings"
 
 const allCategory = "all"
 
 
 export default function Drawings() {
-  const [selected, setSelected] = useState<string | null>(null)
+  const [selected, setSelected] = useState<Drawing | null>(null)
   const [filter, setFilter] = useState(allCategory)
   const { addItem, items } = useCart()
 
@@ -34,52 +35,17 @@ export default function Drawings() {
 
   const renderCard = (art: Drawing) => {
     const inCart = items.some((i) => i.id === art.id)
-    const canAdd = art.multiple || !inCart
     return (
-      <Card
-        key={art.id}
-        className={inCart ? 'bg-green-200 dark:bg-green-900' : ''}
-      >
-        {selected === art.id ? (
-          <div className="w-48 h-48 flex flex-col items-center justify-center text-center space-y-2">
-            <p className="font-semibold">{art.name}</p>
-            <p className="text-sm">{art.description}</p>
-            <p className="font-bold">{art.price.toFixed(2)} €</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  addItem({
-                    id: art.id,
-                    name: art.name,
-                    price: art.price,
-                    multiple: art.multiple,
-                  })
-                }
-                disabled={!canAdd}
-              >
-                {inCart && !art.multiple ? 'Added' : 'Add to Cart'}
-              </Button>
-              <Button
-                className="bg-gray-300 text-black hover:bg-gray-400"
-                onClick={() => setSelected(null)}
-              >
-                <FontAwesomeIcon icon={faXmark} className="mr-1" /> Close
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <>
-            <img
-              src={art.image}
-              alt={art.name}
-              className="w-48 h-48 object-contain mb-2 cursor-pointer"
-              onClick={() => setSelected(art.id)}
-            />
-            <p className="text-center">{art.name}</p>
-            {inCart && !art.multiple && (
-              <p className="text-sm text-green-600">Added to cart</p>
-            )}
-          </>
+      <Card key={art.id} className={inCart ? "bg-green-200 dark:bg-green-900" : ""}>
+        <img
+          src={art.image}
+          alt={art.name}
+          className="mb-2 h-48 w-48 cursor-pointer object-contain"
+          onClick={() => setSelected(art)}
+        />
+        <p className="text-center">{art.name}</p>
+        {inCart && !art.multiple && (
+          <p className="text-sm text-green-600">Added to cart</p>
         )}
       </Card>
     )
@@ -121,6 +87,7 @@ export default function Drawings() {
           {filtered.map(renderCard)}
         </div>
       )}
+      {selected && <ImageModal art={selected} onClose={() => setSelected(null)} />}
     </div>
   )
 }

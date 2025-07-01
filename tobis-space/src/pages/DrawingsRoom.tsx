@@ -443,12 +443,12 @@ export default function DrawingsRoom() {
 
   return (
     <div className="min-h-screen w-screen bg-gray-200">
-      <header className="fixed top-4 left-4 z-10 flex items-center gap-4">
-        <Link to="/drawings/gallery" className="text-blue-500 underline flex items-center">
-          <FontAwesomeIcon icon={faArrowLeft} className="mr-1" /> Back to gallery
+      <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
+        <h2 className="page-title m-0">Virtual Room</h2>
+        <Link to="/drawings/gallery" className="btn">
+          <FontAwesomeIcon icon={faArrowRight} className="mr-1" /> Gallery
         </Link>
-        <h2 className="page-title text-white">Virtual Room</h2>
-      </header>
+      </div>
 
       <Canvas
         className="w-full h-full"
