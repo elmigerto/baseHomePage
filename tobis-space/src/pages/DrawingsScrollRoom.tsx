@@ -86,7 +86,7 @@ export default function DrawingsScrollRoom() {
           className="grid grid-flow-col auto-cols-max grid-rows-1 sm:grid-rows-2 lg:grid-rows-3 gap-4 overflow-x-scroll scroll-smooth min-h-screen pb-16"
         >
           {items.map((d, idx) => (
-            <div key={`${d.id}-${idx}`} className="w-72 flex flex-col items-center px-2">
+            <div key={`${d.id}-${idx}`} className="w-72 flex flex-col items-center px-2 pb-12">
               <img
                 src={d.image}
                 alt={d.name}
