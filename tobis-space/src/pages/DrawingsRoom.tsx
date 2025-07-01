@@ -10,7 +10,13 @@ import {
   faRotateLeft,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons"
-import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber"
+import {
+  Canvas,
+  useFrame,
+  useLoader,
+  useThree,
+  type ThreeElements,
+} from "@react-three/fiber"
 import { Html, MapControls } from "@react-three/drei"
 import {
   DoubleSide,
@@ -106,7 +112,7 @@ function ArtPlane({
   texture: string
   width: number
   height: number
-} & JSX.IntrinsicElements['mesh']) {
+} & ThreeElements['mesh']) {
   const ref = useRef<Mesh>(null)
   return (
     <mesh ref={ref} {...props}>
@@ -132,7 +138,6 @@ function GalleryScene({
   let seg = Math.ceil((showRange * 2) / SEGMENT_SIZE)
   if (seg % 2 === 0) seg += 1
   const segments = Math.max(BASE_SEGMENTS, seg)
-  const half = Math.floor(segments / 2)
   const wallCount = segments * segments
   const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
   const usedPositions = useRef<Set<string>>(new Set())
