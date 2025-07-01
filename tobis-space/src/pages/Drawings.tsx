@@ -1,9 +1,6 @@
 import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import Card from "../components/Card"
-import Button from "../components/Button"
 import ImageModal from "../components/ImageModal"
 import { useCart } from "../contexts/CartContext"
 import drawings, { categories, type Drawing } from "../files/drawings"
@@ -14,7 +11,7 @@ const allCategory = "all"
 export default function Drawings() {
   const [selected, setSelected] = useState<Drawing | null>(null)
   const [filter, setFilter] = useState(allCategory)
-  const { addItem, items } = useCart()
+  const { items } = useCart()
 
   const sortedCategories = useMemo(() => [...categories].sort(), [])
   const drawingsByCat = useMemo(() => {
