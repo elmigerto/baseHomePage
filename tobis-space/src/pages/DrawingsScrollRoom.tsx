@@ -86,14 +86,16 @@ export default function DrawingsScrollRoom() {
           className="grid grid-flow-col auto-cols-max grid-rows-1 sm:grid-rows-2 lg:grid-rows-3 gap-4 overflow-x-scroll scroll-smooth min-h-screen pb-16"
         >
           {items.map((d, idx) => (
-            <div key={`${d.id}-${idx}`} className="w-60 flex flex-col items-center px-2">
+            <div key={`${d.id}-${idx}`} className="w-72 flex flex-col items-center px-2">
               <img
                 src={d.image}
                 alt={d.name}
-                className="mb-2 h-60 w-60 cursor-pointer object-contain shadow-lg"
+                className="mb-2 h-72 w-72 cursor-pointer object-contain shadow-2xl"
                 onClick={() => openModal(d)}
               />
-              <p className="text-center text-base">{d.name}</p>
+              <p className="inline-block rounded bg-gray-800/90 px-2 py-0.5 text-sm text-white shadow">
+                {d.name}
+              </p>
             </div>
           ))}
         </div>
