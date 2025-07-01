@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - work
+      - codex
 
 permissions:
   contents: read
