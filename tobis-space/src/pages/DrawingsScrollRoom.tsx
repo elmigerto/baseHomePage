@@ -153,12 +153,15 @@ export default function DrawingsScrollRoom() {
         >
           {items.map((item, idx) =>
             item.type === 'label' ? (
-              <div
-                key={`label-${item.category}-${idx}`}
-                className="flex items-center justify-center w-60 text-lg font-semibold"
-              >
-                {item.category}
-              </div>
+<div
+  key={`label-${item.category}-${idx}`}
+  className="w-60 flex items-center justify-center px-2 pb-10"
+>
+  <div className="inline-block whitespace-nowrap rounded bg-gray-800/90 px-2 py-0.5 text-xl font-semibold text-white shadow">
+    {item.category}
+  </div>
+</div>
+
             ) : (
               <div
                 key={`${item.drawing.id}-${idx}`}
@@ -170,7 +173,7 @@ export default function DrawingsScrollRoom() {
                   className="mb-2 h-60 w-60 cursor-pointer object-contain shadow-lg"
                   onClick={() => openModal(item.drawing)}
                 />
-                <p className="text-center text-base">{item.drawing.name}</p>
+                <p className="inline-block rounded bg-gray-800/90 px-2 py-0.5 text-sm text-white shadow">{item.drawing.name}</p>
               </div>
             )
           )}
