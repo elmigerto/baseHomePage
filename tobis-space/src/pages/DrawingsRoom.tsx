@@ -43,7 +43,7 @@ function randomSize() {
   return (2 + Math.random() * 2) * 2
 }
 
-const CAMERA_DISTANCE = 5
+const CAMERA_DISTANCE = 10
 const MOVE_STEP = 0.5
 const RANDOM_MOVE_FACTOR = 0.2
 const RANDOM_MOVE_INTERVAL = 100
@@ -423,7 +423,7 @@ export default function DrawingsRoom() {
   }, [markInteraction, startRandomMove, stopRandomMove])
 
   return (
-    <div className="min-h-screen w-screen bg-gray-200">
+    <div className="w-full h-screen pb-5 bg-gray-200">
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
         <h2 className="page-title m-0">Virtual Room</h2>
         <Link
