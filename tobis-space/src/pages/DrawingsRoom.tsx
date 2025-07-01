@@ -33,69 +33,13 @@ import wallImg from "../assets/drawings/wall.png"
 const SEGMENT_SIZE = 10
 const BASE_SEGMENTS = 5
 const BASE_SHOW_RANGE = (SEGMENT_SIZE * BASE_SEGMENTS) / 2
-const INITIAL_RANGE = BASE_SHOW_RANGE * 2
-
-function shuffle<T>(array: T[]): T[] {
-  const copy = array.slice()
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[copy[i], copy[j]] = [copy[j], copy[i]]
-  }
-  return copy
-}
-
-interface Placement {
-  x: number
-  y: number
-  width: number
-  height: number
-  key: string
-}
+const GRID_MARGIN = 2
 
 const GRID_STEP = 5
 
 function randomSize() {
   return (2 + Math.random() * 2) * 2
 }
-
-function randomGridPosition(
-  camX = 0,
-  camY = 0,
-  used?: Set<string>,
-  range = BASE_SHOW_RANGE,
-) {
-  let attempts = 0
-  let currentRange = range
-  while (attempts < 100) {
-    const gridX = Math.round(
-      (camX + (Math.random() - 0.5) * currentRange) / GRID_STEP,
-    )
-    const gridY = Math.round(
-      (camY + (Math.random() - 0.5) * currentRange) / GRID_STEP,
-    )
-    const key = `${gridX}:${gridY}`
-    if (!used || !used.has(key)) {
-      used?.add(key)
-      const jitterX = (Math.random() - 0.5) * GRID_STEP * 0.3
-      const jitterY = (Math.random() - 0.5) * GRID_STEP * 0.3
-      return {
-        x: gridX * GRID_STEP + jitterX,
-        y: gridY * GRID_STEP + jitterY,
-        key,
-      }
-    }
-    attempts += 1
-    if (attempts % 20 === 0) {
-      currentRange *= 1.5
-    }
-  }
-  const gridX = Math.round(camX / GRID_STEP)
-  const gridY = Math.round(camY / GRID_STEP)
-  const key = `${gridX}:${gridY}`
-  used?.add(key)
-  return { x: gridX * GRID_STEP, y: gridY * GRID_STEP, key }
-}
-
 
 const CAMERA_DISTANCE = 5
 const MOVE_STEP = 0.5
@@ -141,17 +85,19 @@ function GalleryScene({
   const segments = Math.max(BASE_SEGMENTS, seg)
   const wallCount = segments * segments
   const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
-  const usedPositions = useRef<Set<string>>(new Set())
-  const [items, setItems] = useState<
-    { placement: Placement; index: number; visible: boolean; id: string }[]
-  >([])
-  const unseenRef = useRef<number[]>([])
-
-  useEffect(() => {
-    unseenRef.current = shuffle(
-      Array.from({ length: drawings.length }, (_, i) => i),
-    )
-  }, [])
+  interface GridItem {
+    x: number
+    y: number
+    width: number
+    height: number
+    index: number
+    key: string
+    gridX: number
+    gridY: number
+  }
+  const itemsRef = useRef<Map<string, GridItem>>(new Map())
+  const [items, setItems] = useState<GridItem[]>([])
+  const indexRef = useRef(0)
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
@@ -173,15 +119,59 @@ function GalleryScene({
   }, [gl])
 
   function nextIndex() {
-    if (unseenRef.current.length === 0) {
-      unseenRef.current = shuffle(
-        Array.from({ length: drawings.length }, (_, i) => i),
-      )
-    }
-    return unseenRef.current.pop() ?? 0
+    const idx = indexRef.current % drawings.length
+    indexRef.current += 1
+    return idx
   }
 
+  const ensureGrid = useCallback(() => {
+    const controls = controlsRef.current
+    if (!controls) return
+    const camX = controls.target.x
+    const camY = controls.target.y
+    const camGridX = Math.round(camX / GRID_STEP)
+    const camGridY = Math.round(camY / GRID_STEP)
+    const rangeCells = Math.ceil(showRange / GRID_STEP) + GRID_MARGIN
+    const newMap = new Map(itemsRef.current)
+
+    for (let gx = camGridX - rangeCells; gx <= camGridX + rangeCells; gx++) {
+      for (let gy = camGridY - rangeCells; gy <= camGridY + rangeCells; gy++) {
+        const key = `${gx}:${gy}`
+        if (!newMap.has(key)) {
+          newMap.set(key, {
+            x: gx * GRID_STEP,
+            y: gy * GRID_STEP,
+            width: randomSize(),
+            height: randomSize(),
+            index: nextIndex(),
+            key,
+            gridX: gx,
+            gridY: gy,
+          })
+        }
+      }
+    }
+
+    const removeCells = rangeCells + GRID_MARGIN
+    for (const [key, item] of newMap) {
+      if (
+        Math.abs(item.gridX - camGridX) > removeCells ||
+        Math.abs(item.gridY - camGridY) > removeCells
+      ) {
+        newMap.delete(key)
+      }
+    }
+
+    itemsRef.current = newMap
+    setItems(Array.from(newMap.values()))
+  }, [controlsRef, showRange])
+
+  useEffect(() => {
+    ensureGrid()
+  }, [ensureGrid])
+
   useFrame(() => {
+    ensureGrid()
     const controls = controlsRef.current
     if (!controls) return
 
@@ -207,41 +197,6 @@ function GalleryScene({
     }
   })
 
-  const addImage = useCallback(() => {
-    const { x, y, key } = randomGridPosition(0, 0, usedPositions.current, INITIAL_RANGE)
-    const hidden = randomGridPosition(0, 0, usedPositions.current, INITIAL_RANGE)
-    const id = Math.random().toString(36).slice(2)
-    const visibleItem = {
-      placement: { x, y, width: randomSize(), height: randomSize(), key },
-      index: nextIndex(),
-      visible: true,
-      id: `${id}-v`,
-    }
-    const hiddenItem = {
-      placement: {
-        x: hidden.x,
-        y: hidden.y,
-        width: randomSize(),
-        height: randomSize(),
-        key: hidden.key,
-      },
-      index: nextIndex(),
-      visible: false,
-      id: `${id}-h`,
-    }
-    setItems((prev) => [...prev, visibleItem, hiddenItem])
-    setTimeout(() => {
-      setItems((prev) => prev.filter((it) => it.id !== visibleItem.id && it.id !== hiddenItem.id))
-      usedPositions.current.delete(key)
-      usedPositions.current.delete(hidden.key)
-    }, 200_000)
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(addImage, 2000)
-    addImage()
-    return () => clearInterval(interval)
-  }, [addImage])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -300,15 +255,14 @@ function GalleryScene({
           <meshBasicMaterial map={wallTexture} side={DoubleSide} />
         </mesh>
       ))}
-      {items.map(({ placement, index, visible, id }) => (
+      {items.map((item) => (
         <ArtPlane
-          key={id}
-          visible={visible}
-          position={[placement.x, placement.y, 0.1]}
+          key={item.key}
+          position={[item.x, item.y, 0.1]}
           rotation={[0, 0, 0]}
-          texture={textures[index]}
-          width={placement.width}
-          height={placement.height}
+          texture={textures[item.index]}
+          width={item.width}
+          height={item.height}
         />
       ))}
     </group>
