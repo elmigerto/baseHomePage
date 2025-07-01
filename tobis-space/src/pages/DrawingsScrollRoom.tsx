@@ -162,7 +162,7 @@ export default function DrawingsScrollRoom() {
             ) : (
               <div
                 key={`${item.drawing.id}-${idx}`}
-                className="w-60 flex flex-col items-center px-2"
+                className="w-60 flex flex-col items-center px-2 pb-10"
               >
                 <img
                   src={item.drawing.image}
