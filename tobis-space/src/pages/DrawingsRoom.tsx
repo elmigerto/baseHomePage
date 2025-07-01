@@ -92,6 +92,8 @@ function randomGridPosition(
 
 const CAMERA_DISTANCE = 5
 const MOVE_STEP = 0.5
+const RANDOM_MOVE_FACTOR = 0.2
+const RANDOM_MOVE_INTERVAL = 100
 const MIN_ZOOM = 0.5
 const MAX_ZOOM = 2
 
@@ -345,9 +347,12 @@ export default function DrawingsRoom() {
   const startRandomMove = useCallback(() => {
     if (autoMoveInterval.current) return
     const angle = Math.random() * Math.PI * 2
-    const dx = Math.cos(angle) * MOVE_STEP
-    const dy = Math.sin(angle) * MOVE_STEP
-    autoMoveInterval.current = setInterval(() => move(dx, dy), 200)
+    const dx = Math.cos(angle) * MOVE_STEP * RANDOM_MOVE_FACTOR
+    const dy = Math.sin(angle) * MOVE_STEP * RANDOM_MOVE_FACTOR
+    autoMoveInterval.current = setInterval(
+      () => move(dx, dy),
+      RANDOM_MOVE_INTERVAL,
+    )
   }, [move])
 
   const stopRandomMove = useCallback(() => {
@@ -456,8 +461,12 @@ export default function DrawingsRoom() {
     <div className="min-h-screen w-screen bg-gray-200">
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
         <h2 className="page-title m-0">Virtual Room</h2>
-        <Link to="/drawings/gallery" className="btn">
-          <FontAwesomeIcon icon={faArrowRight} className="mr-1" /> Gallery
+        <Link
+          to="/drawings/gallery"
+          className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
+        >
+          To the gallery
+          <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
         </Link>
       </div>
 
