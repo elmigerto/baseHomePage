@@ -142,26 +142,15 @@ function GalleryScene({
   const wallCount = segments * segments
   const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
   const usedPositions = useRef<Set<string>>(new Set())
-  const [positions, setPositions] = useState<Placement[]>([])
-  const [mapping, setMapping] = useState<number[]>([])
+  const [items, setItems] = useState<
+    { placement: Placement; index: number; visible: boolean; id: string }[]
+  >([])
   const unseenRef = useRef<number[]>([])
 
   useEffect(() => {
     unseenRef.current = shuffle(
       Array.from({ length: drawings.length }, (_, i) => i),
     )
-
-    const initial = drawings.map(() => {
-      const { x, y, key } = randomGridPosition(
-        0,
-        0,
-        usedPositions.current,
-        INITIAL_RANGE,
-      )
-      return { x, y, width: randomSize(), height: randomSize(), key }
-    })
-    setPositions(initial)
-    setMapping(initial.map(() => nextIndex()))
   }, [])
 
   useEffect(() => {
@@ -216,46 +205,43 @@ function GalleryScene({
       }
       controls.update()
     }
-
-    const camX = controls.target.x
-    const camY = controls.target.y
-    const removeRange = showRange
-
-    setPositions((prev) => {
-      let changed = false
-      const next = [...prev]
-      const nextMapping = [...mapping]
-      for (let i = 0; i < next.length; i++) {
-        const p = next[i]
-        if (
-          Math.abs(p.x - camX) > removeRange ||
-          Math.abs(p.y - camY) > removeRange
-        ) {
-          usedPositions.current.delete(p.key)
-          const { x, y, key } = randomGridPosition(
-            camX,
-            camY,
-            usedPositions.current,
-            showRange,
-          )
-          next[i] = {
-            x,
-            y,
-            width: randomSize(),
-            height: randomSize(),
-            key,
-          }
-          nextMapping[i] = nextIndex()
-          changed = true
-        }
-      }
-      if (changed) {
-        setMapping(nextMapping)
-        return next
-      }
-      return prev
-    })
   })
+
+  const addImage = useCallback(() => {
+    const { x, y, key } = randomGridPosition(0, 0, usedPositions.current, INITIAL_RANGE)
+    const hidden = randomGridPosition(0, 0, usedPositions.current, INITIAL_RANGE)
+    const id = Math.random().toString(36).slice(2)
+    const visibleItem = {
+      placement: { x, y, width: randomSize(), height: randomSize(), key },
+      index: nextIndex(),
+      visible: true,
+      id: `${id}-v`,
+    }
+    const hiddenItem = {
+      placement: {
+        x: hidden.x,
+        y: hidden.y,
+        width: randomSize(),
+        height: randomSize(),
+        key: hidden.key,
+      },
+      index: nextIndex(),
+      visible: false,
+      id: `${id}-h`,
+    }
+    setItems((prev) => [...prev, visibleItem, hiddenItem])
+    setTimeout(() => {
+      setItems((prev) => prev.filter((it) => it.id !== visibleItem.id && it.id !== hiddenItem.id))
+      usedPositions.current.delete(key)
+      usedPositions.current.delete(hidden.key)
+    }, 200_000)
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(addImage, 2000)
+    addImage()
+    return () => clearInterval(interval)
+  }, [addImage])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -314,19 +300,17 @@ function GalleryScene({
           <meshBasicMaterial map={wallTexture} side={DoubleSide} />
         </mesh>
       ))}
-      {positions.map((rand, index) => {
-        const drawingIndex = mapping[index]
-        return (
-          <ArtPlane
-            key={`${index}-${drawingIndex}`}
-            position={[rand.x, rand.y, 0.1]}
-            rotation={[0, 0, 0]}
-            texture={textures[drawingIndex]}
-            width={rand.width}
-            height={rand.height}
-          />
-        )
-      })}
+      {items.map(({ placement, index, visible, id }) => (
+        <ArtPlane
+          key={id}
+          visible={visible}
+          position={[placement.x, placement.y, 0.1]}
+          rotation={[0, 0, 0]}
+          texture={textures[index]}
+          width={placement.width}
+          height={placement.height}
+        />
+      ))}
     </group>
   )
 }
