@@ -103,7 +103,6 @@ function GalleryScene({
   }
   const itemsRef = useRef<Map<string, GridItem>>(new Map())
   const [items, setItems] = useState<GridItem[]>([])
-  const indexRef = useRef(0)
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
@@ -112,23 +111,43 @@ function GalleryScene({
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
       }
-      markInteraction()
     }
     const handleLeave = () => {
       pointerRef.current = { x: -1, y: -1 }
     }
+    const handleDown = () => {
+      markInteraction()
+    }
     gl.domElement.addEventListener('mousemove', handleMove)
     gl.domElement.addEventListener('mouseleave', handleLeave)
+    gl.domElement.addEventListener('mousedown', handleDown)
+    gl.domElement.addEventListener('touchstart', handleDown)
     return () => {
       gl.domElement.removeEventListener('mousemove', handleMove)
       gl.domElement.removeEventListener('mouseleave', handleLeave)
+      gl.domElement.removeEventListener('mousedown', handleDown)
+      gl.domElement.removeEventListener('touchstart', handleDown)
     }
   }, [gl, markInteraction])
 
+  const orderRef = useRef<number[]>([])
+
+  function refillOrder() {
+    orderRef.current = Array.from({ length: drawings.length }, (_, i) => i)
+    for (let i = orderRef.current.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[orderRef.current[i], orderRef.current[j]] = [
+        orderRef.current[j],
+        orderRef.current[i],
+      ]
+    }
+  }
+
   function nextIndex() {
-    const idx = indexRef.current % drawings.length
-    indexRef.current += 1
-    return idx
+    if (orderRef.current.length === 0) {
+      refillOrder()
+    }
+    return orderRef.current.shift() ?? 0
   }
 
   const ensureGrid = useCallback(() => {
@@ -195,7 +214,6 @@ function GalleryScene({
     const edge = 50
     const moveStep = 0.2
     if (pointer.x >= 0 && pointer.y >= 0) {
-      markInteraction()
       if (pointer.x < edge) {
         controls.target.x -= moveStep
         controls.object.position.x -= moveStep
@@ -407,13 +425,7 @@ export default function DrawingsRoom() {
         startRandomMove()
       }
     }, 1000)
-    const events = [
-      'mousemove',
-      'keydown',
-      'mousedown',
-      'touchstart',
-      'wheel',
-    ] as const
+    const events = ['mousedown', 'touchstart', 'keydown', 'wheel'] as const
     events.forEach((e) => window.addEventListener(e, markInteraction))
     return () => {
       clearInterval(checkIdle)
