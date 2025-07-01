@@ -57,23 +57,29 @@ function randomGridPosition(
   used?: Set<string>,
   range = BASE_SHOW_RANGE,
 ) {
-  for (let i = 0; i < 20; i++) {
+  let attempts = 0
+  let currentRange = range
+  while (attempts < 100) {
     const gridX = Math.round(
-      (camX + (Math.random() - 0.5) * range) / GRID_STEP,
+      (camX + (Math.random() - 0.5) * currentRange) / GRID_STEP,
     )
     const gridY = Math.round(
-      (camY + (Math.random() - 0.5) * range) / GRID_STEP,
+      (camY + (Math.random() - 0.5) * currentRange) / GRID_STEP,
     )
     const key = `${gridX}:${gridY}`
     if (!used || !used.has(key)) {
       used?.add(key)
-      const jitterX = (Math.random() - 0.5) * (GRID_STEP * 0.3)
-      const jitterY = (Math.random() - 0.5) * (GRID_STEP * 0.3)
+      const jitterX = (Math.random() - 0.5) * GRID_STEP * 0.3
+      const jitterY = (Math.random() - 0.5) * GRID_STEP * 0.3
       return {
         x: gridX * GRID_STEP + jitterX,
         y: gridY * GRID_STEP + jitterY,
         key,
       }
+    }
+    attempts += 1
+    if (attempts % 20 === 0) {
+      currentRange *= 1.5
     }
   }
   const gridX = Math.round(camX / GRID_STEP)
