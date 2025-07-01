@@ -416,7 +416,7 @@ export default function DrawingsRoom() {
             target={[0, 1.5, 0]}
             enableRotate={false}
             enablePan
-            enableZoom
+            enableZoom={false}
             enableDamping
             dampingFactor={0.1}
           />
