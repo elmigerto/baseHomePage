@@ -23,10 +23,8 @@ import drawings from "../files/drawings"
 import wallImg from "../assets/drawings/wall.png"
 
 const SEGMENT_SIZE = 10
-const SEGMENTS = 5
-const HALF = Math.floor(SEGMENTS / 2)
-const SHOW_RANGE = (SEGMENT_SIZE * SEGMENTS) / 2
-const REMOVE_RANGE = SHOW_RANGE * 1.4
+const BASE_SEGMENTS = 5
+const BASE_SHOW_RANGE = (SEGMENT_SIZE * BASE_SEGMENTS) / 2
 
 function shuffle<T>(array: T[]): T[] {
   const copy = array.slice()
@@ -44,7 +42,7 @@ interface Placement {
   height: number
 }
 
-const GRID_STEP = 6
+const GRID_STEP = 10
 
 function randomSize() {
   return (2 + Math.random() * 2) * 2
@@ -54,14 +52,13 @@ function randomGridPosition(
   camX = 0,
   camY = 0,
   used?: Set<string>,
+  range = BASE_SHOW_RANGE,
 ) {
   for (let i = 0; i < 20; i++) {
     const x =
-      Math.round((camX + (Math.random() - 0.5) * SHOW_RANGE) / GRID_STEP) *
-      GRID_STEP
+      Math.round((camX + (Math.random() - 0.5) * range) / GRID_STEP) * GRID_STEP
     const y =
-      Math.round((camY + (Math.random() - 0.5) * SHOW_RANGE) / GRID_STEP) *
-      GRID_STEP
+      Math.round((camY + (Math.random() - 0.5) * range) / GRID_STEP) * GRID_STEP
     const key = `${x}:${y}`
     if (!used || !used.has(key)) {
       used?.add(key)
@@ -97,13 +94,21 @@ function ArtPlane({
 function GalleryScene({
   controlsRef,
   move,
+  zoom,
 }: {
   controlsRef: React.RefObject<any>
   move: (dx: number, dy: number) => void
+  zoom: number
 }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const wallTexture = useLoader(TextureLoader, wallImg)
   const { size, gl } = useThree()
+  const showRange = BASE_SHOW_RANGE / zoom
+  let seg = Math.ceil((showRange * 2) / SEGMENT_SIZE)
+  if (seg % 2 === 0) seg += 1
+  const segments = Math.max(BASE_SEGMENTS, seg)
+  const half = Math.floor(segments / 2)
+  const wallCount = segments * segments
   const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
   const usedPositions = useRef<Set<string>>(new Set())
   const [positions, setPositions] = useState<Placement[]>([])
@@ -116,7 +121,12 @@ function GalleryScene({
     )
 
     const initial = drawings.map(() => {
-      const { x, y } = randomGridPosition(0, 0, usedPositions.current)
+      const { x, y } = randomGridPosition(
+        0,
+        0,
+        usedPositions.current,
+        BASE_SHOW_RANGE,
+      )
       return { x, y, width: randomSize(), height: randomSize() }
     })
     setPositions(initial)
@@ -178,6 +188,7 @@ function GalleryScene({
 
     const camX = controls.target.x
     const camY = controls.target.y
+    const removeRange = showRange * 1.4
 
     setPositions((prev) => {
       let changed = false
@@ -186,11 +197,16 @@ function GalleryScene({
       for (let i = 0; i < next.length; i++) {
         const p = next[i]
         if (
-          Math.abs(p.x - camX) > REMOVE_RANGE ||
-          Math.abs(p.y - camY) > REMOVE_RANGE
+          Math.abs(p.x - camX) > removeRange ||
+          Math.abs(p.y - camY) > removeRange
         ) {
           usedPositions.current.delete(`${p.x}:${p.y}`)
-          const { x, y } = randomGridPosition(camX, camY, usedPositions.current)
+          const { x, y } = randomGridPosition(
+            camX,
+            camY,
+            usedPositions.current,
+            showRange,
+          )
           next[i] = {
             x,
             y,
@@ -236,19 +252,24 @@ function GalleryScene({
     if (!controls) return
     const camX = controls.target.x
     const camY = controls.target.y
+    let seg = Math.ceil((showRange * 2) / SEGMENT_SIZE)
+    if (seg % 2 === 0) seg += 1
+    const segments = Math.max(BASE_SEGMENTS, seg)
+    const half = Math.floor(segments / 2)
     tilesRef.current.forEach((mesh, idx) => {
-      const col = (idx % SEGMENTS) - HALF
-      const row = Math.floor(idx / SEGMENTS) - HALF
+      const col = (idx % segments) - half
+      const row = Math.floor(idx / segments) - half
       const baseX = Math.floor(camX / SEGMENT_SIZE) * SEGMENT_SIZE
       const baseY = Math.floor(camY / SEGMENT_SIZE) * SEGMENT_SIZE
       mesh.position.x = baseX + col * SEGMENT_SIZE
       mesh.position.y = baseY + row * SEGMENT_SIZE
     })
+    tilesRef.current.length = wallCount
   })
 
   return (
     <group>
-      {Array.from({ length: SEGMENTS * SEGMENTS }).map((_, i) => (
+      {Array.from({ length: wallCount }).map((_, i) => (
         <mesh
           key={`wall-${i}`}
           ref={(el) => {
@@ -343,7 +364,7 @@ export default function DrawingsRoom() {
             dampingFactor={0.1}
           />
           <ambientLight intensity={0.8} />
-          <GalleryScene controlsRef={controlsRef} move={move} />
+          <GalleryScene controlsRef={controlsRef} move={move} zoom={zoom} />
         </Suspense>
       </Canvas>
       <div className="fixed bottom-4 right-4 z-20 flex flex-col items-center space-y-2 text-white">
