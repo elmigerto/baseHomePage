@@ -320,6 +320,30 @@ export default function DrawingsRoom() {
   const controlsRef = useRef<any>(null)
   const [zoom, setZoom] = useState(1)
   const moveInterval = useRef<NodeJS.Timeout | null>(null)
+  const autoMoveInterval = useRef<NodeJS.Timeout | null>(null)
+  const lastInteraction = useRef(Date.now())
+
+  const IDLE_DELAY = 5000
+
+  const startRandomMove = useCallback(() => {
+    if (autoMoveInterval.current) return
+    const angle = Math.random() * Math.PI * 2
+    const dx = Math.cos(angle) * MOVE_STEP
+    const dy = Math.sin(angle) * MOVE_STEP
+    autoMoveInterval.current = setInterval(() => move(dx, dy), 1000)
+  }, [move])
+
+  const stopRandomMove = useCallback(() => {
+    if (autoMoveInterval.current) {
+      clearInterval(autoMoveInterval.current)
+      autoMoveInterval.current = null
+    }
+  }, [])
+
+  const markInteraction = useCallback(() => {
+    lastInteraction.current = Date.now()
+    stopRandomMove()
+  }, [stopRandomMove])
 
   const setCameraDistance = useCallback((targetZoom: number) => {
     const controls = controlsRef.current
@@ -386,6 +410,37 @@ export default function DrawingsRoom() {
       controls.removeEventListener("change", handleChange)
     }
   }, [setCameraDistance])
+
+  useEffect(() => {
+    drawings.forEach((d) => {
+      const img = new Image()
+      img.src = d.image
+    })
+  }, [])
+
+  useEffect(() => {
+    const checkIdle = setInterval(() => {
+      if (
+        !autoMoveInterval.current &&
+        Date.now() - lastInteraction.current > IDLE_DELAY
+      ) {
+        startRandomMove()
+      }
+    }, 1000)
+    const events = [
+      'mousemove',
+      'keydown',
+      'mousedown',
+      'touchstart',
+      'wheel',
+    ] as const
+    events.forEach((e) => window.addEventListener(e, markInteraction))
+    return () => {
+      clearInterval(checkIdle)
+      events.forEach((e) => window.removeEventListener(e, markInteraction))
+      stopRandomMove()
+    }
+  }, [markInteraction, startRandomMove, stopRandomMove])
 
   return (
     <div className="min-h-screen w-screen bg-gray-200">
