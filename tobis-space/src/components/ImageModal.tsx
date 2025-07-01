@@ -8,6 +8,8 @@ import type { Drawing } from "../files/drawings"
 export default function ImageModal({ art, onClose }: { art: Drawing; onClose: () => void }) {
   const { addItem, items } = useCart()
   const [zoom, setZoom] = useState(1)
+  const handleZoomIn = () => setZoom((z) => Math.min(3, z + 0.25))
+  const handleZoomOut = () => setZoom((z) => Math.max(1, z - 0.25))
   const inCart = items.some((i) => i.id === art.id)
   const canAdd = art.multiple || !inCart
   return (
@@ -24,22 +26,28 @@ export default function ImageModal({ art, onClose }: { art: Drawing; onClose: ()
           <img
             src={art.image}
             alt={art.name}
-            className="object-contain"
+            className="cursor-zoom-in object-contain"
             style={{ transform: `scale(${zoom})`, transformOrigin: "center" }}
+            onClick={handleZoomIn}
+            onWheel={(e) => {
+              e.preventDefault()
+              if (e.deltaY < 0) handleZoomIn()
+              else handleZoomOut()
+            }}
           />
         </div>
         <div className="mb-2 flex justify-center gap-2">
           <button
             aria-label="Zoom in"
             className="rounded bg-gray-200 p-1 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-            onClick={() => setZoom(Math.min(3, zoom + 0.25))}
+            onClick={handleZoomIn}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
           <button
             aria-label="Zoom out"
             className="rounded bg-gray-200 p-1 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-            onClick={() => setZoom(Math.max(1, zoom - 0.25))}
+            onClick={handleZoomOut}
           >
             <FontAwesomeIcon icon={faMinus} />
           </button>
