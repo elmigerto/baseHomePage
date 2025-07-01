@@ -437,14 +437,23 @@ export default function DrawingsRoom() {
   return (
     <div className="w-full h-screen pb-5 bg-gray-200">
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
-        <h2 className="page-title m-0">Virtual Room</h2>
-        <Link
-          to="/drawings/gallery"
-          className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
-        >
-          To the gallery
-          <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-        </Link>
+        <h2 className="page-title m-0">3D Room</h2>
+        <div className="flex gap-2">
+          <Link
+            to="/drawings/scroll"
+            className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
+          >
+            Scroll Room
+            <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+          </Link>
+          <Link
+            to="/drawings/gallery"
+            className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
+          >
+            Gallery
+            <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+          </Link>
+        </div>
       </div>
 
       <Canvas
