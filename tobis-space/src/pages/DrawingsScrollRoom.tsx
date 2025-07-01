@@ -1,12 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import drawings from '../files/drawings'
 import wallImg from '../assets/drawings/wall.png'
+import useDrawingModal from '../hooks/useDrawingModal'
 
 export default function DrawingsScrollRoom() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const { open: openModal, modal } = useDrawingModal()
+  const [items, setItems] = useState([...drawings])
+  const [bgPos, setBgPos] = useState(0)
 
   useEffect(() => {
     const el = containerRef.current
@@ -26,21 +30,26 @@ export default function DrawingsScrollRoom() {
       restartTimer = setTimeout(start, 5000)
     }
 
+    const onScroll = () => {
+      setBgPos(el.scrollLeft)
+      if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 200) {
+        setItems((prev) => [...prev, ...drawings])
+      }
+    }
+
     const interval = setInterval(() => {
       if (!active) return
-      if (el.scrollLeft >= el.scrollWidth - el.clientWidth) {
-        el.scrollTo({ left: 0 })
-      } else {
-        el.scrollLeft += step
-      }
+      el.scrollLeft += step
     }, 20)
 
+    el.addEventListener('scroll', onScroll)
     el.addEventListener('mousedown', stop)
     el.addEventListener('touchstart', stop)
 
     return () => {
       clearInterval(interval)
       if (restartTimer) clearTimeout(restartTimer)
+      el.removeEventListener('scroll', onScroll)
       el.removeEventListener('mousedown', stop)
       el.removeEventListener('touchstart', stop)
     }
@@ -57,6 +66,7 @@ export default function DrawingsScrollRoom() {
         backgroundImage: `url(${wallImg})`,
         backgroundSize: '200px',
         backgroundRepeat: 'repeat',
+        backgroundPositionX: `-${bgPos}px`,
       }}
     >
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
@@ -73,12 +83,17 @@ export default function DrawingsScrollRoom() {
       <div className="relative">
         <div
           ref={containerRef}
-          className="grid grid-flow-col auto-cols-max grid-rows-1 sm:grid-rows-2 lg:grid-rows-3 gap-2 overflow-x-scroll scroll-smooth min-h-screen pb-16"
+          className="grid grid-flow-col auto-cols-max grid-rows-1 sm:grid-rows-2 lg:grid-rows-3 gap-4 overflow-x-scroll scroll-smooth min-h-screen pb-16"
         >
-          {drawings.map((d) => (
-            <div key={d.id} className="w-48 flex flex-col items-center px-1">
-              <img src={d.image} alt={d.name} className="h-48 w-48 object-contain mb-1" />
-              <p className="text-center text-sm">{d.name}</p>
+          {items.map((d, idx) => (
+            <div key={`${d.id}-${idx}`} className="w-60 flex flex-col items-center px-2">
+              <img
+                src={d.image}
+                alt={d.name}
+                className="mb-2 h-60 w-60 cursor-pointer object-contain shadow-lg"
+                onClick={() => openModal(d)}
+              />
+              <p className="text-center text-base">{d.name}</p>
             </div>
           ))}
         </div>
@@ -96,7 +111,9 @@ export default function DrawingsScrollRoom() {
         >
           <FontAwesomeIcon icon={faArrowRight} />
         </button>
+        {modal}
       </div>
     </div>
   )
 }
+

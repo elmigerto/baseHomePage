@@ -1,16 +1,16 @@
 import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import Card from "../components/Card"
-import ImageModal from "../components/ImageModal"
 import { useCart } from "../contexts/CartContext"
 import drawings, { categories, type Drawing } from "../files/drawings"
+import useDrawingModal from "../hooks/useDrawingModal"
 
 const allCategory = "all"
 
 
 export default function Drawings() {
-  const [selected, setSelected] = useState<Drawing | null>(null)
   const [filter, setFilter] = useState(allCategory)
+  const { open: openModal, modal } = useDrawingModal()
   const { items } = useCart()
 
   const sortedCategories = useMemo(() => [...categories].sort(), [])
@@ -38,7 +38,7 @@ export default function Drawings() {
           src={art.image}
           alt={art.name}
           className="mb-2 h-48 w-48 cursor-pointer object-contain"
-          onClick={() => setSelected(art)}
+          onClick={() => openModal(art)}
         />
         <p className="text-center">{art.name}</p>
         {inCart && !art.multiple && (
@@ -87,7 +87,8 @@ export default function Drawings() {
           {filtered.map(renderCard)}
         </div>
       )}
-      {selected && <ImageModal art={selected} onClose={() => setSelected(null)} />}
+      {modal}
     </div>
   )
 }
+
