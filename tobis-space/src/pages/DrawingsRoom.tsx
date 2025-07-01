@@ -86,6 +86,8 @@ function GalleryScene({
   if (seg % 2 === 0) seg += 1
   const segments = Math.max(BASE_SEGMENTS, seg)
   const wallCount = segments * segments
+  const POSITION_JITTER = 0.5
+  const SCALE_JITTER = 0.1
   const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
   interface GridItem {
     x: number
@@ -142,13 +144,16 @@ function GalleryScene({
         if (!newMap.has(key)) {
           const index = nextIndex()
           const tex = textures[index]
-          const width = randomSize()
+          const scaleFactor = 1 + (Math.random() - 0.5) * SCALE_JITTER * 2
+          const width = randomSize() * scaleFactor
           const ratio = tex?.image
             ? tex.image.height / tex.image.width
             : 1
+          const jitterX = (Math.random() - 0.5) * POSITION_JITTER * 2
+          const jitterY = (Math.random() - 0.5) * POSITION_JITTER * 2
           newMap.set(key, {
-            x: gx * GRID_STEP,
-            y: gy * GRID_STEP,
+            x: gx * GRID_STEP + jitterX,
+            y: gy * GRID_STEP + jitterY,
             width,
             height: width * ratio,
             index,
@@ -286,7 +291,7 @@ export default function DrawingsRoom() {
   const autoMoveInterval = useRef<NodeJS.Timeout | null>(null)
   const lastInteraction = useRef(Date.now())
 
-  const IDLE_DELAY = 0
+  const IDLE_DELAY = 5000
 
   const move = useCallback((dx: number, dy: number) => {
     const controls = controlsRef.current
