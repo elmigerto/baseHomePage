@@ -1,6 +1,15 @@
-import { Suspense, useEffect, useRef, useState } from "react"
+import { Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowLeft,
+  faSpinner,
+  faArrowUp,
+  faArrowDown,
+  faArrowRight,
+  faPlus,
+  faMinus,
+  faRotateLeft,
+} from '@fortawesome/free-solid-svg-icons'
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber"
 import { Html, MapControls } from "@react-three/drei"
 import {
@@ -64,6 +73,7 @@ function randomGridPosition(
 
 
 const CAMERA_DISTANCE = 5
+const MOVE_STEP = 0.5
 
 function ArtPlane({
   texture,
@@ -199,27 +209,19 @@ function GalleryScene({
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      const controls = controlsRef.current
-      if (!controls) return
-      const step = 0.5
       if (e.key === 'ArrowUp') {
-        controls.target.y += step
-        controls.object.position.y += step
+        move(0, MOVE_STEP)
       } else if (e.key === 'ArrowDown') {
-        controls.target.y -= step
-        controls.object.position.y -= step
+        move(0, -MOVE_STEP)
       } else if (e.key === 'ArrowLeft') {
-        controls.target.x -= step
-        controls.object.position.x -= step
+        move(-MOVE_STEP, 0)
       } else if (e.key === 'ArrowRight') {
-        controls.target.x += step
-        controls.object.position.x += step
+        move(MOVE_STEP, 0)
       }
-      controls.update()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, [move])
 
   wallTexture.wrapS = RepeatWrapping
   wallTexture.wrapT = RepeatWrapping
@@ -276,6 +278,34 @@ function GalleryScene({
 
 export default function DrawingsRoom() {
   const controlsRef = useRef<any>(null)
+  const [zoom, setZoom] = useState(1)
+
+  const applyZoom = useCallback(
+    (next: number) => {
+      const clamped = Math.min(2, Math.max(0.5, next))
+      setZoom(clamped)
+    },
+    [],
+  )
+
+  const move = useCallback((dx: number, dy: number) => {
+    const controls = controlsRef.current
+    if (!controls) return
+    controls.target.x += dx
+    controls.object.position.x += dx
+    controls.target.y += dy
+    controls.object.position.y += dy
+    controls.update()
+  }, [])
+
+  useEffect(() => {
+    const controls = controlsRef.current
+    if (!controls) return
+    const cam = controls.object
+    cam.zoom = zoom
+    cam.updateProjectionMatrix()
+    controls.update()
+  }, [zoom])
 
   return (
     <div className="min-h-screen w-screen bg-gray-200">
@@ -314,6 +344,63 @@ export default function DrawingsRoom() {
           <GalleryScene controlsRef={controlsRef} />
         </Suspense>
       </Canvas>
+      <div className="fixed bottom-4 right-4 z-20 flex flex-col items-center space-y-2 text-white">
+        <div className="flex gap-2">
+          <button
+            aria-label="Zoom in"
+            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
+            onClick={() => applyZoom(zoom + 0.1)}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+          <button
+            aria-label="Reset zoom"
+            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
+            onClick={() => applyZoom(1)}
+          >
+            <FontAwesomeIcon icon={faRotateLeft} />
+          </button>
+          <button
+            aria-label="Zoom out"
+            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
+            onClick={() => applyZoom(zoom - 0.1)}
+          >
+            <FontAwesomeIcon icon={faMinus} />
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-1">
+          <div />
+          <button
+            aria-label="Move up"
+            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
+            onClick={() => move(0, MOVE_STEP)}
+          >
+            <FontAwesomeIcon icon={faArrowUp} />
+          </button>
+          <div />
+          <button
+            aria-label="Move left"
+            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
+            onClick={() => move(-MOVE_STEP, 0)}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </button>
+          <button
+            aria-label="Move down"
+            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
+            onClick={() => move(0, -MOVE_STEP)}
+          >
+            <FontAwesomeIcon icon={faArrowDown} />
+          </button>
+          <button
+            aria-label="Move right"
+            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
+            onClick={() => move(MOVE_STEP, 0)}
+          >
+            <FontAwesomeIcon icon={faArrowRight} />
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
