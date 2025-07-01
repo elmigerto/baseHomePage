@@ -24,6 +24,8 @@ import {
   RepeatWrapping,
   TextureLoader,
   Vector3,
+  MOUSE,
+  TOUCH,
   type Texture,
 } from "three"
 import { Link } from "react-router-dom"
@@ -138,12 +140,18 @@ function GalleryScene({
       for (let gy = camGridY - rangeCells; gy <= camGridY + rangeCells; gy++) {
         const key = `${gx}:${gy}`
         if (!newMap.has(key)) {
+          const index = nextIndex()
+          const tex = textures[index]
+          const width = randomSize()
+          const ratio = tex?.image
+            ? tex.image.height / tex.image.width
+            : 1
           newMap.set(key, {
             x: gx * GRID_STEP,
             y: gy * GRID_STEP,
-            width: randomSize(),
-            height: randomSize(),
-            index: nextIndex(),
+            width,
+            height: width * ratio,
+            index,
             key,
             gridX: gx,
             gridY: gy,
@@ -167,6 +175,8 @@ function GalleryScene({
   }, [controlsRef, showRange])
 
   useEffect(() => {
+    itemsRef.current.clear()
+    indexRef.current = 0
     ensureGrid()
   }, [ensureGrid])
 
@@ -276,7 +286,7 @@ export default function DrawingsRoom() {
   const autoMoveInterval = useRef<NodeJS.Timeout | null>(null)
   const lastInteraction = useRef(Date.now())
 
-  const IDLE_DELAY = 1000
+  const IDLE_DELAY = 0
 
   const move = useCallback((dx: number, dy: number) => {
     const controls = controlsRef.current
@@ -437,6 +447,12 @@ export default function DrawingsRoom() {
             enableZoom={false}
             enableDamping
             dampingFactor={0.1}
+            mouseButtons={{
+              LEFT: MOUSE.PAN,
+              MIDDLE: MOUSE.PAN,
+              RIGHT: MOUSE.PAN,
+            }}
+            touches={{ ONE: TOUCH.PAN, TWO: TOUCH.PAN }}
           />
           <ambientLight intensity={0.8} />
           <GalleryScene controlsRef={controlsRef} move={move} zoom={zoom} />
