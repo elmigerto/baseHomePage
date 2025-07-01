@@ -1,4 +1,10 @@
-import { useCart, CartItem } from '../contexts/CartContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCreditCard,
+  faTrash,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
+import { useCart, type CartItem } from '../contexts/CartContext'
 
 async function checkout(items: CartItem[]) {
   const res = await fetch('/create-checkout-session', {
@@ -24,7 +30,9 @@ export default function Cart() {
           <li key={item.id} className="flex justify-between">
             <span>{item.name}</span>
             <span>{item.price.toFixed(2)} €</span>
-            <button onClick={() => removeItem(item.id)}>X</button>
+            <button onClick={() => removeItem(item.id)} className="ml-2">
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
           </li>
         ))}
       </ul>
@@ -34,14 +42,11 @@ export default function Cart() {
             Total {items.reduce((sum, i) => sum + i.price, 0).toFixed(2)} €
           </strong>
           <button onClick={clear} className="ml-2 text-sm text-red-500">
-            Clear
+            <FontAwesomeIcon icon={faTrash} className="mr-1" /> Clear
           </button>
         </div>
-        <button
-          onClick={() => checkout(items)}
-          className="px-4 py-2 bg-green-500 text-white rounded"
-        >
-          Buy
+        <button onClick={() => checkout(items)} className="btn bg-green-600 hover:bg-green-700">
+          <FontAwesomeIcon icon={faCreditCard} className="mr-1" /> Buy
         </button>
       </div>
     </div>

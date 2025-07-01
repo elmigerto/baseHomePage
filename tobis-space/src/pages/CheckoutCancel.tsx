@@ -1,3 +1,3 @@
 export default function CheckoutCancel() {
-  return <h2 className="text-xl">Checkout canceled.</h2>
+  return <h2 className="page-title">Checkout canceled.</h2>
 }

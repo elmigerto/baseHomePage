@@ -4,6 +4,8 @@
   - `/` → Homepage
   - `/boardgame` → Board Game section
   - `/stories` → Stories section
-  - `/drawings` → Painted Drawings (virtual gallery)
+  - `/boardgame/updates` → Board Game updates
+  - `/drawings` → Walk-around view of the gallery
+  - `/drawings/gallery` → Grid gallery view
 - [x] Add navigation bar with active link highlighting
 - [x] Implement a **shared layout** (e.g. with `<Outlet>`)

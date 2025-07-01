@@ -1,52 +1,93 @@
-import { useState } from 'react'
-import { useCart } from '../contexts/CartContext'
+import { useMemo, useState } from "react"
+import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faXmark } from "@fortawesome/free-solid-svg-icons"
+import Card from "../components/Card"
+import Button from "../components/Button"
+import ImageModal from "../components/ImageModal"
+import { useCart } from "../contexts/CartContext"
+import drawings, { categories, type Drawing } from "../files/drawings"
 
-const artworks = [
-  { id: 'drawing1', name: 'Drawing 1', price: 9.99 },
-  { id: 'drawing2', name: 'Drawing 2', price: 9.99 },
-]
+const allCategory = "all"
+
 
 export default function Drawings() {
-  const { addItem } = useCart()
-  const [selected, setSelected] = useState<typeof artworks[0] | null>(null)
+  const [selected, setSelected] = useState<Drawing | null>(null)
+  const [filter, setFilter] = useState(allCategory)
+  const { addItem, items } = useCart()
+
+  const sortedCategories = useMemo(() => [...categories].sort(), [])
+  const drawingsByCat = useMemo(() => {
+    const map: Record<string, Drawing[]> = {}
+    for (const cat of sortedCategories) {
+      map[cat] = drawings
+        .filter((d) => d.category === cat)
+        .sort((a, b) => a.name.localeCompare(b.name))
+    }
+    return map
+  }, [])
+
+  const filtered =
+    filter === allCategory
+      ? sortedCategories.flatMap((cat) => drawingsByCat[cat])
+      : drawingsByCat[filter] ?? []
+  const showHeaders = filter === allCategory
+
+  const renderCard = (art: Drawing) => {
+    const inCart = items.some((i) => i.id === art.id)
+    return (
+      <Card key={art.id} className={inCart ? "bg-green-200 dark:bg-green-900" : ""}>
+        <img
+          src={art.image}
+          alt={art.name}
+          className="mb-2 h-48 w-48 cursor-pointer object-contain"
+          onClick={() => setSelected(art)}
+        />
+        <p className="text-center">{art.name}</p>
+        {inCart && !art.multiple && (
+          <p className="text-sm text-green-600">Added to cart</p>
+        )}
+      </Card>
+    )
+  }
 
   return (
     <div>
-      <h2 className="text-xl mb-4">Drawings</h2>
-      <div className="grid grid-cols-2 gap-4">
-        {artworks.map((art) => (
-          <div key={art.id} className="border p-2">
-            <div
-              className="h-24 bg-gray-200 mb-2 cursor-pointer"
-              onClick={() => setSelected(art)}
-            />
-            <p>{art.name}</p>
-            <button
-              className="mt-2 px-2 py-1 bg-blue-500 text-white rounded"
-              onClick={() => addItem(art)}
-            >
-              Add to Cart
-            </button>
-          </div>
-        ))}
+      <div className="sticky top-16 z-30 mb-4 flex flex-wrap items-center justify-between gap-2 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
+        <div className="flex items-center gap-4">
+          <h2 className="page-title m-0">Gallery</h2>
+          <Link to="/drawings" className="text-blue-500 underline">
+            Virtual Room
+          </Link>
+        </div>
+        <select
+          className="border rounded p-1 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value={allCategory}>All</option>
+          {sortedCategories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
       </div>
-      {selected && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white text-black p-4">
-            <div className="h-48 w-48 bg-gray-200 mb-2" />
-            <p className="mb-2">{selected.name}</p>
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded"
-              onClick={() => addItem(selected)}
-            >
-              Add to Cart
-            </button>
-            <button className="ml-2" onClick={() => setSelected(null)}>
-              Close
-            </button>
-          </div>
+      {showHeaders ? (
+        sortedCategories.map((cat) => (
+          <section key={cat} className="mb-6">
+            <h3 className="mb-2 text-lg font-semibold">{cat}</h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              {drawingsByCat[cat].map(renderCard)}
+            </div>
+          </section>
+        ))
+      ) : (
+        <div className="flex flex-wrap justify-center gap-4">
+          {filtered.map(renderCard)}
         </div>
       )}
+      {selected && <ImageModal art={selected} onClose={() => setSelected(null)} />}
     </div>
   )
 }

@@ -1,121 +1,517 @@
-diff --git a/Agent.md b/Agent.md
-index 759a14f9a36f60569f0d44df2ddf336c27e128aa..0d368187f67363d4001e70f25c7d0961d104cfc5 100644
---- a/Agent.md
-+++ b/Agent.md
-@@ -1,59 +1,60 @@
--# 🛠️ Project: tobis-space – Creator Homepage with Integrated Shop
--
--## 🎯 Goal
--A personal homepage with subpages for:
--- **Board Game**, **Stories**, and **Painted Drawings**
--- Integrated shopping across all subpages
--- Custom lightweight cart
--- Stripe Checkout for payments
--- Full control over design and logic — no platform fees
-+# 🧠 Agent Briefing: tobis-space
-+
-+## 🎯 Project Goal
-+Build a personal homepage where visitors can browse board games, read stories, and explore a virtual gallery. Each section offers products that can be purchased through a shared cart and Stripe Checkout.
-+
-+## 🛠 Tech Stack
-+- **Frontend**: React + Vite + Tailwind CSS
-+- **Language**: TypeScript
-+- **Routing**: React Router
-+- **Cart**: Custom React context
-+- **Payments**: Stripe Checkout (custom backend)
-+- **Backend**: Node.js (Express or serverless)
-+- **Formatter**: [Biome](https://biomejs.dev)
-+
-+## 📂 File Organization
-+- Project code lives in `tobis-space/`
-+- Individual task files are in `Agent/`
-+- This file (`Agent.md`) summarizes the project scope
-+
-+## 🧑‍💻 Agent Instructions
-+### Coding Style
-+- Use Tailwind for styling
-+- Functional components only
-+- Manage state with React Context or signals
-+- Apply `min-h-screen` for layout height
-+- Sort imports and remove unused ones
-+- Format using Biome on save
-+
-+### Routing & Pages
-+- Use `react-router-dom` for routing
-+- Subpages: `/`, `/boardgame`, `/stories`, `/drawings`
-+
-+### Stripe Integration
-+- Backend exposes `/create-checkout-session`
-+- Frontend redirects to Stripe Checkout
-+- Handle success and cancel routes
-+- Avoid third-party shopping platforms
-+
-+## ✅ Do
-+- Respect folder structure
-+- Modularize components
-+- Use environment variables for API keys
-+- Optimize for clarity and maintainability
-+
-+## 🚫 Don’t
-+- Use class components
-+- Introduce external UI libraries
-+- Include hardcoded secrets or credentials
+diff --git a/Agent/frontend/stories.md b/Agent/frontend/stories.md
+index f546423f5e445a7bacc090a55d286b6ef2a96d4e..668845cddb25646a9a295e737675ba5c505cd88f 100644
+--- a/Agent/frontend/stories.md
++++ b/Agent/frontend/stories.md
+@@ -1,17 +1,17 @@
+ # Stories Section
  
- ---
+ - [x] List short story summaries with cover images
+ - [x] Provide "Read more" links to full texts
+ - [ ] Allow buying stories as PDF or print via cart
+ - [ ] (Optional) Add comment section for reader feedback
+ - [x] Add previous/next links for continuous chapter reading
+ - [x] Sort chapters chronologically and label as "Chapter 1", "Chapter 2", etc.
  
--## ✅ Frontend Setup
--- [x] Scaffold frontend using **Vite + React + Tailwind (TypeScript + SWC)**
--- [x] Configure Tailwind with working `tailwind.config.ts` and global styles
--- [x] Set up **basic layout**: header, nav bar, footer
--- [x] Install and configure **React Router v6+** for subpages
--
--## 🧭 Pages & Navigation
--- [x] Create routes:
--  - `/` → Homepage
--  - `/boardgame` → Board Game section
--  - `/stories` → Stories section
--  - `/drawings` → Painted Drawings (virtual gallery)
--- [x] Add navigation bar with active link highlighting
--- [x] Implement a **shared layout** (e.g. with `<Outlet>`)
--
--## 🛒 Cart & Product Display
--- [x] Implement global **Cart Context** using React Context API or signals
--- [x] Show cart icon in header with item count
--- [x] Enable **Add to Cart** functionality from each subpage
--- [x] Create a **Cart drawer or modal** to show items and total
--
--## 🎨 Drawings Gallery (Virtual Room)
--- [x] Display paintings in a **virtual gallery style UI**
--- [x] Add modal to preview enlarged artwork
--- [x] Allow adding individual artworks to cart
--- [ ] (Later) Add hover effects or simple 3D illusion
--
--## 💳 Stripe Checkout Integration
--- [x] Set up basic **Node.js Express backend**
--- [x] Implement `/create-checkout-session` endpoint
--- [x] Redirect user to Stripe Checkout when clicking "Buy"
--- [x] Handle success/cancel URLs (e.g. `/success`, `/cancel`)
--- [ ] (Optional) Add webhook handling for digital delivery
--
--## 📦 Backend Hosting
--- [ ] Deploy backend to **Render**, **Vercel**, or similar
--- [ ] Store Stripe secret in environment variable
--- [ ] Test full checkout flow end-to-end
--
--## 🚚 Deployment
--- [ ] Deploy frontend (Vite) to GitHub Pages or Vercel
--- [ ] Connect to backend Stripe API from frontend
--- [ ] Use custom domain (optional)
--
--## 🎨 Design Enhancements
--- [x] Improve layout with Tailwind so pages fill the screen and respond well on mobile
--- [x] Add a full-screen hero section on the homepage
-+## 📈 Task Summary
-+- **Frontend Setup**: Vite + React + Tailwind scaffold, basic layout, and routing configured.
-+- **Pages & Navigation**: Implement routes for the homepage, board game, stories, and drawings with a shared layout.
-+- **Cart & Product Display**: Global cart context, add-to-cart buttons, and a drawer/modal to show items.
-+- **Content Sections**: Board game showcase, stories list with full texts, and a virtual drawings gallery with image modal.
-+- **Stripe Checkout**: Node.js backend exposes `/create-checkout-session` and handles success/cancel redirects.
-+- **Deployment**: Host frontend and backend (e.g., Vercel/Render) and store Stripe secrets as environment variables.
-+- **Design Enhancements**: Responsive layout using Tailwind and a full-screen hero section.
-+
+ ## The Summoners' Veiled Cards
+ 
+-- Chapters stored in `tobis-space/src/chapters/chapter-files` as Markdown files
+-- Images for each chapter in `tobis-space/src/chapters/images`
++- Chapters stored in `tobis-space/src/files/chapters/chapter-files` as Markdown files
++- Images for each chapter in `tobis-space/src/files/chapters/images`
+ - Story page lists chapters and links to `/stories/:chapterSlug`
+ - Clicking a chapter shows its text and image
+ - `/stories` acts as a landing page with a short story description and chapter list
+ - Original story on [Wattpad](https://www.wattpad.com/1528766096-the-summoners%27-veiled-cards-chapter-1-the-fire-in)
+diff --git a/tobis-space/src/boardgame/general/summary.md b/tobis-space/src/files/boardgame/general/summary.md
+similarity index 100%
+rename from tobis-space/src/boardgame/general/summary.md
+rename to tobis-space/src/files/boardgame/general/summary.md
+diff --git a/tobis-space/src/boardgame/manual/dragon-boardgame-rules.en.md b/tobis-space/src/files/boardgame/manual/dragon-boardgame-rules.en.md
+similarity index 100%
+rename from tobis-space/src/boardgame/manual/dragon-boardgame-rules.en.md
+rename to tobis-space/src/files/boardgame/manual/dragon-boardgame-rules.en.md
+diff --git a/tobis-space/src/boardgame/manual/dragon-boardgame-rules.md b/tobis-space/src/files/boardgame/manual/dragon-boardgame-rules.md
+similarity index 100%
+rename from tobis-space/src/boardgame/manual/dragon-boardgame-rules.md
+rename to tobis-space/src/files/boardgame/manual/dragon-boardgame-rules.md
+diff --git a/tobis-space/src/boardgame/updates/2024-05-01/image.png b/tobis-space/src/files/boardgame/updates/2024-05-01/image.png
+similarity index 100%
+rename from tobis-space/src/boardgame/updates/2024-05-01/image.png
+rename to tobis-space/src/files/boardgame/updates/2024-05-01/image.png
+diff --git a/tobis-space/src/boardgame/updates/2024-05-01/update.json b/tobis-space/src/files/boardgame/updates/2024-05-01/update.json
+similarity index 100%
+rename from tobis-space/src/boardgame/updates/2024-05-01/update.json
+rename to tobis-space/src/files/boardgame/updates/2024-05-01/update.json
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 1 - The Fire in the Dark.md b/tobis-space/src/files/chapters/chapter-files/Chapter 1 - The Fire in the Dark.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 1 - The Fire in the Dark.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 1 - The Fire in the Dark.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 10 - Draft - The Summoner's Gaze**.md b/tobis-space/src/files/chapters/chapter-files/Chapter 10 - Draft - The Summoner's Gaze**.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 10 - Draft - The Summoner's Gaze**.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 10 - Draft - The Summoner's Gaze**.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 11 -v3.md b/tobis-space/src/files/chapters/chapter-files/Chapter 11 -v3.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 11 -v3.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 11 -v3.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 12 - The Hunt Begins**.md b/tobis-space/src/files/chapters/chapter-files/Chapter 12 - The Hunt Begins**.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 12 - The Hunt Begins**.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 12 - The Hunt Begins**.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 13 - The Green Hunt.md b/tobis-space/src/files/chapters/chapter-files/Chapter 13 - The Green Hunt.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 13 - The Green Hunt.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 13 - The Green Hunt.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 14 - Ash and Echoes.md b/tobis-space/src/files/chapters/chapter-files/Chapter 14 - Ash and Echoes.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 14 - Ash and Echoes.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 14 - Ash and Echoes.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 15 - Return to the Camp.md b/tobis-space/src/files/chapters/chapter-files/Chapter 15 - Return to the Camp.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 15 - Return to the Camp.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 15 - Return to the Camp.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 16 - Arena Fight.md b/tobis-space/src/files/chapters/chapter-files/Chapter 16 - Arena Fight.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 16 - Arena Fight.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 16 - Arena Fight.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 17 - Snake Prince.md b/tobis-space/src/files/chapters/chapter-files/Chapter 17 - Snake Prince.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 17 - Snake Prince.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 17 - Snake Prince.md
+diff --git "a/tobis-space/src/chapters/chapter-files/Chapter 18 - Peter\342\200\231s Shadow.md" "b/tobis-space/src/files/chapters/chapter-files/Chapter 18 - Peter\342\200\231s Shadow.md"
+similarity index 100%
+rename from "tobis-space/src/chapters/chapter-files/Chapter 18 - Peter\342\200\231s Shadow.md"
+rename to "tobis-space/src/files/chapters/chapter-files/Chapter 18 - Peter\342\200\231s Shadow.md"
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 2 - The Weight of Chains.md b/tobis-space/src/files/chapters/chapter-files/Chapter 2 - The Weight of Chains.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 2 - The Weight of Chains.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 2 - The Weight of Chains.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 3 - A Shadow over the Sky.md b/tobis-space/src/files/chapters/chapter-files/Chapter 3 - A Shadow over the Sky.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 3 - A Shadow over the Sky.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 3 - A Shadow over the Sky.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 4 - The City of Towers.md b/tobis-space/src/files/chapters/chapter-files/Chapter 4 - The City of Towers.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 4 - The City of Towers.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 4 - The City of Towers.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 5 - The Trap.md b/tobis-space/src/files/chapters/chapter-files/Chapter 5 - The Trap.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 5 - The Trap.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 5 - The Trap.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 6 - The Offer**.md b/tobis-space/src/files/chapters/chapter-files/Chapter 6 - The Offer**.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 6 - The Offer**.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 6 - The Offer**.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 7 - Draft - The Theft.md b/tobis-space/src/files/chapters/chapter-files/Chapter 7 - Draft - The Theft.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 7 - Draft - The Theft.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 7 - Draft - The Theft.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 8 - Draft The Escape.md b/tobis-space/src/files/chapters/chapter-files/Chapter 8 - Draft The Escape.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 8 - Draft The Escape.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 8 - Draft The Escape.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 9 - Draft.md b/tobis-space/src/files/chapters/chapter-files/Chapter 9 - Draft.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 9 - Draft.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 9 - Draft.md
+diff --git a/tobis-space/src/chapters/chapter-files/Chapter 9 - Unused Side Story.md b/tobis-space/src/files/chapters/chapter-files/Chapter 9 - Unused Side Story.md
+similarity index 100%
+rename from tobis-space/src/chapters/chapter-files/Chapter 9 - Unused Side Story.md
+rename to tobis-space/src/files/chapters/chapter-files/Chapter 9 - Unused Side Story.md
+diff --git a/tobis-space/src/chapters/images/Chapter1.png b/tobis-space/src/files/chapters/images/Chapter1.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter1.png
+rename to tobis-space/src/files/chapters/images/Chapter1.png
+diff --git a/tobis-space/src/chapters/images/Chapter10.png b/tobis-space/src/files/chapters/images/Chapter10.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter10.png
+rename to tobis-space/src/files/chapters/images/Chapter10.png
+diff --git a/tobis-space/src/chapters/images/Chapter11b.png b/tobis-space/src/files/chapters/images/Chapter11b.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter11b.png
+rename to tobis-space/src/files/chapters/images/Chapter11b.png
+diff --git a/tobis-space/src/chapters/images/Chapter2.png b/tobis-space/src/files/chapters/images/Chapter2.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter2.png
+rename to tobis-space/src/files/chapters/images/Chapter2.png
+diff --git a/tobis-space/src/chapters/images/Chapter3.png b/tobis-space/src/files/chapters/images/Chapter3.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter3.png
+rename to tobis-space/src/files/chapters/images/Chapter3.png
+diff --git a/tobis-space/src/chapters/images/Chapter4.png b/tobis-space/src/files/chapters/images/Chapter4.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter4.png
+rename to tobis-space/src/files/chapters/images/Chapter4.png
+diff --git a/tobis-space/src/chapters/images/Chapter5.png b/tobis-space/src/files/chapters/images/Chapter5.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter5.png
+rename to tobis-space/src/files/chapters/images/Chapter5.png
+diff --git a/tobis-space/src/chapters/images/Chapter6.png b/tobis-space/src/files/chapters/images/Chapter6.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter6.png
+rename to tobis-space/src/files/chapters/images/Chapter6.png
+diff --git a/tobis-space/src/chapters/images/Chapter7.png b/tobis-space/src/files/chapters/images/Chapter7.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter7.png
+rename to tobis-space/src/files/chapters/images/Chapter7.png
+diff --git a/tobis-space/src/chapters/images/Chapter8.png b/tobis-space/src/files/chapters/images/Chapter8.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter8.png
+rename to tobis-space/src/files/chapters/images/Chapter8.png
+diff --git a/tobis-space/src/chapters/images/Chapter9.png b/tobis-space/src/files/chapters/images/Chapter9.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter9.png
+rename to tobis-space/src/files/chapters/images/Chapter9.png
+diff --git a/tobis-space/src/chapters/images/Chapter_12.png b/tobis-space/src/files/chapters/images/Chapter_12.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter_12.png
+rename to tobis-space/src/files/chapters/images/Chapter_12.png
+diff --git a/tobis-space/src/chapters/images/Chapter_13_3.png b/tobis-space/src/files/chapters/images/Chapter_13_3.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter_13_3.png
+rename to tobis-space/src/files/chapters/images/Chapter_13_3.png
+diff --git a/tobis-space/src/chapters/images/Chapter_14_1.png b/tobis-space/src/files/chapters/images/Chapter_14_1.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Chapter_14_1.png
+rename to tobis-space/src/files/chapters/images/Chapter_14_1.png
+diff --git a/tobis-space/src/chapters/images/Cover_HIdden.png b/tobis-space/src/files/chapters/images/Cover_HIdden.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Cover_HIdden.png
+rename to tobis-space/src/files/chapters/images/Cover_HIdden.png
+diff --git a/tobis-space/src/chapters/images/Cover_Veiled.png b/tobis-space/src/files/chapters/images/Cover_Veiled.png
+similarity index 100%
+rename from tobis-space/src/chapters/images/Cover_Veiled.png
+rename to tobis-space/src/files/chapters/images/Cover_Veiled.png
+diff --git a/tobis-space/src/chapters/index.ts b/tobis-space/src/files/chapters/index.ts
+similarity index 100%
+rename from tobis-space/src/chapters/index.ts
+rename to tobis-space/src/files/chapters/index.ts
+diff --git a/tobis-space/src/drawings/Charcoal/2015-01-18 22.32.50.jpg b/tobis-space/src/files/drawings/Charcoal/2015-01-18 22.32.50.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/2015-01-18 22.32.50.jpg
+rename to tobis-space/src/files/drawings/Charcoal/2015-01-18 22.32.50.jpg
+diff --git a/tobis-space/src/drawings/Charcoal/Angi_final.jpg b/tobis-space/src/files/drawings/Charcoal/Angi_final.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/Angi_final.jpg
+rename to tobis-space/src/files/drawings/Charcoal/Angi_final.jpg
+diff --git a/tobis-space/src/drawings/Charcoal/DSC_4135.psd b/tobis-space/src/files/drawings/Charcoal/DSC_4135.psd
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/DSC_4135.psd
+rename to tobis-space/src/files/drawings/Charcoal/DSC_4135.psd
+diff --git a/tobis-space/src/drawings/Charcoal/Enthralling Dream.jpg b/tobis-space/src/files/drawings/Charcoal/Enthralling Dream.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/Enthralling Dream.jpg
+rename to tobis-space/src/files/drawings/Charcoal/Enthralling Dream.jpg
+diff --git a/tobis-space/src/drawings/Charcoal/Meli_klein.jpg b/tobis-space/src/files/drawings/Charcoal/Meli_klein.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/Meli_klein.jpg
+rename to tobis-space/src/files/drawings/Charcoal/Meli_klein.jpg
+diff --git a/tobis-space/src/drawings/Charcoal/Nathalie.jpg b/tobis-space/src/files/drawings/Charcoal/Nathalie.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/Nathalie.jpg
+rename to tobis-space/src/files/drawings/Charcoal/Nathalie.jpg
+diff --git a/tobis-space/src/drawings/Charcoal/Simona_final.jpg b/tobis-space/src/files/drawings/Charcoal/Simona_final.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/Simona_final.jpg
+rename to tobis-space/src/files/drawings/Charcoal/Simona_final.jpg
+diff --git a/tobis-space/src/drawings/Charcoal/Tulip01.jpg b/tobis-space/src/files/drawings/Charcoal/Tulip01.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Charcoal/Tulip01.jpg
+rename to tobis-space/src/files/drawings/Charcoal/Tulip01.jpg
+diff --git a/tobis-space/src/drawings/Cup/Cup1_foto.jpg b/tobis-space/src/files/drawings/Cup/Cup1_foto.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Cup/Cup1_foto.jpg
+rename to tobis-space/src/files/drawings/Cup/Cup1_foto.jpg
+diff --git a/tobis-space/src/drawings/Pencil/AnnaPainted.jpeg b/tobis-space/src/files/drawings/Pencil/AnnaPainted.jpeg
+similarity index 100%
+rename from tobis-space/src/drawings/Pencil/AnnaPainted.jpeg
+rename to tobis-space/src/files/drawings/Pencil/AnnaPainted.jpeg
+diff --git a/tobis-space/src/drawings/Pencil/DSC_5513.JPG b/tobis-space/src/files/drawings/Pencil/DSC_5513.JPG
+similarity index 100%
+rename from tobis-space/src/drawings/Pencil/DSC_5513.JPG
+rename to tobis-space/src/files/drawings/Pencil/DSC_5513.JPG
+diff --git a/tobis-space/src/drawings/Pencil/KimLocher_klein.jpg b/tobis-space/src/files/drawings/Pencil/KimLocher_klein.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Pencil/KimLocher_klein.jpg
+rename to tobis-space/src/files/drawings/Pencil/KimLocher_klein.jpg
+diff --git a/tobis-space/src/drawings/Pencil/NudeWoman.jpg b/tobis-space/src/files/drawings/Pencil/NudeWoman.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/Pencil/NudeWoman.jpg
+rename to tobis-space/src/files/drawings/Pencil/NudeWoman.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/23_3_guys_next_to_fire.jpg b/tobis-space/src/files/drawings/canvas/Acryl/23_3_guys_next_to_fire.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/23_3_guys_next_to_fire.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/23_3_guys_next_to_fire.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/23_landscape_w_mountains.jpg b/tobis-space/src/files/drawings/canvas/Acryl/23_landscape_w_mountains.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/23_landscape_w_mountains.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/23_landscape_w_mountains.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/2_week.JPG b/tobis-space/src/files/drawings/canvas/Acryl/2_week.JPG
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/2_week.JPG
+rename to tobis-space/src/files/drawings/canvas/Acryl/2_week.JPG
+diff --git a/tobis-space/src/drawings/canvas/Acryl/2nd_week_scan_paper glider_edit-1.jpg b/tobis-space/src/files/drawings/canvas/Acryl/2nd_week_scan_paper glider_edit-1.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/2nd_week_scan_paper glider_edit-1.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/2nd_week_scan_paper glider_edit-1.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/BlueMoon2.jpg b/tobis-space/src/files/drawings/canvas/Acryl/BlueMoon2.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/BlueMoon2.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/BlueMoon2.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/DSC_8482-Bearbeitet.jpg b/tobis-space/src/files/drawings/canvas/Acryl/DSC_8482-Bearbeitet.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/DSC_8482-Bearbeitet.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/DSC_8482-Bearbeitet.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/Foto 20.11.18, 19 54 14.jpg b/tobis-space/src/files/drawings/canvas/Acryl/Foto 20.11.18, 19 54 14.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/Foto 20.11.18, 19 54 14.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/Foto 20.11.18, 19 54 14.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/IMG_2519.JPG b/tobis-space/src/files/drawings/canvas/Acryl/IMG_2519.JPG
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/IMG_2519.JPG
+rename to tobis-space/src/files/drawings/canvas/Acryl/IMG_2519.JPG
+diff --git a/tobis-space/src/drawings/canvas/Acryl/IMG_2520.JPG b/tobis-space/src/files/drawings/canvas/Acryl/IMG_2520.JPG
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/IMG_2520.JPG
+rename to tobis-space/src/files/drawings/canvas/Acryl/IMG_2520.JPG
+diff --git a/tobis-space/src/drawings/canvas/Acryl/IMG_2955.jpg b/tobis-space/src/files/drawings/canvas/Acryl/IMG_2955.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/IMG_2955.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/IMG_2955.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/IMG_3298.jpg b/tobis-space/src/files/drawings/canvas/Acryl/IMG_3298.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/IMG_3298.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/IMG_3298.jpg
+diff --git a/tobis-space/src/drawings/canvas/Acryl/IMG_4256.JPG b/tobis-space/src/files/drawings/canvas/Acryl/IMG_4256.JPG
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/IMG_4256.JPG
+rename to tobis-space/src/files/drawings/canvas/Acryl/IMG_4256.JPG
+diff --git "a/tobis-space/src/drawings/canvas/Acryl/JoggerinInW\303\274ste.jpg" "b/tobis-space/src/files/drawings/canvas/Acryl/JoggerinInW\303\274ste.jpg"
+similarity index 100%
+rename from "tobis-space/src/drawings/canvas/Acryl/JoggerinInW\303\274ste.jpg"
+rename to "tobis-space/src/files/drawings/canvas/Acryl/JoggerinInW\303\274ste.jpg"
+diff --git a/tobis-space/src/drawings/canvas/Acryl/Natalie2.jpg b/tobis-space/src/files/drawings/canvas/Acryl/Natalie2.jpg
+similarity index 100%
+rename from tobis-space/src/drawings/canvas/Acryl/Natalie2.jpg
+rename to tobis-space/src/files/drawings/canvas/Acryl/Natalie2.jpg
+diff --git a/tobis-space/src/drawings/index.ts b/tobis-space/src/files/drawings/index.ts
+similarity index 100%
+rename from tobis-space/src/drawings/index.ts
+rename to tobis-space/src/files/drawings/index.ts
+diff --git a/tobis-space/src/pages/BoardGameAbout.tsx b/tobis-space/src/pages/BoardGameAbout.tsx
+index 7cad8e9ca5c38b02815df3f81bf3665e47404b96..dce431cd8945ae7f9fcec7c318e794a82dad52f1 100644
+--- a/tobis-space/src/pages/BoardGameAbout.tsx
++++ b/tobis-space/src/pages/BoardGameAbout.tsx
+@@ -1,13 +1,13 @@
+ import ReactMarkdown from 'react-markdown'
+-import summary from '../boardgame/general/summary.md?raw'
++import summary from '../files/boardgame/general/summary.md?raw'
+ 
+ export default function BoardGameAbout() {
+   return (
+     <div className="space-y-4">
+       <h3 className="text-lg font-semibold">About the Game</h3>
+       <article className="prose max-w-none">
+         <ReactMarkdown>{summary}</ReactMarkdown>
+       </article>
+     </div>
+   )
+ }
+diff --git a/tobis-space/src/pages/BoardGameRules.tsx b/tobis-space/src/pages/BoardGameRules.tsx
+index 4be174ef64f3a095c4d466c3b71846f568da25eb..0ad2416946ed4bcbd9b21f9635123717c74eff2c 100644
+--- a/tobis-space/src/pages/BoardGameRules.tsx
++++ b/tobis-space/src/pages/BoardGameRules.tsx
+@@ -1,29 +1,29 @@
+ import  { useState } from "react"
+ import ReactMarkdown from "react-markdown"
+-import rulesDe from "../boardgame/manual/dragon-boardgame-rules.md?raw"
+-import rulesEn from "../boardgame/manual/dragon-boardgame-rules.en.md?raw"
++import rulesDe from "../files/boardgame/manual/dragon-boardgame-rules.md?raw"
++import rulesEn from "../files/boardgame/manual/dragon-boardgame-rules.en.md?raw"
+ 
+ export default function BoardGameRules() {
+   const [lang, setLang] = useState<"de" | "en">("de")
+ 
+   const current = lang === "de" ? rulesDe : rulesEn
+ 
+   return (
+     <div className="space-y-4">
+       <div className="flex items-center gap-2">
+         <h3 className="text-lg font-semibold">Rules</h3>
+         <button
+           className={`px-2 py-1 text-sm border rounded ${lang === "de" ? "bg-blue-500 text-white" : ""}`}
+           onClick={() => setLang("de")}
+         >
+           DE
+         </button>
+         <button
+           className={`px-2 py-1 text-sm border rounded ${lang === "en" ? "bg-blue-500 text-white" : ""}`}
+           onClick={() => setLang("en")}
+         >
+           EN
+         </button>
+       </div>
+       <article className="prose max-w-none">
+         <ReactMarkdown>{current}</ReactMarkdown>
+diff --git a/tobis-space/src/pages/BoardGameUpdates.tsx b/tobis-space/src/pages/BoardGameUpdates.tsx
+index 88f1f13a10699da22248d0c33009d0d9ca5ad9b5..aead575505e6212b9c05ebb705117aa1e97f4927 100644
+--- a/tobis-space/src/pages/BoardGameUpdates.tsx
++++ b/tobis-space/src/pages/BoardGameUpdates.tsx
+@@ -1,27 +1,27 @@
+-import updateInfo from '../boardgame/updates/2024-05-01/update.json'
+-import updateImg from '../boardgame/updates/2024-05-01/image.png'
++import updateInfo from '../files/boardgame/updates/2024-05-01/update.json'
++import updateImg from '../files/boardgame/updates/2024-05-01/image.png'
+ 
+ interface Update {
+   date: string
+   version: string
+   title: string
+   description: string
+   image: string
+ }
+ 
+ const updates: Update[] = [
+   { ...updateInfo, image: updateImg },
+ ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+ 
+ export default function BoardGameUpdates() {
+   return (
+     <div className="space-y-4">
+       <h3 className="text-lg font-semibold">Game Updates</h3>
+       <ul className="space-y-4">
+         {updates.map((u) => (
+           <li key={u.version} className="border p-4">
+             <p className="text-sm text-gray-500">{u.date}</p>
+             <h4 className="font-semibold">
+               {u.title} ({u.version})
+             </h4>
+             <img src={u.image} alt={u.title} className="my-2 w-full max-w-xs" />
+diff --git a/tobis-space/src/pages/Chapter.tsx b/tobis-space/src/pages/Chapter.tsx
+index 1fd8372398f8ab6ea9ce0768b24d38ee898b9295..8507ce2cbc7a9e297d31c4505f0b3b68f0706d96 100644
+--- a/tobis-space/src/pages/Chapter.tsx
++++ b/tobis-space/src/pages/Chapter.tsx
+@@ -1,28 +1,28 @@
+ import { Link, useParams } from "react-router-dom"
+ import { useEffect } from "react"
+-import chapters from "../chapters"
++import chapters from "../files/chapters"
+ 
+ export default function Chapter() {
+   const { chapterSlug } = useParams()
+   const chapter = chapters.find((c) => c.slug === chapterSlug)
+   if (!chapter) return <div>Chapter not found</div>
+   const index = chapters.findIndex((c) => c.slug === chapterSlug)
+   const prev = index > 0 ? chapters[index - 1] : undefined
+   const next = index < chapters.length - 1 ? chapters[index + 1] : undefined
+   useEffect(() => {
+     window.scrollTo({ top: 0, behavior: "smooth" })
+   }, [chapterSlug])
+   return (
+     <div className="space-y-4">
+       <h3 className="text-lg font-bold">{chapter.title}</h3>
+       {chapter.image && (
+         <img
+           src={chapter.image}
+           alt={chapter.title}
+           className="w-full max-w-md mx-auto"
+         />
+       )}
+       <pre className="whitespace-pre-wrap">{chapter.content}</pre>
+       <div className="flex justify-between">
+         {prev && (
+           <Link to={`../${prev.slug}`} className="text-blue-500 underline">
+diff --git a/tobis-space/src/pages/Drawings.tsx b/tobis-space/src/pages/Drawings.tsx
+index cf131a764b79f63d116253b9a27c416587ab91bc..d1e7c003e8ed6753c8b02edf6ec3b5aab8bea23c 100644
+--- a/tobis-space/src/pages/Drawings.tsx
++++ b/tobis-space/src/pages/Drawings.tsx
+@@ -1,28 +1,28 @@
+ import { useState } from "react"
+ import { useCart } from "../contexts/CartContext"
+-import drawings, { categories } from "../drawings"
++import drawings, { categories } from "../files/drawings"
+ 
+ const allCategory = "all"
+ 
+ type Artwork = (typeof drawings)[number]
+ 
+ export default function Drawings() {
+   const { addItem } = useCart()
+   const [selected, setSelected] = useState<Artwork | null>(null)
+   const [filter, setFilter] = useState(allCategory)
+ 
+   const filtered =
+     filter === allCategory
+       ? drawings
+       : drawings.filter((d) => d.category === filter)
+ 
+   return (
+     <div>
+       <h2 className="text-xl mb-4">Drawings</h2>
+       <select
+         className="border rounded p-1 mb-4"
+         value={filter}
+         onChange={(e) => setFilter(e.target.value)}
+       >
+         <option value={allCategory}>All</option>
+         {categories.map((cat) => (
+diff --git a/tobis-space/src/pages/Stories.tsx b/tobis-space/src/pages/Stories.tsx
+index 0535d3b5f2746464ac86f66dbb5d87faf0c18467..5f21f80458ca88fba5b3caabee013b41f1bdac20 100644
+--- a/tobis-space/src/pages/Stories.tsx
++++ b/tobis-space/src/pages/Stories.tsx
+@@ -1,27 +1,27 @@
+ import { Link, Outlet } from "react-router-dom"
+-import chapters from "../chapters"
++import chapters from "../files/chapters"
+ 
+ export default function Stories() {
+   return (
+     <div className="space-y-4">
+       <h2 className="text-xl">Stories</h2>
+       <p>
+         Join the discussion on{' '}
+         <a
+           href="https://discord.gg/ZF9uQWHt"
+           target="_blank"
+           rel="noreferrer"
+           className="text-blue-500 underline"
+         >
+           Discord
+         </a>
+         .
+       </p>
+       <nav className="flex flex-wrap gap-2">
+         {chapters.map((ch) => (
+           <Link key={ch.slug} to={ch.slug} className="text-blue-500 underline">
+             {ch.title}
+           </Link>
+         ))}
+       </nav>
+       
+diff --git a/tobis-space/src/pages/StoryLanding.tsx b/tobis-space/src/pages/StoryLanding.tsx
+index 8753091adfc1125920eeef6fbdcfd0d7cef80655..c5fad3eb4c68996d7d7d2643dffabe2b062bdd69 100644
+--- a/tobis-space/src/pages/StoryLanding.tsx
++++ b/tobis-space/src/pages/StoryLanding.tsx
+@@ -1,21 +1,21 @@
+ import { Link } from "react-router-dom"
+-import chapters from "../chapters"
++import chapters from "../files/chapters"
+ 
+ export default function StoryLanding() {
+   const description =
+     "Varan, a farm slave boy, is forced to flee after a single mistake. With his newfound freedom, he must survive in a world of dangerous beasts, powerful summoners, ruthless gangs, and shifting loyalties. Will he become a thief—or dare to reach for a place among the feared summoners? In a world where allies betray and enemies change, one wrong step could cost more than just freedom."
+   return (
+     <div className="space-y-4">
+       <h2 className="text-xl font-bold">The Summoners' Veiled Cards</h2>
+       <p>{description}</p>
+       <nav className="flex flex-wrap gap-2">
+         {chapters.map((ch) => (
+           <Link key={ch.slug} to={ch.slug} className="text-blue-500 underline">
+             {ch.title}
+           </Link>
+         ))}
+       </nav>
+ 
+     </div>
+   )
+ }

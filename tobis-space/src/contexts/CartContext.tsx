@@ -4,6 +4,7 @@ export interface CartItem {
   id: string
   name: string
   price: number
+  multiple?: boolean
 }
 
 interface CartContextValue {
@@ -18,7 +19,13 @@ const CartContext = createContext<CartContextValue | undefined>(undefined)
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
 
-  const addItem = (item: CartItem) => setItems((prev) => [...prev, item])
+  const addItem = (item: CartItem) =>
+    setItems((prev) => {
+      if (!item.multiple && prev.some((i) => i.id === item.id)) {
+        return prev
+      }
+      return [...prev, item]
+    })
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((i) => i.id !== id))
   const clear = () => setItems([])
