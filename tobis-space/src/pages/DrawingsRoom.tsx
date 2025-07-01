@@ -26,6 +26,7 @@ import wallImg from "../assets/drawings/wall.png"
 const SEGMENT_SIZE = 10
 const BASE_SEGMENTS = 5
 const BASE_SHOW_RANGE = (SEGMENT_SIZE * BASE_SEGMENTS) / 2
+const INITIAL_RANGE = BASE_SHOW_RANGE * 2
 
 function shuffle<T>(array: T[]): T[] {
   const copy = array.slice()
@@ -44,7 +45,7 @@ interface Placement {
   key: string
 }
 
-const GRID_STEP = 10
+const GRID_STEP = 5
 
 function randomSize() {
   return (2 + Math.random() * 2) * 2
@@ -141,7 +142,7 @@ function GalleryScene({
         0,
         0,
         usedPositions.current,
-        BASE_SHOW_RANGE,
+        INITIAL_RANGE,
       )
       return { x, y, width: randomSize(), height: randomSize(), key }
     })
@@ -204,7 +205,7 @@ function GalleryScene({
 
     const camX = controls.target.x
     const camY = controls.target.y
-    const removeRange = showRange * 1.4
+    const removeRange = showRange
 
     setPositions((prev) => {
       let changed = false
@@ -323,7 +324,7 @@ export default function DrawingsRoom() {
   const autoMoveInterval = useRef<NodeJS.Timeout | null>(null)
   const lastInteraction = useRef(Date.now())
 
-  const IDLE_DELAY = 5000
+  const IDLE_DELAY = 1000
 
   const move = useCallback((dx: number, dy: number) => {
     const controls = controlsRef.current
@@ -340,7 +341,7 @@ export default function DrawingsRoom() {
     const angle = Math.random() * Math.PI * 2
     const dx = Math.cos(angle) * MOVE_STEP
     const dy = Math.sin(angle) * MOVE_STEP
-    autoMoveInterval.current = setInterval(() => move(dx, dy), 1000)
+    autoMoveInterval.current = setInterval(() => move(dx, dy), 200)
   }, [move])
 
   const stopRandomMove = useCallback(() => {
@@ -354,6 +355,10 @@ export default function DrawingsRoom() {
     lastInteraction.current = Date.now()
     stopRandomMove()
   }, [stopRandomMove])
+
+  useEffect(() => {
+    startRandomMove()
+  }, [startRandomMove])
 
   const setCameraDistance = useCallback((targetZoom: number) => {
     const controls = controlsRef.current
