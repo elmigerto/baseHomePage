@@ -41,6 +41,7 @@ interface Placement {
   y: number
   width: number
   height: number
+  key: string
 }
 
 const GRID_STEP = 10
@@ -56,17 +57,29 @@ function randomGridPosition(
   range = BASE_SHOW_RANGE,
 ) {
   for (let i = 0; i < 20; i++) {
-    const x =
-      Math.round((camX + (Math.random() - 0.5) * range) / GRID_STEP) * GRID_STEP
-    const y =
-      Math.round((camY + (Math.random() - 0.5) * range) / GRID_STEP) * GRID_STEP
-    const key = `${x}:${y}`
+    const gridX = Math.round(
+      (camX + (Math.random() - 0.5) * range) / GRID_STEP,
+    )
+    const gridY = Math.round(
+      (camY + (Math.random() - 0.5) * range) / GRID_STEP,
+    )
+    const key = `${gridX}:${gridY}`
     if (!used || !used.has(key)) {
       used?.add(key)
-      return { x, y }
+      const jitterX = (Math.random() - 0.5) * (GRID_STEP * 0.3)
+      const jitterY = (Math.random() - 0.5) * (GRID_STEP * 0.3)
+      return {
+        x: gridX * GRID_STEP + jitterX,
+        y: gridY * GRID_STEP + jitterY,
+        key,
+      }
     }
   }
-  return { x: camX, y: camY }
+  const gridX = Math.round(camX / GRID_STEP)
+  const gridY = Math.round(camY / GRID_STEP)
+  const key = `${gridX}:${gridY}`
+  used?.add(key)
+  return { x: gridX * GRID_STEP, y: gridY * GRID_STEP, key }
 }
 
 
@@ -124,13 +137,13 @@ function GalleryScene({
     )
 
     const initial = drawings.map(() => {
-      const { x, y } = randomGridPosition(
+      const { x, y, key } = randomGridPosition(
         0,
         0,
         usedPositions.current,
         BASE_SHOW_RANGE,
       )
-      return { x, y, width: randomSize(), height: randomSize() }
+      return { x, y, width: randomSize(), height: randomSize(), key }
     })
     setPositions(initial)
     setMapping(initial.map(() => nextIndex()))
@@ -203,8 +216,8 @@ function GalleryScene({
           Math.abs(p.x - camX) > removeRange ||
           Math.abs(p.y - camY) > removeRange
         ) {
-          usedPositions.current.delete(`${p.x}:${p.y}`)
-          const { x, y } = randomGridPosition(
+          usedPositions.current.delete(p.key)
+          const { x, y, key } = randomGridPosition(
             camX,
             camY,
             usedPositions.current,
@@ -215,6 +228,7 @@ function GalleryScene({
             y,
             width: randomSize(),
             height: randomSize(),
+            key,
           }
           nextMapping[i] = nextIndex()
           changed = true
