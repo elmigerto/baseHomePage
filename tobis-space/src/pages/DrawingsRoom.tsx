@@ -37,7 +37,7 @@ const BASE_SEGMENTS = 5
 const BASE_SHOW_RANGE = (SEGMENT_SIZE * BASE_SEGMENTS) / 2
 const GRID_MARGIN = 2
 
-const GRID_STEP = 5
+const GRID_STEP = 9
 
 function randomSize() {
   return (2 + Math.random() * 2) * 2
