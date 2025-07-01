@@ -73,10 +73,12 @@ function GalleryScene({
   controlsRef,
   move,
   zoom,
+  markInteraction,
 }: {
   controlsRef: React.RefObject<any>
   move: (dx: number, dy: number) => void
   zoom: number
+  markInteraction: () => void
 }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const wallTexture = useLoader(TextureLoader, wallImg)
@@ -110,6 +112,7 @@ function GalleryScene({
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
       }
+      markInteraction()
     }
     const handleLeave = () => {
       pointerRef.current = { x: -1, y: -1 }
@@ -120,7 +123,7 @@ function GalleryScene({
       gl.domElement.removeEventListener('mousemove', handleMove)
       gl.domElement.removeEventListener('mouseleave', handleLeave)
     }
-  }, [gl])
+  }, [gl, markInteraction])
 
   function nextIndex() {
     const idx = indexRef.current % drawings.length
@@ -192,6 +195,7 @@ function GalleryScene({
     const edge = 50
     const moveStep = 0.2
     if (pointer.x >= 0 && pointer.y >= 0) {
+      markInteraction()
       if (pointer.x < edge) {
         controls.target.x -= moveStep
         controls.object.position.x -= moveStep
@@ -351,10 +355,14 @@ export default function DrawingsRoom() {
 
   const startContinuousMove = useCallback(
     (dx: number, dy: number) => {
+      markInteraction()
       move(dx, dy)
-      moveInterval.current = setInterval(() => move(dx, dy), 100)
+      moveInterval.current = setInterval(() => {
+        markInteraction()
+        move(dx, dy)
+      }, 100)
     },
-    [move],
+    [move, markInteraction],
   )
 
   const stopContinuousMove = useCallback(() => {
@@ -458,7 +466,12 @@ export default function DrawingsRoom() {
             touches={{ ONE: TOUCH.PAN, TWO: TOUCH.PAN }}
           />
           <ambientLight intensity={0.8} />
-          <GalleryScene controlsRef={controlsRef} move={move} zoom={zoom} />
+          <GalleryScene
+            controlsRef={controlsRef}
+            move={move}
+            zoom={zoom}
+            markInteraction={markInteraction}
+          />
         </Suspense>
       </Canvas>
       <div className="fixed bottom-4 right-4 z-20 flex flex-col items-center space-y-2 text-white">
