@@ -37,7 +37,7 @@ const BASE_SEGMENTS = 5
 const BASE_SHOW_RANGE = (SEGMENT_SIZE * BASE_SEGMENTS) / 2
 const GRID_MARGIN = 2
 
-const GRID_STEP = 9
+const GRID_STEP = 12
 
 function randomSize() {
   return (2 + Math.random() * 2) * 2
@@ -86,7 +86,7 @@ function GalleryScene({
   if (seg % 2 === 0) seg += 1
   const segments = Math.max(BASE_SEGMENTS, seg)
   const wallCount = segments * segments
-  const POSITION_JITTER = 0.5
+  const POSITION_JITTER = 1
   const SCALE_JITTER = 0.1
   const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
   interface GridItem {
@@ -291,7 +291,7 @@ export default function DrawingsRoom() {
   const autoMoveInterval = useRef<NodeJS.Timeout | null>(null)
   const lastInteraction = useRef(Date.now())
 
-  const IDLE_DELAY = 5000
+  const IDLE_DELAY = 3000
 
   const move = useCallback((dx: number, dy: number) => {
     const controls = controlsRef.current
