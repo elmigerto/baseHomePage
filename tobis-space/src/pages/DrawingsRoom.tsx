@@ -1,24 +1,25 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-  faArrowLeft,
-  faSpinner,
-  faArrowUp,
   faArrowDown,
+  faArrowLeft,
   faArrowRight,
-  faPlus,
+  faArrowUp,
   faMinus,
+  faPlus,
   faRotateLeft,
-} from '@fortawesome/free-solid-svg-icons'
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons"
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber"
 import { Html, MapControls } from "@react-three/drei"
 import {
   DoubleSide,
   Mesh,
-  TextureLoader,
   RepeatWrapping,
+  TextureLoader,
+  Vector3,
 } from "three"
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom"
 import drawings from "../files/drawings"
 import wallImg from "../assets/drawings/wall.png"
 
@@ -71,6 +72,8 @@ function randomGridPosition(
 
 const CAMERA_DISTANCE = 5
 const MOVE_STEP = 0.5
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 2
 
 function ArtPlane({
   texture,
@@ -302,13 +305,27 @@ function GalleryScene({
 export default function DrawingsRoom() {
   const controlsRef = useRef<any>(null)
   const [zoom, setZoom] = useState(1)
+  const moveInterval = useRef<NodeJS.Timeout | null>(null)
+
+  const setCameraDistance = useCallback((targetZoom: number) => {
+    const controls = controlsRef.current
+    if (!controls) return
+    const cam = controls.object
+    const dir = new Vector3()
+      .subVectors(cam.position, controls.target)
+      .normalize()
+    const distance = CAMERA_DISTANCE / targetZoom
+    cam.position.copy(controls.target.clone().add(dir.multiplyScalar(distance)))
+    controls.update()
+  }, [])
 
   const applyZoom = useCallback(
     (next: number) => {
-      const clamped = Math.min(2, Math.max(0.5, next))
+      const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next))
+      setCameraDistance(clamped)
       setZoom(clamped)
     },
-    [],
+    [setCameraDistance],
   )
 
   const move = useCallback((dx: number, dy: number) => {
@@ -321,14 +338,40 @@ export default function DrawingsRoom() {
     controls.update()
   }, [])
 
+
+  const startContinuousMove = useCallback(
+    (dx: number, dy: number) => {
+      move(dx, dy)
+      moveInterval.current = setInterval(() => move(dx, dy), 100)
+    },
+    [move],
+  )
+
+  const stopContinuousMove = useCallback(() => {
+    if (moveInterval.current) {
+      clearInterval(moveInterval.current)
+      moveInterval.current = null
+    }
+  }, [])
+
   useEffect(() => {
     const controls = controlsRef.current
     if (!controls) return
-    const cam = controls.object
-    cam.zoom = zoom
-    cam.updateProjectionMatrix()
-    controls.update()
-  }, [zoom])
+    const handleChange = () => {
+      const cam = controls.object
+      const dist = cam.position.distanceTo(controls.target)
+      const currentZoom = CAMERA_DISTANCE / dist
+      const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, currentZoom))
+      if (clamped !== currentZoom) {
+        setCameraDistance(clamped)
+      }
+      setZoom(clamped)
+    }
+    controls.addEventListener("change", handleChange)
+    return () => {
+      controls.removeEventListener("change", handleChange)
+    }
+  }, [setCameraDistance])
 
   return (
     <div className="min-h-screen w-screen bg-gray-200">
@@ -358,8 +401,8 @@ export default function DrawingsRoom() {
             ref={controlsRef}
             target={[0, 1.5, 0]}
             enableRotate={false}
-            enableZoom={false}
             enablePan
+            enableZoom
             enableDamping
             dampingFactor={0.1}
           />
@@ -368,7 +411,7 @@ export default function DrawingsRoom() {
         </Suspense>
       </Canvas>
       <div className="fixed bottom-4 right-4 z-20 flex flex-col items-center space-y-2 text-white">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
             aria-label="Zoom in"
             className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
@@ -390,40 +433,58 @@ export default function DrawingsRoom() {
           >
             <FontAwesomeIcon icon={faMinus} />
           </button>
-        </div>
-        <div className="grid grid-cols-3 gap-1">
-          <div />
-          <button
-            aria-label="Move up"
-            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
-            onClick={() => move(0, MOVE_STEP)}
-          >
-            <FontAwesomeIcon icon={faArrowUp} />
-          </button>
-          <div />
-          <button
-            aria-label="Move left"
-            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
-            onClick={() => move(-MOVE_STEP, 0)}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} />
-          </button>
-          <button
-            aria-label="Move down"
-            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
-            onClick={() => move(0, -MOVE_STEP)}
-          >
-            <FontAwesomeIcon icon={faArrowDown} />
-          </button>
-          <button
-            aria-label="Move right"
-            className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
-            onClick={() => move(MOVE_STEP, 0)}
-          >
-            <FontAwesomeIcon icon={faArrowRight} />
-          </button>
+          <span className="ml-2">{zoom.toFixed(1)}x</span>
         </div>
       </div>
+
+      <button
+        aria-label="Move up"
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
+        onMouseDown={() => startContinuousMove(0, MOVE_STEP)}
+        onMouseUp={stopContinuousMove}
+        onMouseLeave={stopContinuousMove}
+        onTouchStart={() => startContinuousMove(0, MOVE_STEP)}
+        onTouchEnd={stopContinuousMove}
+        onTouchCancel={stopContinuousMove}
+      >
+        <FontAwesomeIcon icon={faArrowUp} />
+      </button>
+      <button
+        aria-label="Move down"
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
+        onMouseDown={() => startContinuousMove(0, -MOVE_STEP)}
+        onMouseUp={stopContinuousMove}
+        onMouseLeave={stopContinuousMove}
+        onTouchStart={() => startContinuousMove(0, -MOVE_STEP)}
+        onTouchEnd={stopContinuousMove}
+        onTouchCancel={stopContinuousMove}
+      >
+        <FontAwesomeIcon icon={faArrowDown} />
+      </button>
+      <button
+        aria-label="Move left"
+        className="fixed left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
+        onMouseDown={() => startContinuousMove(-MOVE_STEP, 0)}
+        onMouseUp={stopContinuousMove}
+        onMouseLeave={stopContinuousMove}
+        onTouchStart={() => startContinuousMove(-MOVE_STEP, 0)}
+        onTouchEnd={stopContinuousMove}
+        onTouchCancel={stopContinuousMove}
+      >
+        <FontAwesomeIcon icon={faArrowLeft} />
+      </button>
+      <button
+        aria-label="Move right"
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
+        onMouseDown={() => startContinuousMove(MOVE_STEP, 0)}
+        onMouseUp={stopContinuousMove}
+        onMouseLeave={stopContinuousMove}
+        onTouchStart={() => startContinuousMove(MOVE_STEP, 0)}
+        onTouchEnd={stopContinuousMove}
+        onTouchCancel={stopContinuousMove}
+      >
+        <FontAwesomeIcon icon={faArrowRight} />
+      </button>
     </div>
   )
 }
