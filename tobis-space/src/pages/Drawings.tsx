@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import Card from "../components/Card"
+import Button from "../components/Button"
 import { useCart } from "../contexts/CartContext"
 import drawings, { categories, type Drawing } from "../files/drawings"
 import useDrawingModal from "../hooks/useDrawingModal"
@@ -11,7 +12,7 @@ const allCategory = "all"
 export default function Drawings() {
   const [filter, setFilter] = useState(allCategory)
   const { open: openModal, modal } = useDrawingModal()
-  const { items } = useCart()
+  const { addItem, removeItem, items } = useCart()
 
   const sortedCategories = useMemo(() => [...categories].sort(), [])
   const drawingsByCat = useMemo(() => {
@@ -32,6 +33,11 @@ export default function Drawings() {
 
   const renderCard = (art: Drawing) => {
     const inCart = items.some((i) => i.id === art.id)
+    const handleClick = () => {
+      if (inCart && !art.multiple) removeItem(art.id)
+      else
+        addItem({ id: art.id, name: art.name, price: art.price, multiple: art.multiple })
+    }
     return (
       <Card key={art.id} className={inCart ? "bg-green-200 dark:bg-green-900" : ""}>
         <img
@@ -41,9 +47,9 @@ export default function Drawings() {
           onClick={() => openModal(art)}
         />
         <p className="text-center">{art.name}</p>
-        {inCart && !art.multiple && (
-          <p className="text-sm text-green-600">Added to cart</p>
-        )}
+        <Button className="mt-2" onClick={handleClick}>
+          {inCart && !art.multiple ? "Remove" : "Add to Cart"}
+        </Button>
       </Card>
     )
   }
