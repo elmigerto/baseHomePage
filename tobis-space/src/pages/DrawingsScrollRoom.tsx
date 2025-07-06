@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import drawings, { categories, type Drawing } from '../files/drawings'
 import wallImg from '../assets/drawings/wall.png'
 import useDrawingModal from '../hooks/useDrawingModal'
+import { useCart } from '../contexts/CartContext'
 
 function useRowCount() {
   const getRows = () => {
@@ -30,6 +31,7 @@ function useRowCount() {
 export default function DrawingsScrollRoom() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { open: openModal, modal } = useDrawingModal()
+  const { items: cartItems } = useCart()
 
   type RowItem =
     | { type: 'label'; category: string }
@@ -153,19 +155,23 @@ export default function DrawingsScrollRoom() {
         >
           {items.map((item, idx) =>
             item.type === 'label' ? (
-<div
-  key={`label-${item.category}-${idx}`}
-  className="w-60 flex items-center justify-center px-2 pb-10"
->
-  <div className="inline-block whitespace-nowrap rounded bg-gray-800/90 px-2 py-0.5 text-xl font-semibold text-white shadow">
-    {item.category}
-  </div>
-</div>
+              <div
+                key={`label-${item.category}-${idx}`}
+                className="w-60 flex items-center justify-center px-2 pb-10"
+              >
+                <div className="inline-block whitespace-nowrap rounded bg-gray-800/90 px-2 py-0.5 text-xl font-semibold text-white shadow">
+                  {item.category}
+                </div>
+              </div>
 
             ) : (
               <div
                 key={`${item.drawing.id}-${idx}`}
-                className="w-60 flex flex-col items-center px-2 pb-10"
+                className={`w-60 flex flex-col items-center px-2 pb-10 ${
+                  cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
+                    ? 'bg-green-200 dark:bg-green-900'
+                    : ''
+                }`}
               >
                 <img
                   src={item.drawing.image}
@@ -174,6 +180,9 @@ export default function DrawingsScrollRoom() {
                   onClick={() => openModal(item.drawing)}
                 />
                 <p className="inline-block rounded bg-gray-800/90 px-2 py-0.5 text-sm text-white shadow">{item.drawing.name}</p>
+                {cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple && (
+                  <p className="text-sm text-green-600">Added to cart</p>
+                )}
               </div>
             )
           )}
