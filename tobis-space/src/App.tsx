@@ -12,6 +12,7 @@ import CheckoutSuccess from './pages/CheckoutSuccess'
 import Drawings from './pages/Drawings'
 import DrawingsRoom from './pages/DrawingsRoom'
 import DrawingsScrollRoom from './pages/DrawingsScrollRoom'
+import Checkout from './pages/Checkout'
 import Home from './pages/Home'
 import Stories from './pages/Stories'
 import StoryOverview from './pages/StoryOverview'
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="drawings/gallery" element={<Drawings />} />
         <Route path="software" element={<Software />} />
         <Route path="about" element={<About />} />
+        <Route path="checkout" element={<Checkout />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />
       </Route>
