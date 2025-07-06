@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import drawings, { categories, type Drawing } from '../files/drawings'
 import wallImg from '../assets/drawings/wall.png'
 import useDrawingModal from '../hooks/useDrawingModal'
+import Button from '../components/Button'
 import { useCart } from '../contexts/CartContext'
 
 function useRowCount() {
@@ -31,7 +32,7 @@ function useRowCount() {
 export default function DrawingsScrollRoom() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { open: openModal, modal } = useDrawingModal()
-  const { items: cartItems } = useCart()
+  const { items: cartItems, addItem, removeItem } = useCart()
 
   type RowItem =
     | { type: 'label'; category: string }
@@ -177,9 +178,23 @@ export default function DrawingsScrollRoom() {
                   onClick={() => openModal(item.drawing)}
                 />
                 <p className="inline-block rounded bg-gray-800/90 px-2 py-0.5 text-sm text-white shadow">{item.drawing.name}</p>
-                {cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple && (
-                  <p className="text-sm text-green-600">Added to cart</p>
-                )}
+                <Button
+                  className="mt-1"
+                  onClick={() =>
+                    cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
+                      ? removeItem(item.drawing.id)
+                      : addItem({
+                          id: item.drawing.id,
+                          name: item.drawing.name,
+                          price: item.drawing.price,
+                          multiple: item.drawing.multiple,
+                        })
+                  }
+                >
+                  {cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
+                    ? 'Remove'
+                    : 'Add to Cart'}
+                </Button>
               </div>
             )
           )}

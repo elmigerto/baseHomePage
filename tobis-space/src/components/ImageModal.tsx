@@ -6,7 +6,7 @@ import { useCart } from "../contexts/CartContext"
 import type { Drawing } from "../files/drawings"
 
 export default function ImageModal({ art, onClose }: { art: Drawing; onClose: () => void }) {
-  const { addItem, items } = useCart()
+  const { addItem, removeItem, items } = useCart()
   const [zoom, setZoom] = useState(1)
   const handleZoomIn = () => setZoom((z) => Math.min(3, z + 0.25))
   const handleZoomOut = () => setZoom((z) => Math.max(1, z - 0.25))
@@ -56,14 +56,18 @@ export default function ImageModal({ art, onClose }: { art: Drawing; onClose: ()
         <p className="mb-1 text-center">{art.description}</p>
         <p className="mb-2 text-center font-bold">{art.price.toFixed(2)} €</p>
         <div className="flex justify-center gap-2">
-          <Button
-            onClick={() =>
-              addItem({ id: art.id, name: art.name, price: art.price, multiple: art.multiple })
-            }
-            disabled={!canAdd}
-          >
-            {inCart && !art.multiple ? "Added" : "Add to Cart"}
-          </Button>
+          {inCart && !art.multiple ? (
+            <Button onClick={() => removeItem(art.id)}>Remove</Button>
+          ) : (
+            <Button
+              onClick={() =>
+                addItem({ id: art.id, name: art.name, price: art.price, multiple: art.multiple })
+              }
+              disabled={!canAdd}
+            >
+              Add to Cart
+            </Button>
+          )}
           <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={onClose}>
             <FontAwesomeIcon icon={faXmark} className="mr-1" /> Close
           </Button>
