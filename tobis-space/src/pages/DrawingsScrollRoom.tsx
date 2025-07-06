@@ -140,9 +140,6 @@ export default function DrawingsScrollRoom() {
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
         <h2 className="page-title m-0">Scrolling Room</h2>
         <div className="flex gap-4">
-          <Link to="/drawings" className="text-blue-500 underline">
-            3D Room
-          </Link>
           <Link to="/drawings/gallery" className="text-blue-500 underline">
             Gallery
           </Link>
