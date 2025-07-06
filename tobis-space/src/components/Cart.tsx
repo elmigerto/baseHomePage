@@ -4,22 +4,13 @@ import {
   faTrash,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons'
-import { useCart, type CartItem } from '../contexts/CartContext'
+import { useCart } from '../contexts/CartContext'
+import { useNavigate } from 'react-router-dom'
 
-async function checkout(items: CartItem[]) {
-  const res = await fetch('/create-checkout-session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items }),
-  })
-  const data = await res.json()
-  if (data.url) {
-    window.location.href = data.url
-  }
-}
 
 export default function Cart() {
   const { items, removeItem, clear } = useCart()
+  const navigate = useNavigate()
 
   if (items.length === 0) return <p>Your cart is empty.</p>
 
@@ -45,7 +36,10 @@ export default function Cart() {
             <FontAwesomeIcon icon={faTrash} className="mr-1" /> Clear
           </button>
         </div>
-        <button onClick={() => checkout(items)} className="btn bg-green-600 hover:bg-green-700">
+        <button
+          onClick={() => navigate('/checkout')}
+          className="btn bg-green-600 hover:bg-green-700"
+        >
           <FontAwesomeIcon icon={faCreditCard} className="mr-1" /> Buy
         </button>
       </div>

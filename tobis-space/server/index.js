@@ -11,11 +11,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET || '', { apiVersion: '2024-0
 
 app.post('/create-checkout-session', async (req, res) => {
   try {
+    const { items, address } = req.body
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      line_items: req.body.items,
+      line_items: items,
       success_url: `${req.headers.origin}/success`,
       cancel_url: `${req.headers.origin}/cancel`,
+      metadata: address,
     })
     res.json({ url: session.url })
   } catch (err) {
