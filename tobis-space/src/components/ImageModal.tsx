@@ -26,6 +26,7 @@ export default function ImageModal({ art, onClose }: { art: Drawing; onClose: ()
           <img
             src={art.image}
             alt={art.name}
+            loading="lazy"
             className="cursor-zoom-in object-contain"
             style={{ transform: `scale(${zoom})`, transformOrigin: "center" }}
             onClick={handleZoomIn}

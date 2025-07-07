@@ -47,6 +47,7 @@ export default function Chapter() {
         <img
           src={chapter.image}
           alt={chapter.title}
+          loading="lazy"
           className="w-full max-w-md mx-auto"
         />
       )}

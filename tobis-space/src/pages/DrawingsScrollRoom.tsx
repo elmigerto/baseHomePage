@@ -176,6 +176,7 @@ export default function DrawingsScrollRoom() {
                 <img
                   src={item.drawing.image}
                   alt={item.drawing.name}
+                  loading="lazy"
                   className="mb-2 h-60 w-60 cursor-pointer object-contain shadow-lg"
                   onClick={() => openModal(item.drawing)}
                 />
