@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCart, type CartItem } from '../contexts/CartContext'
 import { useTranslation } from '../contexts/LanguageContext'
 
+
 interface Address {
   name: string
   street: string
@@ -11,20 +12,8 @@ interface Address {
   country: string
 }
 
-async function checkout(items: CartItem[], address: Address) {
-  const res = await fetch('/create-checkout-session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items, address }),
-  })
-  const data = await res.json()
-  if (data.url) {
-    window.location.href = data.url
-  }
-}
-
 export default function Checkout() {
-  const { items, clear } = useCart()
+  const { items } = useCart()
   const navigate = useNavigate()
   const t = useTranslation()
   const [address, setAddress] = useState<Address>({
@@ -37,16 +26,16 @@ export default function Checkout() {
 
   if (items.length === 0) return <p>{t('checkout.empty')}</p>
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target
     setAddress((a) => ({ ...a, [name]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    await checkout(items, address)
-    clear()
-    navigate('/success')
+    navigate('/payment', { state: { address } })
   }
 
   return (
@@ -87,14 +76,23 @@ export default function Checkout() {
         onChange={handleChange}
         className="rounded border p-2 text-black"
       />
-      <input
+      <select
         required
         name="country"
+
         placeholder={t('checkout.country')}
+
         value={address.country}
         onChange={handleChange}
         className="rounded border p-2 text-black"
-      />
+      >
+        <option value="">Select Country</option>
+        <option value="Germany">Germany</option>
+        <option value="United States">United States</option>
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="Canada">Canada</option>
+        <option value="Australia">Australia</option>
+      </select>
       <button type="submit" className="btn bg-green-600 hover:bg-green-700">
         {t('checkout.continue')}
       </button>

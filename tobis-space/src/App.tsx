@@ -9,6 +9,7 @@ import BoardGameUpdates from './pages/BoardGameUpdates'
 import Chapter from './pages/Chapter'
 import CheckoutCancel from './pages/CheckoutCancel'
 import CheckoutSuccess from './pages/CheckoutSuccess'
+import Payment from './pages/Payment'
 import Drawings from './pages/Drawings'
 import DrawingsRoom from './pages/DrawingsRoom'
 import DrawingsScrollRoom from './pages/DrawingsScrollRoom'
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="software" element={<Software />} />
         <Route path="about" element={<About />} />
         <Route path="checkout" element={<Checkout />} />
+        <Route path="payment" element={<Payment />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />
       </Route>
