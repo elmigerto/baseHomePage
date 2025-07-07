@@ -24,7 +24,12 @@ export default function BoardGameUpdates() {
             <h4 className="font-semibold">
               {u.title} ({u.version})
             </h4>
-            <img src={u.image} alt={u.title} className="my-2 w-full max-w-xs" />
+            <img
+              src={u.image}
+              alt={u.title}
+              loading="lazy"
+              className="my-2 w-full max-w-xs"
+            />
             <p>{u.description}</p>
           </li>
         ))}

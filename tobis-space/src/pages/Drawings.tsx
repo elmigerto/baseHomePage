@@ -44,6 +44,7 @@ export default function Drawings() {
         <img
           src={art.image}
           alt={art.name}
+          loading="lazy"
           className="mb-2 h-48 w-48 cursor-pointer object-contain"
           onClick={() => openModal(art)}
         />
