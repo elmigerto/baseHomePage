@@ -23,6 +23,7 @@ export default function Checkout() {
     zip: '',
     country: '',
   })
+  const [errors, setErrors] = useState<Partial<Record<keyof Address, string>>>({})
 
   if (items.length === 0) return <p>{t('checkout.empty')}</p>
 
@@ -33,9 +34,22 @@ export default function Checkout() {
     setAddress((a) => ({ ...a, [name]: value }))
   }
 
+  const validate = () => {
+    const errs: Partial<Record<keyof Address, string>> = {}
+    if (!address.name.trim()) errs.name = t('checkout.errors.name')
+    if (!address.street.trim()) errs.street = t('checkout.errors.street')
+    if (!address.city.trim()) errs.city = t('checkout.errors.city')
+    if (!/^\d{4,}$/.test(address.zip.trim())) errs.zip = t('checkout.errors.zip')
+    if (!address.country) errs.country = t('checkout.errors.country')
+    setErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    navigate('/payment', { state: { address } })
+    if (validate()) {
+      navigate('/payment', { state: { address } })
+    }
   }
 
   return (
@@ -52,6 +66,7 @@ export default function Checkout() {
         onChange={handleChange}
         className="rounded border p-2 text-black"
       />
+      {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
       <input
         required
         name="street"
@@ -60,6 +75,7 @@ export default function Checkout() {
         onChange={handleChange}
         className="rounded border p-2 text-black"
       />
+      {errors.street && <p className="text-sm text-red-500">{errors.street}</p>}
       <input
         required
         name="city"
@@ -68,6 +84,7 @@ export default function Checkout() {
         onChange={handleChange}
         className="rounded border p-2 text-black"
       />
+      {errors.city && <p className="text-sm text-red-500">{errors.city}</p>}
       <input
         required
         name="zip"
@@ -76,6 +93,7 @@ export default function Checkout() {
         onChange={handleChange}
         className="rounded border p-2 text-black"
       />
+      {errors.zip && <p className="text-sm text-red-500">{errors.zip}</p>}
       <select
         required
         name="country"
@@ -90,6 +108,7 @@ export default function Checkout() {
         <option value="Canada">Canada</option>
         <option value="Australia">Australia</option>
       </select>
+      {errors.country && <p className="text-sm text-red-500">{errors.country}</p>}
       <button type="submit" className="btn bg-green-600 hover:bg-green-700">
         {t('checkout.continue')}
       </button>

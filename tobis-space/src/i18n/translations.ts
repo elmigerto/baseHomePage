@@ -71,6 +71,13 @@ export const translations = {
       empty: 'Your cart is empty.',
       success: 'Thank you for your purchase!',
       cancel: 'Checkout canceled.',
+      errors: {
+        name: 'Please enter your name.',
+        street: 'Please enter your street.',
+        city: 'Please enter your city.',
+        zip: 'ZIP should contain only numbers.',
+        country: 'Please select a country.',
+      },
     },
     cart: {
       empty: 'Your cart is empty.',
@@ -158,6 +165,13 @@ export const translations = {
       empty: 'Dein Warenkorb ist leer.',
       success: 'Vielen Dank für deinen Einkauf!',
       cancel: 'Bezahlung abgebrochen.',
+      errors: {
+        name: 'Bitte Namen eingeben.',
+        street: 'Bitte Straße eingeben.',
+        city: 'Bitte Stadt eingeben.',
+        zip: 'PLZ darf nur Zahlen enthalten.',
+        country: 'Bitte Land auswählen.',
+      },
     },
     cart: {
       empty: 'Dein Warenkorb ist leer.',
