@@ -7,7 +7,8 @@ export default function BoardGameBuy() {
   const id = 'boardgame-core'
   const name = "The Dragon's Tweak"
   const price = 49.99
-  const inCart = items.some((i) => i.id === id)
+  const count = items.filter((i) => i.id === id).length
+  const inCart = count > 0
 
   return (
     <div className="space-y-4">
@@ -17,18 +18,20 @@ export default function BoardGameBuy() {
           <p className="font-semibold">{name}</p>
           <p>A modular strategy game of summoning dragons.</p>
           <p className="font-bold">{price.toFixed(2)} €</p>
-          {inCart ? (
-            <Button onClick={() => removeItem(id)} className="bg-red-600 hover:bg-red-700">
-              Remove from Cart
-            </Button>
-          ) : (
+          {count > 0 && <p>In Cart: {count}</p>}
+          <div className="flex gap-2">
             <Button
-              onClick={() => addItem({ id, name, price })}
+              onClick={() => addItem({ id, name, price, multiple: true })}
               className="bg-green-600 hover:bg-green-700"
             >
-              Add to Cart
+              {inCart ? 'Add Another' : 'Add to Cart'}
             </Button>
-          )}
+            {inCart && (
+              <Button onClick={() => removeItem(id)} className="bg-red-600 hover:bg-red-700">
+                Remove from Cart
+              </Button>
+            )}
+          </div>
         </div>
       </Card>
     </div>
