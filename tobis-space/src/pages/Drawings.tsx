@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import Card from "../components/Card"
-import Button from "../components/Button"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons"
 import { useCart } from "../contexts/CartContext"
 import drawings, { categories, type Drawing } from "../files/drawings"
 import useDrawingModal from "../hooks/useDrawingModal"
@@ -47,9 +48,13 @@ export default function Drawings() {
           onClick={() => openModal(art)}
         />
         <p className="text-center">{art.name}</p>
-        <Button className="mt-2" onClick={handleClick}>
-          {inCart && !art.multiple ? "Remove" : "Add to Cart"}
-        </Button>
+        <button
+          aria-label={inCart && !art.multiple ? "Remove from cart" : "Add to cart"}
+          className="mt-2 rounded p-1 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
+          onClick={handleClick}
+        >
+          <FontAwesomeIcon icon={inCart && !art.multiple ? faMinus : faPlus} />
+        </button>
       </Card>
     )
   }

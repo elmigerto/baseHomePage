@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import drawings, { categories, type Drawing } from '../files/drawings'
 import wallImg from '../assets/drawings/wall.png'
 import useDrawingModal from '../hooks/useDrawingModal'
-import Button from '../components/Button'
 import { useCart } from '../contexts/CartContext'
 
 function useRowCount() {
@@ -181,8 +180,13 @@ export default function DrawingsScrollRoom() {
                   onClick={() => openModal(item.drawing)}
                 />
                 <p className="inline-block rounded bg-gray-800/90 px-2 py-0.5 text-sm text-white shadow">{item.drawing.name}</p>
-                <Button
-                  className="mt-1"
+                <button
+                  aria-label={
+                    cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
+                      ? 'Remove from cart'
+                      : 'Add to cart'
+                  }
+                  className="mt-1 rounded p-1 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
                   onClick={() =>
                     cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
                       ? removeItem(item.drawing.id)
@@ -194,10 +198,14 @@ export default function DrawingsScrollRoom() {
                         })
                   }
                 >
-                  {cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
-                    ? 'Remove'
-                    : 'Add to Cart'}
-                </Button>
+                  <FontAwesomeIcon
+                    icon={
+                      cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
+                        ? faMinus
+                        : faPlus
+                    }
+                  />
+                </button>
               </div>
             )
           )}
