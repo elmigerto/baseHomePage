@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCart, type CartItem } from '../contexts/CartContext'
+import { useCart } from '../contexts/CartContext'
 import { useTranslation } from '../contexts/LanguageContext'
 
 
@@ -79,14 +79,11 @@ export default function Checkout() {
       <select
         required
         name="country"
-
-        placeholder={t('checkout.country')}
-
         value={address.country}
         onChange={handleChange}
         className="rounded border p-2 text-black"
       >
-        <option value="">Select Country</option>
+        <option value="">{t('checkout.country')}</option>
         <option value="Germany">Germany</option>
         <option value="United States">United States</option>
         <option value="United Kingdom">United Kingdom</option>
