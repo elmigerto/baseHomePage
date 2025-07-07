@@ -1,5 +1,6 @@
 import updateInfo from '../files/boardgame/updates/2024-05-01/update.json'
 import updateImg from '../files/boardgame/updates/2024-05-01/image.png'
+import { useTranslation } from '../contexts/LanguageContext'
 
 interface Update {
   date: string
@@ -14,9 +15,10 @@ const updates: Update[] = [
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
 export default function BoardGameUpdates() {
+  const t = useTranslation()
   return (
     <div className="space-y-4">
-      <h3 className="subpage-title">Game Updates</h3>
+      <h3 className="subpage-title">{t('boardgame.updates')}</h3>
       <ul className="space-y-4">
         {updates.map((u) => (
           <li key={u.version} className="border p-4">

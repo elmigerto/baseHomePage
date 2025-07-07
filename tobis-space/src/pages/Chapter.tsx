@@ -2,12 +2,14 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { useEffect } from "react"
 import ReactMarkdown from "react-markdown"
 import chapters from "../files/chapters"
+import { useTranslation } from "../contexts/LanguageContext"
 
 export default function Chapter() {
   const { chapterSlug } = useParams()
   const navigate = useNavigate()
+  const t = useTranslation()
   const chapter = chapters.find((c) => c.slug === chapterSlug)
-  if (!chapter) return <div>Chapter not found</div>
+  if (!chapter) return <div>{t('stories.notFound')}</div>
   const index = chapters.findIndex((c) => c.slug === chapterSlug)
   const prev = index > 0 ? chapters[index - 1] : undefined
   const next = index < chapters.length - 1 ? chapters[index + 1] : undefined
