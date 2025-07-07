@@ -1,18 +1,20 @@
 import { Link, Outlet, useLocation, useParams } from "react-router-dom"
 import chapters from "../files/chapters"
+import { useTranslation } from "../contexts/LanguageContext"
 
 export default function Stories() {
   const location = useLocation()
   const { chapterSlug } = useParams()
   const detailTarget = chapterSlug ?? chapters[0].slug
   const isOverview = location.pathname === "/stories" || location.pathname === "/stories/"
+  const t = useTranslation()
   const tabClass = (active: boolean) =>
     active ? "border-b-2 border-blue-500" : "text-blue-500"
   return (
     <div className="space-y-4">
-      <h2 className="page-title">Stories</h2>
+      <h2 className="page-title">{t('stories.title')}</h2>
       <p>
-        Join the discussion on{' '}
+        {t('stories.join')} {' '}
         <a
           href="https://discord.gg/ZF9uQWHt"
           target="_blank"
@@ -25,10 +27,10 @@ export default function Stories() {
       </p>
       <nav className="flex gap-4 border-b">
         <Link to="." className={tabClass(isOverview)}>
-          Overview
+          {t('stories.overview')}
         </Link>
         <Link to={detailTarget} className={tabClass(!isOverview)}>
-          Detail
+          {t('stories.detail')}
         </Link>
       </nav>
 
