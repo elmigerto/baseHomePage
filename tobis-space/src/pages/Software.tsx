@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import cvGer from '../files/software/personal/cv_ger.pdf'
 
 export default function Software() {
   return (
@@ -11,13 +12,24 @@ export default function Software() {
         creativity drives user-focused solutions.
       </p>
       <p>
-        <a href="/cv.pdf" target="_blank" rel="noreferrer" className="text-blue-500 underline">
+        <a href={cvGer} target="_blank" rel="noreferrer" className="text-blue-500 underline">
           <FontAwesomeIcon icon={faDownload} className="mr-1" /> View my CV
         </a>
       </p>
       <p>
+        LinkedIn:{' '}
+        <a
+          href="https://www.linkedin.com/in/tobias-elmiger-7b8708125/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 underline"
+        >
+          https://www.linkedin.com/in/tobias-elmiger-7b8708125/
+        </a>
+      </p>
+      <p>
         Interested in working together? Book me via{' '}
-        <a href="mailto:booking@example.com" className="text-blue-500 underline">
+        <a href="mailto:elmigerto@gmail.com" className="text-blue-500 underline">
           <FontAwesomeIcon icon={faEnvelope} className="mr-1" /> email
         </a>
         .
