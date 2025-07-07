@@ -18,6 +18,9 @@ export default function BoardGame() {
         <Link to="updates" className="text-blue-500 underline">
           Updates
         </Link>
+        <Link to="buy" className="text-blue-500 underline">
+          Buy
+        </Link>
       </nav>
       <Outlet />
     </div>
