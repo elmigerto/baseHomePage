@@ -19,6 +19,9 @@ export default function BoardGame() {
         <Link to="updates" className="text-blue-500 underline">
           {t('boardgame.updates')}
         </Link>
+        <Link to="buy" className="text-blue-500 underline">
+          Buy
+        </Link>
       </nav>
       <Outlet />
     </div>

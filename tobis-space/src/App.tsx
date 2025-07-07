@@ -6,6 +6,7 @@ import BoardGameAbout from './pages/BoardGameAbout'
 import BoardGameCommunity from './pages/BoardGameCommunity'
 import BoardGameRules from './pages/BoardGameRules'
 import BoardGameUpdates from './pages/BoardGameUpdates'
+import BoardGameBuy from './pages/BoardGameBuy'
 import Chapter from './pages/Chapter'
 import CheckoutCancel from './pages/CheckoutCancel'
 import CheckoutSuccess from './pages/CheckoutSuccess'
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="community" element={<BoardGameCommunity />} />
           <Route path="rules" element={<BoardGameRules />} />
           <Route path="updates" element={<BoardGameUpdates />} />
+          <Route path="buy" element={<BoardGameBuy />} />
         </Route>
         <Route path="stories" element={<Stories />}>
           <Route index element={<StoryOverview />} />
