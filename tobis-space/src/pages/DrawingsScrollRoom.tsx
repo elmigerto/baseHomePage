@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import drawings, { categories, type Drawing } from '../files/drawings'
+import { useTranslation } from '../contexts/LanguageContext'
 import wallImg from '../assets/drawings/wall.png'
 import useDrawingModal from '../hooks/useDrawingModal'
 import { useCart } from '../contexts/CartContext'
@@ -32,6 +33,7 @@ export default function DrawingsScrollRoom() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { open: openModal, modal } = useDrawingModal()
   const { items: cartItems, addItem, removeItem } = useCart()
+  const t = useTranslation()
 
   type RowItem =
     | { type: 'label'; category: string }
@@ -141,10 +143,10 @@ export default function DrawingsScrollRoom() {
       }}
     >
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
-        <h2 className="page-title m-0">Scrolling Room</h2>
+        <h2 className="page-title m-0">{t('drawings.scrollRoom')}</h2>
         <div className="flex gap-4">
           <Link to="/drawings/gallery" className="text-blue-500 underline">
-            Gallery
+            {t('drawings.gallery')}
           </Link>
         </div>
       </div>
@@ -184,8 +186,8 @@ export default function DrawingsScrollRoom() {
                 <button
                   aria-label={
                     cartItems.some((i) => i.id === item.drawing.id) && !item.drawing.multiple
-                      ? 'Remove from cart'
-                      : 'Add to cart'
+                      ? t('drawings.remove')
+                      : t('drawings.add')
                   }
                   className="mt-1 rounded p-1 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
                   onClick={() =>
@@ -212,14 +214,14 @@ export default function DrawingsScrollRoom() {
           )}
         </div>
         <button
-          aria-label="Move left"
+          aria-label={t('drawings.moveLeft')}
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-700/40 text-white p-2 rounded hover:bg-gray-700/60"
           onClick={() => scroll(-300)}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <button
-          aria-label="Move right"
+          aria-label={t('drawings.moveRight')}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-700/40 text-white p-2 rounded hover:bg-gray-700/60"
           onClick={() => scroll(300)}
         >

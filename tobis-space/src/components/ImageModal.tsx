@@ -3,10 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons"
 import Button from "./Button"
 import { useCart } from "../contexts/CartContext"
+import { useTranslation } from "../contexts/LanguageContext"
 import type { Drawing } from "../files/drawings"
 
 export default function ImageModal({ art, onClose }: { art: Drawing; onClose: () => void }) {
   const { addItem, removeItem, items } = useCart()
+  const t = useTranslation()
   const [zoom, setZoom] = useState(1)
   const handleZoomIn = () => setZoom((z) => Math.min(3, z + 0.25))
   const handleZoomOut = () => setZoom((z) => Math.max(1, z - 0.25))
@@ -16,7 +18,7 @@ export default function ImageModal({ art, onClose }: { art: Drawing; onClose: ()
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
       <div className="relative max-w-md w-full rounded bg-white p-4 text-black dark:bg-gray-800 dark:text-white">
         <button
-          aria-label="Close"
+          aria-label={t('drawings.close')}
           className="absolute right-2 top-2 text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
           onClick={onClose}
         >
@@ -39,14 +41,14 @@ export default function ImageModal({ art, onClose }: { art: Drawing; onClose: ()
         </div>
         <div className="mb-2 flex justify-center gap-2">
           <button
-            aria-label="Zoom in"
+            aria-label={t('drawings.zoomIn')}
             className="rounded bg-gray-200 p-1 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
             onClick={handleZoomIn}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
           <button
-            aria-label="Zoom out"
+            aria-label={t('drawings.zoomOut')}
             className="rounded bg-gray-200 p-1 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
             onClick={handleZoomOut}
           >
@@ -58,7 +60,7 @@ export default function ImageModal({ art, onClose }: { art: Drawing; onClose: ()
         <p className="mb-2 text-center font-bold">{art.price.toFixed(2)} €</p>
         <div className="flex justify-center gap-2">
           {inCart && !art.multiple ? (
-            <Button onClick={() => removeItem(art.id)}>Remove</Button>
+            <Button onClick={() => removeItem(art.id)}>{t('drawings.remove')}</Button>
           ) : (
             <Button
               onClick={() =>
@@ -66,11 +68,11 @@ export default function ImageModal({ art, onClose }: { art: Drawing; onClose: ()
               }
               disabled={!canAdd}
             >
-              Add to Cart
+              {t('drawings.add')}
             </Button>
           )}
           <Button className="bg-gray-300 text-black hover:bg-gray-400" onClick={onClose}>
-            <FontAwesomeIcon icon={faXmark} className="mr-1" /> Close
+            <FontAwesomeIcon icon={faXmark} className="mr-1" /> {t('drawings.close')}
           </Button>
         </div>
       </div>

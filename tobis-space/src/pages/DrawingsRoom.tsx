@@ -18,6 +18,7 @@ import {
   type ThreeElements,
 } from "@react-three/fiber"
 import { Html, MapControls } from "@react-three/drei"
+import { useTranslation } from "../contexts/LanguageContext"
 import {
   DoubleSide,
   Mesh,
@@ -305,6 +306,7 @@ function GalleryScene({
 }
 
 export default function DrawingsRoom() {
+  const t = useTranslation()
   const controlsRef = useRef<any>(null)
   const [zoom, setZoom] = useState(1)
   const moveInterval = useRef<NodeJS.Timeout | null>(null)
@@ -437,20 +439,20 @@ export default function DrawingsRoom() {
   return (
     <div className="w-full h-screen pb-5 bg-gray-200">
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
-        <h2 className="page-title m-0">3D Room</h2>
+        <h2 className="page-title m-0">{t('drawings.virtualRoom')}</h2>
         <div className="flex gap-2">
           <Link
             to="/drawings/scroll"
             className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
           >
-            Scroll Room
+            {t('drawings.scrollRoom')}
             <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
           </Link>
           <Link
             to="/drawings/gallery"
             className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
           >
-            Gallery
+            {t('drawings.gallery')}
             <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
           </Link>
         </div>
@@ -466,7 +468,7 @@ export default function DrawingsRoom() {
             <Html center>
               <div className="flex items-center gap-2 text-white">
                 <FontAwesomeIcon icon={faSpinner} spin />
-                <span>Loading virtual room...</span>
+                <span>{t('drawings.loading')}</span>
               </div>
             </Html>
           }
@@ -498,21 +500,21 @@ export default function DrawingsRoom() {
       <div className="fixed bottom-4 right-4 z-20 flex flex-col items-center space-y-2 text-white">
         <div className="flex gap-2 items-center">
           <button
-            aria-label="Zoom in"
+            aria-label={t('drawings.zoomIn')}
             className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
             onClick={() => applyZoom(zoom + 0.1)}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
           <button
-            aria-label="Reset zoom"
+            aria-label={t('drawings.resetZoom')}
             className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
             onClick={() => applyZoom(1)}
           >
             <FontAwesomeIcon icon={faRotateLeft} />
           </button>
           <button
-            aria-label="Zoom out"
+            aria-label={t('drawings.zoomOut')}
             className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
             onClick={() => applyZoom(zoom - 0.1)}
           >
@@ -523,7 +525,7 @@ export default function DrawingsRoom() {
       </div>
 
       <button
-        aria-label="Move up"
+        aria-label={t('drawings.moveUp')}
         className="fixed top-4 left-1/2 -translate-x-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(0, MOVE_STEP)}
         onMouseUp={stopContinuousMove}
@@ -535,7 +537,7 @@ export default function DrawingsRoom() {
         <FontAwesomeIcon icon={faArrowUp} />
       </button>
       <button
-        aria-label="Move down"
+        aria-label={t('drawings.moveDown')}
         className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(0, -MOVE_STEP)}
         onMouseUp={stopContinuousMove}
@@ -547,7 +549,7 @@ export default function DrawingsRoom() {
         <FontAwesomeIcon icon={faArrowDown} />
       </button>
       <button
-        aria-label="Move left"
+        aria-label={t('drawings.moveLeft')}
         className="fixed left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(-MOVE_STEP, 0)}
         onMouseUp={stopContinuousMove}
@@ -559,7 +561,7 @@ export default function DrawingsRoom() {
         <FontAwesomeIcon icon={faArrowLeft} />
       </button>
       <button
-        aria-label="Move right"
+        aria-label={t('drawings.moveRight')}
         className="fixed right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(MOVE_STEP, 0)}
         onMouseUp={stopContinuousMove}

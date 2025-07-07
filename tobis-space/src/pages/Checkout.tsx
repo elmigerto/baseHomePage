@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCart } from '../contexts/CartContext'
+import { useCart, type CartItem } from '../contexts/CartContext'
+import { useTranslation } from '../contexts/LanguageContext'
+
 
 interface Address {
   name: string
@@ -13,6 +15,7 @@ interface Address {
 export default function Checkout() {
   const { items } = useCart()
   const navigate = useNavigate()
+  const t = useTranslation()
   const [address, setAddress] = useState<Address>({
     name: '',
     street: '',
@@ -21,7 +24,7 @@ export default function Checkout() {
     country: '',
   })
 
-  if (items.length === 0) return <p>Your cart is empty.</p>
+  if (items.length === 0) return <p>{t('checkout.empty')}</p>
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -40,11 +43,11 @@ export default function Checkout() {
       onSubmit={handleSubmit}
       className="mx-auto flex max-w-md flex-col space-y-4"
     >
-      <h2 className="page-title">Checkout</h2>
+      <h2 className="page-title">{t('checkout.title')}</h2>
       <input
         required
         name="name"
-        placeholder="Name"
+        placeholder={t('checkout.name')}
         value={address.name}
         onChange={handleChange}
         className="rounded border p-2 text-black"
@@ -52,7 +55,7 @@ export default function Checkout() {
       <input
         required
         name="street"
-        placeholder="Street"
+        placeholder={t('checkout.street')}
         value={address.street}
         onChange={handleChange}
         className="rounded border p-2 text-black"
@@ -60,7 +63,7 @@ export default function Checkout() {
       <input
         required
         name="city"
-        placeholder="City"
+        placeholder={t('checkout.city')}
         value={address.city}
         onChange={handleChange}
         className="rounded border p-2 text-black"
@@ -68,7 +71,7 @@ export default function Checkout() {
       <input
         required
         name="zip"
-        placeholder="ZIP"
+        placeholder={t('checkout.zip')}
         value={address.zip}
         onChange={handleChange}
         className="rounded border p-2 text-black"
@@ -76,6 +79,9 @@ export default function Checkout() {
       <select
         required
         name="country"
+
+        placeholder={t('checkout.country')}
+
         value={address.country}
         onChange={handleChange}
         className="rounded border p-2 text-black"
@@ -88,7 +94,7 @@ export default function Checkout() {
         <option value="Australia">Australia</option>
       </select>
       <button type="submit" className="btn bg-green-600 hover:bg-green-700">
-        Continue to Payment
+        {t('checkout.continue')}
       </button>
     </form>
   )
