@@ -55,7 +55,10 @@ export default function DrawingsScrollRoom() {
       const cat = sortedCategories[(start + i) % sortedCategories.length]
       arr.push({ type: 'label', category: cat })
       arr.push(
-        ...drawingsByCat[cat].map((d) => ({ type: 'drawing', drawing: d }))
+        ...drawingsByCat[cat].map<RowItem>((d) => ({
+          type: 'drawing',
+          drawing: d,
+        }))
       )
     }
     return arr
