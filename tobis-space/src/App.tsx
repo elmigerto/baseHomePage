@@ -6,9 +6,11 @@ import BoardGameAbout from './pages/BoardGameAbout'
 import BoardGameCommunity from './pages/BoardGameCommunity'
 import BoardGameRules from './pages/BoardGameRules'
 import BoardGameUpdates from './pages/BoardGameUpdates'
+import BoardGameBuy from './pages/BoardGameBuy'
 import Chapter from './pages/Chapter'
 import CheckoutCancel from './pages/CheckoutCancel'
 import CheckoutSuccess from './pages/CheckoutSuccess'
+import Payment from './pages/Payment'
 import Drawings from './pages/Drawings'
 import DrawingsRoom from './pages/DrawingsRoom'
 import DrawingsScrollRoom from './pages/DrawingsScrollRoom'
@@ -29,6 +31,7 @@ export default function App() {
           <Route path="community" element={<BoardGameCommunity />} />
           <Route path="rules" element={<BoardGameRules />} />
           <Route path="updates" element={<BoardGameUpdates />} />
+          <Route path="buy" element={<BoardGameBuy />} />
         </Route>
         <Route path="stories" element={<Stories />}>
           <Route index element={<StoryOverview />} />
@@ -40,6 +43,7 @@ export default function App() {
         <Route path="software" element={<Software />} />
         <Route path="about" element={<About />} />
         <Route path="checkout" element={<Checkout />} />
+        <Route path="payment" element={<Payment />} />
         <Route path="success" element={<CheckoutSuccess />} />
         <Route path="cancel" element={<CheckoutCancel />} />
       </Route>
