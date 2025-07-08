@@ -7,7 +7,7 @@ export default function BoardGameBuy() {
   const id = 'boardgame-core'
   const name = "The Dragon's Tweak"
   const price = 49.99
-  const count = items.filter((i) => i.id === id).length
+  const count = items.find((i) => i.id === id)?.quantity ?? 0
   const inCart = count > 0
 
   return (
