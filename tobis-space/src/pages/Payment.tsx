@@ -16,6 +16,8 @@ interface CheckoutItem {
   quantity: number
 }
 
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 function groupItems(items: CartItem[]): CheckoutItem[] {
   const map = new Map<string, CheckoutItem>()
   for (const item of items) {
@@ -30,7 +32,7 @@ function groupItems(items: CartItem[]): CheckoutItem[] {
 }
 
 async function checkout(items: CheckoutItem[], address: Address) {
-  const res = await fetch('/create-checkout-session', {
+  const res = await fetch(`${API_URL}/create-checkout-session`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ items, address }),

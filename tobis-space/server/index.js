@@ -2,6 +2,7 @@ import express from 'express'
 import Stripe from 'stripe'
 import dotenv from 'dotenv'
 import sqlite3 from 'sqlite3'
+import cors from 'cors'
 
 dotenv.config()
 
@@ -31,6 +32,7 @@ db.serialize(() => {
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 const stripe = new Stripe(process.env.STRIPE_SECRET || '', { apiVersion: '2024-08-16' })
 
