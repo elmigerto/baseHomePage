@@ -7,9 +7,27 @@ dotenv.config()
 
 // Initialize SQLite database to store orders
 const db = new sqlite3.Database('orders.db')
-db.run(
-  'CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, items TEXT, address TEXT)'
-)
+db.serialize(() => {
+  db.run(
+    'CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, items TEXT, address TEXT)'
+  )
+  db.run('CREATE TABLE IF NOT EXISTS countries (name TEXT PRIMARY KEY)')
+  const defaultCountries = [
+    'Germany',
+    'United States',
+    'United Kingdom',
+    'Canada',
+    'Australia',
+    'France',
+    'Italy',
+    'Spain',
+    'Switzerland',
+    'Austria',
+  ]
+  defaultCountries.forEach((c) => {
+    db.run('INSERT OR IGNORE INTO countries (name) VALUES (?)', c)
+  })
+})
 
 const app = express()
 app.use(express.json())
@@ -53,6 +71,14 @@ app.get('/orders', (req, res) => {
   db.all('SELECT * FROM orders', (err, rows) => {
     if (err) return res.status(500).json({ error: 'Unable to fetch orders' })
     res.json(rows)
+  })
+})
+
+// Provide list of available countries
+app.get('/countries', (req, res) => {
+  db.all('SELECT name FROM countries ORDER BY name', (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Unable to fetch countries' })
+    res.json(rows.map((r) => r.name))
   })
 })
 
