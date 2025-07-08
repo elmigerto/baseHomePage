@@ -10,6 +10,7 @@ Build a personal homepage where visitors can browse board games, read stories, a
 - **Cart**: Custom React context
 - **Payments**: Stripe Checkout (custom backend)
 - **Backend**: Node.js (Express or serverless)
+- **Database**: SQLite used to store checkout orders
 - **Formatter**: [Biome](https://biomejs.dev)
 
 ## 📂 File Organization
