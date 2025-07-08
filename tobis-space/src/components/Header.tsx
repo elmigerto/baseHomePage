@@ -64,7 +64,7 @@ export default function Header({
           </button>
           <button onClick={openCart} className="relative" aria-label="Cart">
             <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />
-            {items.length}
+            {items.reduce((n, i) => n + i.quantity, 0)}
           </button>
           <select
             value={lang}
