@@ -61,6 +61,9 @@ export const translations = {
       email: 'email',
     },
     checkout: {
+      salutation: 'Salutation',
+      mr: 'Mr.',
+      ms: 'Ms.',
       title: 'Checkout',
       name: 'Name',
       street: 'Street',
@@ -72,6 +75,7 @@ export const translations = {
       success: 'Thank you for your purchase!',
       cancel: 'Checkout canceled.',
       errors: {
+        salutation: 'Please select a salutation.',
         name: 'Please enter your name.',
         street: 'Please enter your street.',
         city: 'Please enter your city.',
@@ -155,6 +159,9 @@ export const translations = {
       email: 'E-Mail',
     },
     checkout: {
+      salutation: 'Anrede',
+      mr: 'Herr',
+      ms: 'Frau',
       title: 'Kasse',
       name: 'Name',
       street: 'Straße',
@@ -166,6 +173,7 @@ export const translations = {
       success: 'Vielen Dank für deinen Einkauf!',
       cancel: 'Bezahlung abgebrochen.',
       errors: {
+        salutation: 'Bitte Anrede auswählen.',
         name: 'Bitte Namen eingeben.',
         street: 'Bitte Straße eingeben.',
         city: 'Bitte Stadt eingeben.',
