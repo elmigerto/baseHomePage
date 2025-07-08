@@ -17,7 +17,7 @@ export default function Cart() {
   if (items.length === 0) return <p>{t('cart.empty')}</p>
 
   return (
-    <div className="p-4 border rounded bg-gray-100">
+    <div className="p-4 border rounded bg-gray-100 dark:bg-gray-700 dark:border-gray-600">
       <ul className="space-y-2">
         {items.map((item) => (
           <li key={item.id} className="flex justify-between">
