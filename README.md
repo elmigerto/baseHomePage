@@ -16,7 +16,8 @@ STRIPE_SECRET=sk_test_your_secret
 
 Start the backend with `npm run server` from the `tobis-space` folder. The
 frontend calls the `/create-checkout-session` endpoint to create a session and
-redirects the user to Stripe's hosted payment page.
+redirects the user to Stripe's hosted payment page. When deploying, set
+`VITE_API_URL` to the backend URL so the frontend knows where to send requests.
 
 ## Deploying to GitHub Pages
 
