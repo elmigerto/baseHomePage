@@ -12,9 +12,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET || '', { apiVersion: '2024-0
 app.post('/create-checkout-session', async (req, res) => {
   try {
     const { items, address } = req.body
+    const lineItems = items.map((item) => ({
+      price_data: {
+        currency: 'eur',
+        product_data: { name: item.name },
+        unit_amount: Math.round(item.price * 100),
+      },
+      quantity: item.quantity,
+    }))
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      line_items: items,
+      line_items: lineItems,
       success_url: `${req.headers.origin}/success`,
       cancel_url: `${req.headers.origin}/cancel`,
       metadata: address,
