@@ -9,6 +9,8 @@ import BoardGameUpdates from "./pages/BoardGameUpdates";
 import BoardGameBuy from "./pages/BoardGameBuy";
 import BoardGameGame from "./pages/BoardGameGame";
 import BoardGameGameCards from "./pages/BoardGameGameCards";
+import BoardGameGameHexagons from "./pages/BoardGameGameHexagons";
+import BoardGameGameTokens from "./pages/BoardGameGameTokens";
 import Chapter from "./pages/Chapter";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
@@ -33,10 +35,12 @@ export default function App() {
 					<Route path="community" element={<BoardGameCommunity />} />
 					<Route path="rules" element={<BoardGameRules />} />
 					<Route path="updates" element={<BoardGameUpdates />} />
-					<Route path="game" element={<BoardGameGame />}>
-						<Route index element={<BoardGameGameCards />} />
-						<Route path="cards" element={<BoardGameGameCards />} />
-					</Route>
+                                        <Route path="game" element={<BoardGameGame />}>
+                                                <Route index element={<BoardGameGameCards />} />
+                                                <Route path="cards" element={<BoardGameGameCards />} />
+                                                <Route path="hexagons" element={<BoardGameGameHexagons />} />
+                                                <Route path="tokens" element={<BoardGameGameTokens />} />
+                                        </Route>
 					<Route path="buy" element={<BoardGameBuy />} />
 				</Route>
 				<Route path="stories" element={<Stories />}>
