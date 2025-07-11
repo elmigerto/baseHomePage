@@ -45,8 +45,8 @@ export default function RandomImageStack() {
 
   useEffect(() => {
     function addImages() {
-      setStacks((prev) =>
-        prev.map((stack, index) => {
+      setStacks((prev) => {
+        const nextStacks = prev.map((stack, index) => {
           const id = Date.now() + Math.random()
           const img: ImgState = {
             id,
@@ -59,16 +59,19 @@ export default function RandomImageStack() {
             const first = next[0]
             next[0] = { ...first, leaving: true }
             setTimeout(() => {
-              setStacks((cur) =>
-                cur.map((s, i) =>
-                  i === index ? s.filter((it) => it.id !== first.id) : s,
-                ),
+              setStacks(
+                (cur) =>
+                  cur.map((s, i) =>
+                    i === index ? s.filter((it) => it.id !== first.id) : s,
+                  ) as CornerStacks,
               )
             }, 1000)
           }
           return next
-        }),
-      )
+        }) as CornerStacks
+
+        return nextStacks
+      })
     }
 
     addImages()
