@@ -78,7 +78,7 @@ export default function RandomImageStack() {
 
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-16">
         {stacks.map((stack, index) => (
           <div
             key={index}
