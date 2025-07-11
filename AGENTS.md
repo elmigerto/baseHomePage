@@ -14,6 +14,7 @@ Build a personal homepage where visitors can browse board games, read stories, a
 - **Translations**: English/German strings via `LanguageContext`
 - **Theme**: Light/Dark toggle provided by `ThemeContext` (default dark)
 - **Formatter**: [Biome](https://biomejs.dev)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com) for Radix-based widgets
 
 ## 📂 File Organization
 - Project code lives in `tobis-space/`
@@ -41,6 +42,7 @@ Use this overview to quickly locate files:
 ## 🧑‍💻 Agent Instructions
 ### Coding Style
 - Use Tailwind for styling
+- Prefer [shadcn/ui](https://ui.shadcn.com) components when possible
 - Functional components only
 - Manage state with React Context or signals
 - Apply `min-h-screen` for layout height
@@ -77,8 +79,8 @@ Use this overview to quickly locate files:
 
 ## 🚫 Don’t
 - Use class components
-- Introduce external UI libraries
 - Include hardcoded secrets or credentials
+- Add heavy UI frameworks beyond shadcn
 
 ---
 
