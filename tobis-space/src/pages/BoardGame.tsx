@@ -1,3 +1,4 @@
+
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "../contexts/LanguageContext"
 import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs"
@@ -26,6 +27,9 @@ export default function BoardGame() {
           </TabsTrigger>
           <TabsTrigger value="updates" variant="underline">
             {t("boardgame.updates")}
+          </TabsTrigger>
+                    <TabsTrigger value="game" variant="underline">
+          		{t("boardgame.game")}
           </TabsTrigger>
           <TabsTrigger value="buy" variant="underline">
             Buy
