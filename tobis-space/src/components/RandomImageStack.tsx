@@ -23,6 +23,7 @@ interface ImgState {
   size: number
   x: number
   y: number
+  leaving?: boolean
 }
 
 function randomImage() {
@@ -36,33 +37,61 @@ export default function RandomImageStack() {
     function addImage() {
       const angle = (Math.random() - 0.5) * 10
       const size = 0.9 + Math.random() * 0.2
-      const rad = Math.random() * 2 * Math.PI
       const distance = 400
       const id = Date.now() + Math.random()
+
+      const side = Math.floor(Math.random() * 4)
+      const offset = (Math.random() - 0.5) * distance * 2
+      let x = 0
+      let y = 0
+      switch (side) {
+        case 0:
+          x = -distance
+          y = offset
+          break
+        case 1:
+          x = distance
+          y = offset
+          break
+        case 2:
+          x = offset
+          y = -distance
+          break
+        default:
+          x = offset
+          y = distance
+      }
+
       const img: ImgState = {
         id,
         src: randomImage(),
         angle,
         size,
-        x: Math.cos(rad) * distance,
-        y: Math.sin(rad) * distance,
+        x,
+        y,
       }
+
       setImages((prev) => {
         const next = [...prev, img]
-        if (next.length > 5) next.shift()
+        if (next.length > 5) {
+          const first = next[0]
+          next[0] = { ...first, leaving: true }
+          setTimeout(() => {
+            setImages((cur) => cur.filter((i) => i.id !== first.id))
+          }, 1000)
+        }
         return next
       })
-      setTimeout(() => {
+
+      requestAnimationFrame(() => {
         setImages((prev) =>
-          prev.map((i) =>
-            i.id === id ? { ...i, x: 0, y: 0 } : i,
-          ),
+          prev.map((i) => (i.id === id ? { ...i, x: 0, y: 0 } : i)),
         )
-      }, 50)
+      })
     }
 
     addImage()
-    const timer = setInterval(addImage, 1000)
+    const timer = setInterval(addImage, 3000)
     return () => clearInterval(timer)
   }, [])
 
@@ -72,9 +101,10 @@ export default function RandomImageStack() {
         <img
           key={img.id}
           src={img.src}
-          className="absolute left-1/2 top-1/2 pointer-events-none transition-transform duration-300 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain"
+          className="absolute left-1/2 top-1/2 pointer-events-none transition-all duration-1000 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain"
           style={{
-            transform: `translate(-50%, -50%) translate(${img.x}px, ${img.y}px) rotate(${img.angle}deg) scale(${img.size})`,
+            transform: `translate(-50%, -50%) translate(${img.x}px, ${img.y}px) rotate(${img.angle}deg) scale(${img.leaving ? 0.1 : img.size})`,
+            opacity: img.leaving ? 0 : 1,
           }}
         />
       ))}
