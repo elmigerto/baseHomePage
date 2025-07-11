@@ -72,7 +72,7 @@ export default function RandomImageStack() {
         <img
           key={img.id}
           src={img.src}
-          className="absolute left-1/2 top-1/2 w-64 h-64 object-contain pointer-events-none transition-transform duration-300"
+          className="absolute left-1/2 top-1/2 pointer-events-none transition-transform duration-300 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain"
           style={{
             transform: `translate(-50%, -50%) translate(${img.x}px, ${img.y}px) rotate(${img.angle}deg) scale(${img.size})`,
           }}
