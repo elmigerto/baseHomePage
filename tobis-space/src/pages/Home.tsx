@@ -35,16 +35,20 @@ export default function Home() {
 	const next = (index + 1) % backgrounds.length;
 	return (
 		<section className="relative min-h-screen flex items-center justify-center overflow-hidden text-white text-center">
-			<img
-				src={backgrounds[index]}
-				alt="background"
-				className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vmax] h-[120vmax] object-cover transition-opacity duration-[100000ms] ${fade ? "opacity-0" : "opacity-100"} animate-spin-zoom`}
-			/>
-			<img
-				src={backgrounds[next]}
-				alt="background"
-				className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vmax] h-[120vmax] object-cover transition-opacity duration-[100000ms] ${fade ? "opacity-100" : "opacity-0"} animate-spin-zoom`}
-			/>
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vmax] h-[120vmax]">
+                                <img
+                                        src={backgrounds[index]}
+                                        alt="background"
+                                        className={`w-full h-full object-cover transition-opacity duration-[100000ms] ${fade ? "opacity-0" : "opacity-100"} animate-spin-zoom`}
+                                />
+                        </div>
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vmax] h-[120vmax]">
+                                <img
+                                        src={backgrounds[next]}
+                                        alt="background"
+                                        className={`w-full h-full object-cover transition-opacity duration-[100000ms] ${fade ? "opacity-100" : "opacity-0"} animate-spin-zoom`}
+                                />
+                        </div>
 			<RandomImageStack />
 		</section>
 	);
