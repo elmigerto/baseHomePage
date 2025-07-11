@@ -14,7 +14,14 @@ const drawingImages = Object.values(
   }),
 ) as string[]
 
-const allImages = [...chapterImages, ...drawingImages]
+const boardgameImages = Object.values(
+  import.meta.glob('../files/boardgame/images/**/*.{jpg,JPG,jpeg,JPEG,png}', {
+    eager: true,
+    import: 'default',
+  }),
+) as string[]
+
+const allImages = [...chapterImages, ...drawingImages, ...boardgameImages]
 
 interface ImgState {
   id: number
@@ -101,10 +108,11 @@ export default function RandomImageStack() {
         <img
           key={img.id}
           src={img.src}
-          className="absolute left-1/2 top-1/2 pointer-events-none transition-all duration-1000 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain"
+          className="absolute left-1/2 top-1/2 pointer-events-none transition-all duration-1000 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain transform-gpu"
           style={{
             transform: `translate(-50%, -50%) translate(${img.x}px, ${img.y}px) rotate(${img.angle}deg) scale(${img.leaving ? 0.1 : img.size})`,
             opacity: img.leaving ? 0 : 1,
+            willChange: 'transform, opacity',
           }}
         />
       ))}
