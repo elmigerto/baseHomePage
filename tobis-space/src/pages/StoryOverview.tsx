@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom"
 import chapters from "../files/chapters"
 import { useTranslation } from "../contexts/LanguageContext"
+import coverVeiled from "../files/chapters/images/Cover_Veiled.png"
 
 export default function StoryOverview() {
   const navigate = useNavigate()
@@ -10,6 +11,12 @@ export default function StoryOverview() {
   return (
     <div className="space-y-4">
       <h2 className="page-title">The Summoners' Veiled Cards</h2>
+      <img
+        src={coverVeiled}
+        alt="The Summoners' Veiled Cards cover"
+        loading="lazy"
+        className="w-full max-w-md mx-auto"
+      />
       <p>{description}</p>
       <select
         onChange={(e) => navigate(e.target.value)}
