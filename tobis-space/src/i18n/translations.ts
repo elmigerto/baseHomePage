@@ -18,7 +18,9 @@ export const translations = {
 			community: "Community Links",
 			updates: "Game Updates",
 			game: "The Game",
-			cards: "Cards",
+                        cards: "Cards",
+                        hexagons: "Hexagons",
+                        tokens: "Tokens",
 		},
 		drawings: {
 			gallery: "Gallery",
@@ -115,7 +117,9 @@ export const translations = {
 			community: "Community-Links",
 			updates: "Spielupdates",
 			game: "Das Spiel",
-			cards: "Karten",
+                        cards: "Karten",
+                        hexagons: "Hexagone",
+                        tokens: "Marker",
 		},
 		drawings: {
 			gallery: "Galerie",
