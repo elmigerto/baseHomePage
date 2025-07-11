@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
+import { cn } from "../lib/utils"
 
 const chapterImages = Object.values(
   import.meta.glob('../files/chapters/images/*.{png,jpg,jpeg}', {
@@ -37,18 +38,7 @@ function randomImage() {
   return allImages[Math.floor(Math.random() * allImages.length)]
 }
 
-function cornerClass(corner: number) {
-  switch (corner) {
-    case 0:
-      return "top-0 left-0"
-    case 1:
-      return "top-0 right-0"
-    case 2:
-      return "bottom-0 left-0"
-    default:
-      return "bottom-0 right-0"
-  }
-}
+
 
 export default function RandomImageStack() {
   const [stacks, setStacks] = useState<CornerStacks>([[], [], [], []])
@@ -87,21 +77,31 @@ export default function RandomImageStack() {
   }, [])
 
   return (
-    <>
-      {stacks.map((stack, index) =>
-        stack.map((img) => (
-          <img
-            key={img.id}
-            src={img.src}
-            className={`absolute pointer-events-none transition-all duration-1000 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain transform-gpu ${cornerClass(index)}`}
-            style={{
-              transform: `rotate(${img.angle}deg) scale(${img.leaving ? 0.1 : img.size})`,
-              opacity: img.leaving ? 0 : 1,
-              willChange: 'transform, opacity',
-            }}
-          />
-        )),
-      )}
-    </>
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-8">
+        {stacks.map((stack, index) => (
+          <div
+            key={index}
+            className={cn(
+              "relative w-[35vmin] h-[35vmin] max-w-[280px] max-h-[280px]",
+              index > 0 && "hidden md:block",
+            )}
+          >
+            {stack.map((img) => (
+              <img
+                key={img.id}
+                src={img.src}
+                className="absolute inset-0 transition-all duration-1000 object-contain transform-gpu w-full h-full"
+                style={{
+                  transform: `rotate(${img.angle}deg) scale(${img.leaving ? 0.1 : img.size})`,
+                  opacity: img.leaving ? 0 : 1,
+                  willChange: "transform, opacity",
+                }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
