@@ -15,6 +15,9 @@
   .subpage-title {
     @apply text-xl font-semibold mb-2 text-brand dark:text-brand-neon;
   }
+  .page-container {
+    @apply border rounded bg-white dark:bg-gray-800 p-4 shadow-md min-h-full;
+  }
 }
 
   html, body, #root {
