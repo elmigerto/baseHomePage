@@ -61,6 +61,16 @@ export default {
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
 			},
+			keyframes: {
+				"spin-zoom": {
+					"0%": { transform: "rotate(0deg) scale(1)" },
+					"41.667%": { transform: "rotate(150deg) scale(1.1)" },
+					"100%": { transform: "rotate(360deg) scale(1.1)" },
+				},
+			},
+			animation: {
+				"spin-zoom": "spin-zoom 240s linear infinite",
+			},
 		},
 	},
 	plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
