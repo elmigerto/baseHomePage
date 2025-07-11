@@ -1,16 +1,28 @@
+import { useMemo } from 'react'
 import SineBackground from '../components/SineBackground'
 import RandomImageStack from '../components/RandomImageStack'
-import { useTranslation } from '../contexts/LanguageContext'
+
+const backgrounds = Object.values(
+  import.meta.glob('../files/landing-page/image/*.{png,jpg,jpeg}', {
+    eager: true,
+    import: 'default',
+  }),
+) as string[]
 
 export default function Home() {
-  const t = useTranslation()
+  const background = useMemo(
+    () => backgrounds[Math.floor(Math.random() * backgrounds.length)],
+    [],
+  )
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-night to-brand-dark text-white text-center">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden text-white text-center">
+      <img
+        src={background}
+        alt="background"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
       <SineBackground />
       <RandomImageStack />
-      <h1 className="relative z-10 text-4xl sm:text-6xl font-bold">
-        {t('home.title')}
-      </h1>
     </section>
   )
 }
