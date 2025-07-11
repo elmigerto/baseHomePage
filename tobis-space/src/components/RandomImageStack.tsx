@@ -28,94 +28,80 @@ interface ImgState {
   src: string
   angle: number
   size: number
-  x: number
-  y: number
   leaving?: boolean
 }
+
+type CornerStacks = [ImgState[], ImgState[], ImgState[], ImgState[]]
 
 function randomImage() {
   return allImages[Math.floor(Math.random() * allImages.length)]
 }
 
+function cornerClass(corner: number) {
+  switch (corner) {
+    case 0:
+      return "top-0 left-0"
+    case 1:
+      return "top-0 right-0"
+    case 2:
+      return "bottom-0 left-0"
+    default:
+      return "bottom-0 right-0"
+  }
+}
+
 export default function RandomImageStack() {
-  const [images, setImages] = useState<ImgState[]>([])
+  const [stacks, setStacks] = useState<CornerStacks>([[], [], [], []])
 
   useEffect(() => {
-    function addImage() {
-      const angle = (Math.random() - 0.5) * 10
-      const size = 0.9 + Math.random() * 0.2
-      const distance = 400
-      const id = Date.now() + Math.random()
-
-      const side = Math.floor(Math.random() * 4)
-      const offset = (Math.random() - 0.5) * distance * 2
-      let x = 0
-      let y = 0
-      switch (side) {
-        case 0:
-          x = -distance
-          y = offset
-          break
-        case 1:
-          x = distance
-          y = offset
-          break
-        case 2:
-          x = offset
-          y = -distance
-          break
-        default:
-          x = offset
-          y = distance
-      }
-
-      const img: ImgState = {
-        id,
-        src: randomImage(),
-        angle,
-        size,
-        x,
-        y,
-      }
-
-      setImages((prev) => {
-        const next = [...prev, img]
-        if (next.length > 5) {
-          const first = next[0]
-          next[0] = { ...first, leaving: true }
-          setTimeout(() => {
-            setImages((cur) => cur.filter((i) => i.id !== first.id))
-          }, 1000)
-        }
-        return next
-      })
-
-      requestAnimationFrame(() => {
-        setImages((prev) =>
-          prev.map((i) => (i.id === id ? { ...i, x: 0, y: 0 } : i)),
-        )
-      })
+    function addImages() {
+      setStacks((prev) =>
+        prev.map((stack, index) => {
+          const id = Date.now() + Math.random()
+          const img: ImgState = {
+            id,
+            src: randomImage(),
+            angle: (Math.random() - 0.5) * 10,
+            size: 0.9 + Math.random() * 0.2,
+          }
+          const next = [...stack, img]
+          if (next.length > 5) {
+            const first = next[0]
+            next[0] = { ...first, leaving: true }
+            setTimeout(() => {
+              setStacks((cur) =>
+                cur.map((s, i) =>
+                  i === index ? s.filter((it) => it.id !== first.id) : s,
+                ),
+              )
+            }, 1000)
+          }
+          return next
+        }),
+      )
     }
 
-    addImage()
-    const timer = setInterval(addImage, 3000)
+    addImages()
+    const timer = setInterval(addImages, 3000)
     return () => clearInterval(timer)
   }, [])
 
   return (
     <>
-      {images.map((img) => (
-        <img
-          key={img.id}
-          src={img.src}
-          className="absolute left-1/2 top-1/2 pointer-events-none transition-all duration-1000 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain transform-gpu"
-          style={{
-            transform: `translate(-50%, -50%) translate(${img.x}px, ${img.y}px) rotate(${img.angle}deg) scale(${img.leaving ? 0.1 : img.size})`,
-            opacity: img.leaving ? 0 : 1,
-            willChange: 'transform, opacity',
-          }}
-        />
-      ))}
+      {stacks.map((stack, index) =>
+        stack.map((img) => (
+          <img
+            key={img.id}
+            src={img.src}
+            className={`absolute pointer-events-none transition-all duration-1000 w-[50vmin] h-[50vmin] max-w-[400px] max-h-[400px] object-contain transform-gpu ${cornerClass(index)}`}
+            style={{
+              transform: `rotate(${img.angle}deg) scale(${img.leaving ? 0.1 : img.size})`,
+              opacity: img.leaving ? 0 : 1,
+              willChange: 'transform, opacity',
+            }}
+          />
+        )),
+      )}
     </>
   )
 }
