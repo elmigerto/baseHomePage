@@ -1,3 +1,6 @@
+import { useTranslation } from '../contexts/LanguageContext'
+
 export default function CheckoutSuccess() {
-  return <h2 className="page-title">Thank you for your purchase!</h2>
+  const t = useTranslation()
+  return <h2 className="page-title">{t('checkout.success')}</h2>
 }

@@ -2,10 +2,12 @@
 
 - [x] Create routes:
   - `/` → Homepage
-  - `/boardgame` → Board Game section
-  - `/stories` → Stories section
-  - `/boardgame/updates` → Board Game updates
-  - `/drawings` → Walk-around view of the gallery
-  - `/drawings/gallery` → Grid gallery view
+  - `/boardgame` with `/about`, `/community`, `/rules`, `/updates`, `/buy`
+  - `/stories` overview and `/stories/:chapterSlug`
+  - `/drawings` walk-around view
+  - `/drawings/gallery` grid gallery view
+  - `/drawings/virtual` 3D room
+  - `/software` and `/about`
+  - Checkout flow: `/checkout` → `/payment` → `/success` or `/cancel`
 - [x] Add navigation bar with active link highlighting
 - [x] Implement a **shared layout** (e.g. with `<Outlet>`)

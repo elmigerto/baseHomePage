@@ -1,7 +1,8 @@
 # How to run:
 
 
-`npm run dev` to start the app
+1. Run `npm install` to install dependencies.
+2. Run `npm run dev` to start the app.
 
 # React + TypeScript + Vite
 

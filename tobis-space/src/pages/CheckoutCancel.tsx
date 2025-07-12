@@ -1,3 +1,6 @@
+import { useTranslation } from '../contexts/LanguageContext'
+
 export default function CheckoutCancel() {
-  return <h2 className="page-title">Checkout canceled.</h2>
+  const t = useTranslation()
+  return <h2 className="page-title">{t('checkout.cancel')}</h2>
 }
