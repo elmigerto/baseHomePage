@@ -94,7 +94,7 @@ export default function RandomImageStack() {
               <img
                 key={img.id}
                 src={img.src}
-                className="absolute inset-0 transition-all duration-1000 object-contain transform-gpu w-full h-full"
+                className="absolute inset-0 transition-all duration-1000 object-contain transform-gpu w-full h-full border border-gray-300 dark:border-gray-600"
                 style={{
                   transform: `rotate(${img.angle}deg) scale(${img.leaving ? 0.1 : img.size})`,
                   opacity: img.leaving ? 0 : 1,
