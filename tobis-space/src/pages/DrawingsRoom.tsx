@@ -10,14 +10,24 @@ import {
   faRotateLeft,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons"
-import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber"
+import {
+  Canvas,
+  useFrame,
+  useLoader,
+  useThree,
+  type ThreeElements,
+} from "@react-three/fiber"
 import { Html, MapControls } from "@react-three/drei"
+import { useTranslation } from "../contexts/LanguageContext"
 import {
   DoubleSide,
   Mesh,
   RepeatWrapping,
   TextureLoader,
   Vector3,
+  MOUSE,
+  TOUCH,
+  type Texture,
 } from "three"
 import { Link } from "react-router-dom"
 import drawings from "../files/drawings"
@@ -26,71 +36,15 @@ import wallImg from "../assets/drawings/wall.png"
 const SEGMENT_SIZE = 10
 const BASE_SEGMENTS = 5
 const BASE_SHOW_RANGE = (SEGMENT_SIZE * BASE_SEGMENTS) / 2
-const INITIAL_RANGE = BASE_SHOW_RANGE * 2
+const GRID_MARGIN = 2
 
-function shuffle<T>(array: T[]): T[] {
-  const copy = array.slice()
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[copy[i], copy[j]] = [copy[j], copy[i]]
-  }
-  return copy
-}
-
-interface Placement {
-  x: number
-  y: number
-  width: number
-  height: number
-  key: string
-}
-
-const GRID_STEP = 5
+const GRID_STEP = 12
 
 function randomSize() {
   return (2 + Math.random() * 2) * 2
 }
 
-function randomGridPosition(
-  camX = 0,
-  camY = 0,
-  used?: Set<string>,
-  range = BASE_SHOW_RANGE,
-) {
-  let attempts = 0
-  let currentRange = range
-  while (attempts < 100) {
-    const gridX = Math.round(
-      (camX + (Math.random() - 0.5) * currentRange) / GRID_STEP,
-    )
-    const gridY = Math.round(
-      (camY + (Math.random() - 0.5) * currentRange) / GRID_STEP,
-    )
-    const key = `${gridX}:${gridY}`
-    if (!used || !used.has(key)) {
-      used?.add(key)
-      const jitterX = (Math.random() - 0.5) * GRID_STEP * 0.3
-      const jitterY = (Math.random() - 0.5) * GRID_STEP * 0.3
-      return {
-        x: gridX * GRID_STEP + jitterX,
-        y: gridY * GRID_STEP + jitterY,
-        key,
-      }
-    }
-    attempts += 1
-    if (attempts % 20 === 0) {
-      currentRange *= 1.5
-    }
-  }
-  const gridX = Math.round(camX / GRID_STEP)
-  const gridY = Math.round(camY / GRID_STEP)
-  const key = `${gridX}:${gridY}`
-  used?.add(key)
-  return { x: gridX * GRID_STEP, y: gridY * GRID_STEP, key }
-}
-
-
-const CAMERA_DISTANCE = 5
+const CAMERA_DISTANCE = 10
 const MOVE_STEP = 0.5
 const RANDOM_MOVE_FACTOR = 0.2
 const RANDOM_MOVE_INTERVAL = 100
@@ -103,10 +57,10 @@ function ArtPlane({
   height,
   ...props
 }: {
-  texture: string
+  texture: Texture
   width: number
   height: number
-} & JSX.IntrinsicElements['mesh']) {
+} & ThreeElements['mesh']) {
   const ref = useRef<Mesh>(null)
   return (
     <mesh ref={ref} {...props}>
@@ -120,10 +74,12 @@ function GalleryScene({
   controlsRef,
   move,
   zoom,
+  markInteraction,
 }: {
   controlsRef: React.RefObject<any>
   move: (dx: number, dy: number) => void
   zoom: number
+  markInteraction: () => void
 }) {
   const textures = useLoader(TextureLoader, drawings.map((d) => d.image))
   const wallTexture = useLoader(TextureLoader, wallImg)
@@ -132,31 +88,22 @@ function GalleryScene({
   let seg = Math.ceil((showRange * 2) / SEGMENT_SIZE)
   if (seg % 2 === 0) seg += 1
   const segments = Math.max(BASE_SEGMENTS, seg)
-  const half = Math.floor(segments / 2)
   const wallCount = segments * segments
+  const POSITION_JITTER = 1
+  const SCALE_JITTER = 0.1
   const pointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 })
-  const usedPositions = useRef<Set<string>>(new Set())
-  const [positions, setPositions] = useState<Placement[]>([])
-  const [mapping, setMapping] = useState<number[]>([])
-  const unseenRef = useRef<number[]>([])
-
-  useEffect(() => {
-    unseenRef.current = shuffle(
-      Array.from({ length: drawings.length }, (_, i) => i),
-    )
-
-    const initial = drawings.map(() => {
-      const { x, y, key } = randomGridPosition(
-        0,
-        0,
-        usedPositions.current,
-        INITIAL_RANGE,
-      )
-      return { x, y, width: randomSize(), height: randomSize(), key }
-    })
-    setPositions(initial)
-    setMapping(initial.map(() => nextIndex()))
-  }, [])
+  interface GridItem {
+    x: number
+    y: number
+    width: number
+    height: number
+    index: number
+    key: string
+    gridX: number
+    gridY: number
+  }
+  const itemsRef = useRef<Map<string, GridItem>>(new Map())
+  const [items, setItems] = useState<GridItem[]>([])
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
@@ -169,24 +116,98 @@ function GalleryScene({
     const handleLeave = () => {
       pointerRef.current = { x: -1, y: -1 }
     }
+    const handleDown = () => {
+      markInteraction()
+    }
     gl.domElement.addEventListener('mousemove', handleMove)
     gl.domElement.addEventListener('mouseleave', handleLeave)
+    gl.domElement.addEventListener('mousedown', handleDown)
+    gl.domElement.addEventListener('touchstart', handleDown)
     return () => {
       gl.domElement.removeEventListener('mousemove', handleMove)
       gl.domElement.removeEventListener('mouseleave', handleLeave)
+      gl.domElement.removeEventListener('mousedown', handleDown)
+      gl.domElement.removeEventListener('touchstart', handleDown)
     }
-  }, [gl])
+  }, [gl, markInteraction])
 
-  function nextIndex() {
-    if (unseenRef.current.length === 0) {
-      unseenRef.current = shuffle(
-        Array.from({ length: drawings.length }, (_, i) => i),
-      )
+  const orderRef = useRef<number[]>([])
+
+  function refillOrder() {
+    orderRef.current = Array.from({ length: drawings.length }, (_, i) => i)
+    for (let i = orderRef.current.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[orderRef.current[i], orderRef.current[j]] = [
+        orderRef.current[j],
+        orderRef.current[i],
+      ]
     }
-    return unseenRef.current.pop() ?? 0
   }
 
+  function nextIndex() {
+    if (orderRef.current.length === 0) {
+      refillOrder()
+    }
+    return orderRef.current.shift() ?? 0
+  }
+
+  const ensureGrid = useCallback(() => {
+    const controls = controlsRef.current
+    if (!controls) return
+    const camX = controls.target.x
+    const camY = controls.target.y
+    const camGridX = Math.round(camX / GRID_STEP)
+    const camGridY = Math.round(camY / GRID_STEP)
+    const rangeCells = Math.ceil(showRange / GRID_STEP) + GRID_MARGIN
+    const newMap = new Map(itemsRef.current)
+
+    for (let gx = camGridX - rangeCells; gx <= camGridX + rangeCells; gx++) {
+      for (let gy = camGridY - rangeCells; gy <= camGridY + rangeCells; gy++) {
+        const key = `${gx}:${gy}`
+        if (!newMap.has(key)) {
+          const index = nextIndex()
+          const tex = textures[index]
+          const scaleFactor = 1 + (Math.random() - 0.5) * SCALE_JITTER * 2
+          const width = randomSize() * scaleFactor
+          const ratio = tex?.image
+            ? tex.image.height / tex.image.width
+            : 1
+          const jitterX = (Math.random() - 0.5) * POSITION_JITTER * 2
+          const jitterY = (Math.random() - 0.5) * POSITION_JITTER * 2
+          newMap.set(key, {
+            x: gx * GRID_STEP + jitterX,
+            y: gy * GRID_STEP + jitterY,
+            width,
+            height: width * ratio,
+            index,
+            key,
+            gridX: gx,
+            gridY: gy,
+          })
+        }
+      }
+    }
+
+    const removeCells = rangeCells + GRID_MARGIN
+    for (const [key, item] of newMap) {
+      if (
+        Math.abs(item.gridX - camGridX) > removeCells ||
+        Math.abs(item.gridY - camGridY) > removeCells
+      ) {
+        newMap.delete(key)
+      }
+    }
+
+    itemsRef.current = newMap
+    setItems(Array.from(newMap.values()))
+  }, [controlsRef, showRange])
+
+  useEffect(() => {
+    ensureGrid()
+  }, [ensureGrid])
+
   useFrame(() => {
+    ensureGrid()
     const controls = controlsRef.current
     if (!controls) return
 
@@ -210,46 +231,8 @@ function GalleryScene({
       }
       controls.update()
     }
-
-    const camX = controls.target.x
-    const camY = controls.target.y
-    const removeRange = showRange
-
-    setPositions((prev) => {
-      let changed = false
-      const next = [...prev]
-      const nextMapping = [...mapping]
-      for (let i = 0; i < next.length; i++) {
-        const p = next[i]
-        if (
-          Math.abs(p.x - camX) > removeRange ||
-          Math.abs(p.y - camY) > removeRange
-        ) {
-          usedPositions.current.delete(p.key)
-          const { x, y, key } = randomGridPosition(
-            camX,
-            camY,
-            usedPositions.current,
-            showRange,
-          )
-          next[i] = {
-            x,
-            y,
-            width: randomSize(),
-            height: randomSize(),
-            key,
-          }
-          nextMapping[i] = nextIndex()
-          changed = true
-        }
-      }
-      if (changed) {
-        setMapping(nextMapping)
-        return next
-      }
-      return prev
-    })
   })
+
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -308,31 +291,29 @@ function GalleryScene({
           <meshBasicMaterial map={wallTexture} side={DoubleSide} />
         </mesh>
       ))}
-      {positions.map((rand, index) => {
-        const drawingIndex = mapping[index]
-        return (
-          <ArtPlane
-            key={`${index}-${drawingIndex}`}
-            position={[rand.x, rand.y, 0.1]}
-            rotation={[0, 0, 0]}
-            texture={textures[drawingIndex]}
-            width={rand.width}
-            height={rand.height}
-          />
-        )
-      })}
+      {items.map((item) => (
+        <ArtPlane
+          key={item.key}
+          position={[item.x, item.y, 0.1]}
+          rotation={[0, 0, 0]}
+          texture={textures[item.index]}
+          width={item.width}
+          height={item.height}
+        />
+      ))}
     </group>
   )
 }
 
 export default function DrawingsRoom() {
+  const t = useTranslation()
   const controlsRef = useRef<any>(null)
   const [zoom, setZoom] = useState(1)
   const moveInterval = useRef<NodeJS.Timeout | null>(null)
   const autoMoveInterval = useRef<NodeJS.Timeout | null>(null)
   const lastInteraction = useRef(Date.now())
 
-  const IDLE_DELAY = 1000
+  const IDLE_DELAY = 5000
 
   const move = useCallback((dx: number, dy: number) => {
     const controls = controlsRef.current
@@ -394,10 +375,14 @@ export default function DrawingsRoom() {
 
   const startContinuousMove = useCallback(
     (dx: number, dy: number) => {
+      markInteraction()
       move(dx, dy)
-      moveInterval.current = setInterval(() => move(dx, dy), 100)
+      moveInterval.current = setInterval(() => {
+        markInteraction()
+        move(dx, dy)
+      }, 100)
     },
-    [move],
+    [move, markInteraction],
   )
 
   const stopContinuousMove = useCallback(() => {
@@ -442,13 +427,7 @@ export default function DrawingsRoom() {
         startRandomMove()
       }
     }, 1000)
-    const events = [
-      'mousemove',
-      'keydown',
-      'mousedown',
-      'touchstart',
-      'wheel',
-    ] as const
+    const events = ['mousedown', 'touchstart', 'keydown', 'wheel'] as const
     events.forEach((e) => window.addEventListener(e, markInteraction))
     return () => {
       clearInterval(checkIdle)
@@ -458,16 +437,25 @@ export default function DrawingsRoom() {
   }, [markInteraction, startRandomMove, stopRandomMove])
 
   return (
-    <div className="min-h-screen w-screen bg-gray-200">
+    <div className="w-full h-screen pb-5 bg-gray-200">
       <div className="sticky top-16 z-30 mb-4 flex items-center justify-between gap-4 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
-        <h2 className="page-title m-0">Virtual Room</h2>
-        <Link
-          to="/drawings/gallery"
-          className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
-        >
-          To the gallery
-          <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-        </Link>
+        <h2 className="page-title m-0">{t('drawings.virtualRoom')}</h2>
+        <div className="flex gap-2">
+          <Link
+            to="/drawings/scroll"
+            className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
+          >
+            {t('drawings.scrollRoom')}
+            <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+          </Link>
+          <Link
+            to="/drawings/gallery"
+            className="btn bg-brand-neon px-6 py-3 text-lg hover:bg-brand"
+          >
+            {t('drawings.gallery')}
+            <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+          </Link>
+        </div>
       </div>
 
       <Canvas
@@ -480,7 +468,7 @@ export default function DrawingsRoom() {
             <Html center>
               <div className="flex items-center gap-2 text-white">
                 <FontAwesomeIcon icon={faSpinner} spin />
-                <span>Loading virtual room...</span>
+                <span>{t('drawings.loading')}</span>
               </div>
             </Html>
           }
@@ -493,29 +481,40 @@ export default function DrawingsRoom() {
             enableZoom={false}
             enableDamping
             dampingFactor={0.1}
+            mouseButtons={{
+              LEFT: MOUSE.PAN,
+              MIDDLE: MOUSE.PAN,
+              RIGHT: MOUSE.PAN,
+            }}
+            touches={{ ONE: TOUCH.PAN, TWO: TOUCH.PAN }}
           />
           <ambientLight intensity={0.8} />
-          <GalleryScene controlsRef={controlsRef} move={move} zoom={zoom} />
+          <GalleryScene
+            controlsRef={controlsRef}
+            move={move}
+            zoom={zoom}
+            markInteraction={markInteraction}
+          />
         </Suspense>
       </Canvas>
       <div className="fixed bottom-4 right-4 z-20 flex flex-col items-center space-y-2 text-white">
         <div className="flex gap-2 items-center">
           <button
-            aria-label="Zoom in"
+            aria-label={t('drawings.zoomIn')}
             className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
             onClick={() => applyZoom(zoom + 0.1)}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
           <button
-            aria-label="Reset zoom"
+            aria-label={t('drawings.resetZoom')}
             className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
             onClick={() => applyZoom(1)}
           >
             <FontAwesomeIcon icon={faRotateLeft} />
           </button>
           <button
-            aria-label="Zoom out"
+            aria-label={t('drawings.zoomOut')}
             className="bg-gray-700/40 p-2 rounded hover:bg-gray-700/60"
             onClick={() => applyZoom(zoom - 0.1)}
           >
@@ -526,7 +525,7 @@ export default function DrawingsRoom() {
       </div>
 
       <button
-        aria-label="Move up"
+        aria-label={t('drawings.moveUp')}
         className="fixed top-4 left-1/2 -translate-x-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(0, MOVE_STEP)}
         onMouseUp={stopContinuousMove}
@@ -538,7 +537,7 @@ export default function DrawingsRoom() {
         <FontAwesomeIcon icon={faArrowUp} />
       </button>
       <button
-        aria-label="Move down"
+        aria-label={t('drawings.moveDown')}
         className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(0, -MOVE_STEP)}
         onMouseUp={stopContinuousMove}
@@ -550,7 +549,7 @@ export default function DrawingsRoom() {
         <FontAwesomeIcon icon={faArrowDown} />
       </button>
       <button
-        aria-label="Move left"
+        aria-label={t('drawings.moveLeft')}
         className="fixed left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(-MOVE_STEP, 0)}
         onMouseUp={stopContinuousMove}
@@ -562,7 +561,7 @@ export default function DrawingsRoom() {
         <FontAwesomeIcon icon={faArrowLeft} />
       </button>
       <button
-        aria-label="Move right"
+        aria-label={t('drawings.moveRight')}
         className="fixed right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700/40 p-2 rounded hover:bg-gray-700/60 text-white"
         onMouseDown={() => startContinuousMove(MOVE_STEP, 0)}
         onMouseUp={stopContinuousMove}

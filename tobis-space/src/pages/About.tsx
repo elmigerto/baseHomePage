@@ -1,16 +1,14 @@
+import { useTranslation } from '../contexts/LanguageContext'
+
 export default function About() {
+  const t = useTranslation()
   return (
     <div className="space-y-4">
-      <h2 className="page-title">About Me</h2>
+      <h2 className="page-title">{t('about.title')}</h2>
+      <p>{t('about.p1')}</p>
+      <p>{t('about.p2')}</p>
       <p>
-        I enjoy exploring new territory—both mentally and physically. Sports have
-        always been a passion: from martial arts and climbing to dance, I've tried a wide range of disciplines.
-      </p>
-      <p>
-        My analytical mindset comes from a master's degree in mechanical engineering (ETH Zurich), my structure from working as a software developer, and my creativity from painting and designing board games.
-      </p>
-      <p>
-        Discord for discussions and more:{' '}
+        {t('about.p3')}{' '}
         <a
           href="https://discord.gg/ZF9uQWHt"
           target="_blank"

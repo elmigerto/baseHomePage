@@ -10,7 +10,11 @@ Build a personal homepage where visitors can browse board games, read stories, a
 - **Cart**: Custom React context
 - **Payments**: Stripe Checkout (custom backend)
 - **Backend**: Node.js (Express or serverless)
+- **Database**: SQLite used to store checkout orders
+- **Translations**: English/German strings via `LanguageContext`
+- **Theme**: Light/Dark toggle provided by `ThemeContext` (default dark)
 - **Formatter**: [Biome](https://biomejs.dev)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com) for Radix-based widgets
 
 ## 📂 File Organization
 - Project code lives in `tobis-space/`
@@ -28,6 +32,7 @@ Use this overview to quickly locate files:
     - `files/` – Markdown chapters and assets
   - `server/` – Express backend with Stripe
   - `package.json` – Scripts (run `npm run dev` for Vite, `npm run server` for backend)
+  - `404.html` – Fallback page for GitHub Pages
 - `Agent/` – Documentation and tasks
   - `frontend/` – Frontend tasks (`README.md` lists all subtasks)
   - `stories/` – Story Markdown chapters
@@ -37,6 +42,7 @@ Use this overview to quickly locate files:
 ## 🧑‍💻 Agent Instructions
 ### Coding Style
 - Use Tailwind for styling
+- Prefer [shadcn/ui](https://ui.shadcn.com) components when possible
 - Functional components only
 - Manage state with React Context or signals
 - Apply `min-h-screen` for layout height
@@ -46,12 +52,23 @@ Use this overview to quickly locate files:
 
 ### Routing & Pages
 - Use `react-router-dom` for routing
-- Subpages: `/`, `/boardgame`, `/stories`, `/drawings`
+- Subpages include:
+  - `/` (home)
+  - `/boardgame` with `/about`, `/community`, `/rules`, `/updates`, `/buy`
+  - `/stories` and `/stories/:chapterSlug`
+  - `/drawings` walk-through view
+  - `/drawings/gallery` grid view
+  - `/drawings/virtual` 3D room
+  - `/software` and `/about`
+  - `/checkout` → address form
+  - `/payment` → Stripe redirect
+  - `/success` and `/cancel` checkout result pages
 
 ### Stripe Integration
 - Backend exposes `/create-checkout-session`
 - Frontend redirects to Stripe Checkout
 - Handle success and cancel routes
+- Orders stored in `orders.db` (SQLite)
 - Avoid third-party shopping platforms
 
 ## ✅ Do
@@ -62,8 +79,8 @@ Use this overview to quickly locate files:
 
 ## 🚫 Don’t
 - Use class components
-- Introduce external UI libraries
 - Include hardcoded secrets or credentials
+- Add heavy UI frameworks beyond shadcn
 
 ---
 
@@ -76,7 +93,9 @@ Use this overview to quickly locate files:
 - **Chapter Navigation**: Chapters load from Markdown files with matching images, ordered by number, and include previous/next links for continuous reading.
 - **Stripe Checkout**: Node.js backend exposes `/create-checkout-session` and handles success/cancel redirects.
 - **Deployment**: Host frontend and backend (e.g., Vercel/Render) and store Stripe secrets as environment variables.
-- **Design Enhancements**: Responsive layout using Tailwind and a full-screen hero section.
+- **Design Enhancements**: Responsive layout, default dark mode with toggle, and FontAwesome icons.
+- **Internationalization**: Language dropdown with English and German strings.
+- **404 Handling**: Static `404.html` page for GitHub Pages.
 
 ## 🗒️ Detailed Task List
 
@@ -89,12 +108,16 @@ corresponding file so you can dive deeper when needed.
 - [x] Set up **basic layout**: header, nav bar, footer
 - [x] Install and configure **React Router v6+** for subpages
 
-### Pages & Navigation (`Agent/frontend/pages-navigation.md`)
+-### Pages & Navigation (`Agent/frontend/pages-navigation.md`)
 - [x] Create routes:
   - `/` → Homepage
-  - `/boardgame` → Board Game section
-  - `/stories` → Stories section
-  - `/drawings` → Painted Drawings (virtual gallery)
+  - `/boardgame` with `/about`, `/community`, `/rules`, `/updates`, `/buy`
+  - `/stories` → Overview and `/stories/:chapterSlug`
+  - `/drawings` walk-through view
+  - `/drawings/gallery` grid gallery
+  - `/drawings/virtual` 3D room
+  - `/software` and `/about` static pages
+  - Checkout flow: `/checkout` → `/payment` → `/success` or `/cancel`
 - [x] Add navigation bar with active link highlighting
 - [x] Implement a **shared layout** (e.g. with `<Outlet>`)
 

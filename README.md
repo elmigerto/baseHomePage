@@ -4,6 +4,21 @@ This repository contains the code for a personal homepage built with React and
 Vite. The frontend lives in the `tobis-space/` folder and can be deployed to
 GitHub Pages.
 
+## Payments
+
+The project uses [Stripe Checkout](https://stripe.com/docs/checkout) for
+handling payments. To run the backend locally you need a Stripe secret key in an
+`.env` file:
+
+```
+STRIPE_SECRET=sk_test_your_secret
+```
+
+Start the backend with `npm run server` from the `tobis-space` folder. The
+frontend calls the `/create-checkout-session` endpoint to create a session and
+redirects the user to Stripe's hosted payment page. When deploying, set
+`VITE_API_URL` to the backend URL so the frontend knows where to send requests.
+
 ## Deploying to GitHub Pages
 
 1. Ensure the `work` branch is pushed to GitHub.
