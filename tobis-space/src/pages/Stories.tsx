@@ -1,6 +1,14 @@
 import { Link, Outlet, useLocation, useParams } from "react-router-dom"
 import chapters from "../files/chapters"
 import { useTranslation } from "../contexts/LanguageContext"
+import ScrollingImage from "../components/ScrollingImage"
+
+const storyImages = Object.values(
+  import.meta.glob("../files/chapters/images/*.{png,jpg,jpeg,JPG,JPEG}", {
+    eager: true,
+    import: "default",
+  }),
+) as string[]
 
 export default function Stories() {
   const location = useLocation()
@@ -35,6 +43,10 @@ export default function Stories() {
       </nav>
 
       <Outlet />
+      <ScrollingImage
+        key={isOverview ? 'overview' : detailTarget}
+        images={storyImages}
+      />
     </div>
   )
 }

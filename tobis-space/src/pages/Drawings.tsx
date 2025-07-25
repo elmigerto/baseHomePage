@@ -7,6 +7,14 @@ import { useCart } from "../contexts/CartContext"
 import { useTranslation } from "../contexts/LanguageContext"
 import drawings, { categories, type Drawing } from "../files/drawings"
 import useDrawingModal from "../hooks/useDrawingModal"
+import ScrollingImage from "../components/ScrollingImage"
+
+const drawingImages = Object.values(
+  import.meta.glob("../files/drawings/**/*.{jpg,JPG,jpeg,JPEG,png}", {
+    eager: true,
+    import: "default",
+  }),
+) as string[]
 
 const allCategory = "all"
 
@@ -101,6 +109,7 @@ export default function Drawings() {
         </div>
       )}
       {modal}
+      <ScrollingImage key={filter} images={drawingImages} />
     </div>
   )
 }

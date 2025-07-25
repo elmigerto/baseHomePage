@@ -2,6 +2,14 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "../contexts/LanguageContext"
 import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs"
+import ScrollingImage from "../components/ScrollingImage"
+
+const boardgameImages = Object.values(
+  import.meta.glob("../files/boardgame/images/**/*.{png,jpg,jpeg,JPG,JPEG}", {
+    eager: true,
+    import: "default",
+  }),
+) as string[]
 
 export default function BoardGame() {
   const t = useTranslation()
@@ -37,6 +45,7 @@ export default function BoardGame() {
         </TabsList>
       </Tabs>
       <Outlet />
+      <ScrollingImage key={value} images={boardgameImages} />
     </div>
   )
 }
