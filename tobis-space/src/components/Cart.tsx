@@ -3,33 +3,49 @@ import {
   faCreditCard,
   faTrash,
   faXmark,
+  faPlus,
+  faMinus,
 } from '@fortawesome/free-solid-svg-icons'
-import { useCart, type CartItem } from '../contexts/CartContext'
+import { useCart } from '../contexts/CartContext'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from '../contexts/LanguageContext'
 
-async function checkout(items: CartItem[]) {
-  const res = await fetch('/create-checkout-session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items }),
-  })
-  const data = await res.json()
-  if (data.url) {
-    window.location.href = data.url
-  }
-}
 
 export default function Cart() {
-  const { items, removeItem, clear } = useCart()
+  const { items, addItem, decreaseItem, removeItem, clear } = useCart()
+  const navigate = useNavigate()
+  const t = useTranslation()
 
-  if (items.length === 0) return <p>Your cart is empty.</p>
+  if (items.length === 0) return <p>{t('cart.empty')}</p>
 
   return (
-    <div className="p-4 border rounded bg-gray-100">
+    <div className="p-4 border rounded bg-gray-100 dark:bg-gray-700 dark:border-gray-600">
       <ul className="space-y-2">
         {items.map((item) => (
-          <li key={item.id} className="flex justify-between">
+          <li key={item.id} className="flex items-center justify-between gap-2">
             <span>{item.name}</span>
-            <span>{item.price.toFixed(2)} €</span>
+            {item.multiple ? (
+              <div className="flex items-center gap-1">
+                <button
+                  aria-label="Decrease quantity"
+                  onClick={() => decreaseItem(item.id)}
+                  className="rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-600"
+                >
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  aria-label="Increase quantity"
+                  onClick={() => addItem(item)}
+                  className="rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-600"
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+            ) : (
+              <span>x{item.quantity}</span>
+            )}
+            <span>{(item.price * item.quantity).toFixed(2)} €</span>
             <button onClick={() => removeItem(item.id)} className="ml-2">
               <FontAwesomeIcon icon={faXmark} />
             </button>
@@ -39,14 +55,21 @@ export default function Cart() {
       <div className="mt-4 flex flex-col space-y-2">
         <div className="flex justify-between">
           <strong>
-            Total {items.reduce((sum, i) => sum + i.price, 0).toFixed(2)} €
+            {t('cart.total')}{' '}
+            {items
+              .reduce((sum, i) => sum + i.price * i.quantity, 0)
+              .toFixed(2)}{' '}
+            €
           </strong>
           <button onClick={clear} className="ml-2 text-sm text-red-500">
-            <FontAwesomeIcon icon={faTrash} className="mr-1" /> Clear
+            <FontAwesomeIcon icon={faTrash} className="mr-1" /> {t('cart.clear')}
           </button>
         </div>
-        <button onClick={() => checkout(items)} className="btn bg-green-600 hover:bg-green-700">
-          <FontAwesomeIcon icon={faCreditCard} className="mr-1" /> Buy
+        <button
+          onClick={() => navigate('/checkout')}
+          className="btn bg-green-600 hover:bg-green-700"
+        >
+          <FontAwesomeIcon icon={faCreditCard} className="mr-1" /> {t('cart.buy')}
         </button>
       </div>
     </div>

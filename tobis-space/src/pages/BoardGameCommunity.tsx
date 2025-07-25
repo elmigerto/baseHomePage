@@ -1,9 +1,11 @@
-import React from 'react'
+
+import { useTranslation } from '../contexts/LanguageContext'
 
 export default function BoardGameCommunity() {
+  const t = useTranslation()
   return (
     <div className="space-y-2">
-      <h3 className="subpage-title">Community Links</h3>
+      <h3 className="subpage-title">{t('boardgame.community')}</h3>
       <ul className="list-disc list-inside">
         <li>
           <a

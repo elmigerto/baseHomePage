@@ -20,3 +20,5 @@ The main implementation is in `tobis-space/src/pages/DrawingsRoom.tsx`. This com
 - `GallerySegment` in `DrawingsRoom.tsx` duplicates artwork groups to fake an endless corridor. Modify the `ART_SPACING` constant or the placement logic to change spacing.
 - Styles rely on Tailwind classes. Use the `min-h-screen` layout rule from the agent briefing for consistency.
 
+
+- The virtual room uses the same painting list as the scrolling room. Any images added to `src/files/drawings` will automatically appear in both views.

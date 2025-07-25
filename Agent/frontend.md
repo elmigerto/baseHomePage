@@ -10,3 +10,4 @@ The detailed tasks for the frontend are split into separate files inside `Task/f
 - [Stories](frontend/stories.md)
 - [Drawings Gallery](frontend/gallery.md)
 - [Design Enhancements](frontend/design.md)
+- [Background Images](frontend/background-images.md)

@@ -1,25 +1,53 @@
-import { Link, Outlet } from 'react-router-dom'
+
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { useTranslation } from "../contexts/LanguageContext"
+import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs"
+import ScrollingImage from "../components/ScrollingImage"
+
+const boardgameImages = Object.values(
+  import.meta.glob("../files/boardgame/images/**/*.{png,jpg,jpeg,JPG,JPEG}", {
+    eager: true,
+    import: "default",
+  }),
+) as string[]
 
 export default function BoardGame() {
+  const t = useTranslation()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const last = location.pathname.split("/").pop() ?? "about"
+  const value = last === "boardgame" ? "about" : last
 
   return (
-    <div className="space-y-4">
-      <h2 className="page-title">Board Game</h2>
-      <nav className="flex gap-4">
-        <Link to="about" className="text-blue-500 underline">
-          About
-        </Link>
-        <Link to="rules" className="text-blue-500 underline">
-          Rules
-        </Link>
-        <Link to="community" className="text-blue-500 underline">
-          Community
-        </Link>
-        <Link to="updates" className="text-blue-500 underline">
-          Updates
-        </Link>
-      </nav>
-      <Outlet />
+    <div className="relative">
+      <ScrollingImage key={value} images={boardgameImages} />
+      <div className="relative space-y-4 z-10">
+        <h2 className="page-title">{t("boardgame.title")}</h2>
+        <Tabs value={value} onValueChange={(v) => navigate(v)} className="w-full">
+          <TabsList className="bg-transparent">
+            <TabsTrigger value="about" variant="underline">
+              {t("boardgame.about")}
+            </TabsTrigger>
+            <TabsTrigger value="rules" variant="underline">
+              {t("boardgame.rules")}
+            </TabsTrigger>
+            <TabsTrigger value="community" variant="underline">
+              {t("boardgame.community")}
+            </TabsTrigger>
+            <TabsTrigger value="updates" variant="underline">
+              {t("boardgame.updates")}
+            </TabsTrigger>
+            <TabsTrigger value="game" variant="underline">
+              {t("boardgame.game")}
+            </TabsTrigger>
+            <TabsTrigger value="buy" variant="underline">
+              Buy
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Outlet />
+      </div>
     </div>
   )
 }
