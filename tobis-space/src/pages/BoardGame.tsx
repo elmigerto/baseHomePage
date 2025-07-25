@@ -20,32 +20,34 @@ export default function BoardGame() {
   const value = last === "boardgame" ? "about" : last
 
   return (
-    <div className="space-y-4">
-      <h2 className="page-title">{t("boardgame.title")}</h2>
-      <Tabs value={value} onValueChange={(v) => navigate(v)} className="w-full">
-        <TabsList className="bg-transparent">
-          <TabsTrigger value="about" variant="underline">
-            {t("boardgame.about")}
-          </TabsTrigger>
-          <TabsTrigger value="rules" variant="underline">
-            {t("boardgame.rules")}
-          </TabsTrigger>
-          <TabsTrigger value="community" variant="underline">
-            {t("boardgame.community")}
-          </TabsTrigger>
-          <TabsTrigger value="updates" variant="underline">
-            {t("boardgame.updates")}
-          </TabsTrigger>
-                    <TabsTrigger value="game" variant="underline">
-          		{t("boardgame.game")}
-          </TabsTrigger>
-          <TabsTrigger value="buy" variant="underline">
-            Buy
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-      <Outlet />
+    <div className="relative">
       <ScrollingImage key={value} images={boardgameImages} />
+      <div className="relative space-y-4 z-10">
+        <h2 className="page-title">{t("boardgame.title")}</h2>
+        <Tabs value={value} onValueChange={(v) => navigate(v)} className="w-full">
+          <TabsList className="bg-transparent">
+            <TabsTrigger value="about" variant="underline">
+              {t("boardgame.about")}
+            </TabsTrigger>
+            <TabsTrigger value="rules" variant="underline">
+              {t("boardgame.rules")}
+            </TabsTrigger>
+            <TabsTrigger value="community" variant="underline">
+              {t("boardgame.community")}
+            </TabsTrigger>
+            <TabsTrigger value="updates" variant="underline">
+              {t("boardgame.updates")}
+            </TabsTrigger>
+            <TabsTrigger value="game" variant="underline">
+              {t("boardgame.game")}
+            </TabsTrigger>
+            <TabsTrigger value="buy" variant="underline">
+              Buy
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Outlet />
+      </div>
     </div>
   )
 }
