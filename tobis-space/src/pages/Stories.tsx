@@ -19,8 +19,13 @@ export default function Stories() {
   const tabClass = (active: boolean) =>
     active ? "border-b-2 border-blue-500" : "text-blue-500"
   return (
-    <div className="space-y-4">
-      <h2 className="page-title">{t('stories.title')}</h2>
+    <div className="relative">
+      <ScrollingImage
+        key={isOverview ? 'overview' : detailTarget}
+        images={storyImages}
+      />
+      <div className="relative space-y-4 z-10">
+        <h2 className="page-title">{t('stories.title')}</h2>
       <p>
         {t('stories.join')} {' '}
         <a
@@ -43,10 +48,7 @@ export default function Stories() {
       </nav>
 
       <Outlet />
-      <ScrollingImage
-        key={isOverview ? 'overview' : detailTarget}
-        images={storyImages}
-      />
+      </div>
     </div>
   )
 }

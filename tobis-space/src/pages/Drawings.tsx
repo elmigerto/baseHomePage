@@ -73,7 +73,9 @@ export default function Drawings() {
   }
 
   return (
-    <div>
+    <div className="relative">
+      <ScrollingImage key={filter} images={drawingImages} />
+      <div className="relative z-10">
       <div className="sticky top-16 z-30 mb-4 flex flex-wrap items-center justify-between gap-2 rounded border border-gray-300 bg-gray-200/70 p-2 backdrop-blur dark:border-gray-600 dark:bg-gray-700/70">
         <div className="flex items-center gap-4">
           <h2 className="page-title m-0">{t('drawings.gallery')}</h2>
@@ -109,7 +111,7 @@ export default function Drawings() {
         </div>
       )}
       {modal}
-      <ScrollingImage key={filter} images={drawingImages} />
+      </div>
     </div>
   )
 }
