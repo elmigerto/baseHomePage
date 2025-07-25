@@ -12,3 +12,4 @@ This folder contains separate task lists for each major section of the frontend.
 - `stories.md` – Stories page features
 - `design.md` – General design improvements
 - `about.md` – About page with personal info
+- `background-images.md` – Background picture scrolling effect

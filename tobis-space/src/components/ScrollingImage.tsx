@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ScrollingImage({ images }: { images: string[] }) {
   const [src, setSrc] = useState(() => {
@@ -6,12 +6,16 @@ export default function ScrollingImage({ images }: { images: string[] }) {
     return images[Math.floor(Math.random() * images.length)];
   });
   const [offset, setOffset] = useState(0);
+  const lastScroll = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
-      setOffset(window.scrollY * 0.1);
+      const current = window.scrollY;
+      const delta = current - lastScroll.current;
+      setOffset((o) => o + delta * 0.2);
+      lastScroll.current = current;
     };
-    onScroll();
+    lastScroll.current = window.scrollY;
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -25,8 +29,8 @@ export default function ScrollingImage({ images }: { images: string[] }) {
   return (
     <img
       src={src}
-      alt="random"
-      className="fixed bottom-4 left-4 w-32 h-32 object-contain pointer-events-none transition-transform"
+      alt=""
+      className="pointer-events-none fixed left-1/2 top-1/2 -z-10 h-[90vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 object-cover opacity-60 transition-transform"
       style={{ transform: `translateX(${offset}px)` }}
     />
   );
